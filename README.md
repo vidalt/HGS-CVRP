@@ -14,16 +14,17 @@ When using this algorithm (or part of it) in derived academic studies, please re
 [1] Vidal, T., Crainic, T. G., Gendreau, M., Lahrichi, N., Rei, W. (2012). 
 A hybrid genetic algorithm for multidepot and periodic vehicle routing problems. Operations Research, 60(3), 611-624. (Available [HERE](https://w1.cirrelt.ca/~vidalt/papers/HGS-CIRRELT-2011.pdf) in technical report form).
 
-[2] Vidal, T. (2020). Hybrid genetic search for the CVRP: Open-source implementation and SWAP* neighborhood. Technical Report PUC-Rio (Under Review -- Available [HERE](https://w1.cirrelt.ca/~vidalt/papers/HGS-CVRP-2020.pdf) in technical report form).
+[2] Vidal, T. (2020). Hybrid genetic search for the CVRP: Open-source implementation and SWAP* neighborhood. Technical Report PUC-Rio. 
+Available in ArXiV: https://arxiv.org/abs/2012.10384.
 
 ## Scope
 
-This code has been designed to solve the ``canonical'' Capacitated Vehicle Routing Problem (CVRP).
-It can also directly handle asymmetric distances and eventual duration constraints (see LocalSearch.h for the calculation of duration values).
+This code has been designed to solve the "canonical" Capacitated Vehicle Routing Problem (CVRP).
+It can also directly handle asymmetric distances as well as duration constraints.
 
 This version of the code has been designed and calibrated for medium-scale instances with up to 1,000 customers. 
 It is **not** designed in its current form to run very-large scale instances (e.g., with over 5,000 customers), as this requires additional solution strategies (e.g., decompositions and additional neighborhood limitations).
-If you need to solve problems that are outside of the scope of this algorithm, do not hesitate to contact me at <vidalt@inf.puc-rio.br>.
+If you need to solve problems outside of this algorithm's scope, do not hesitate to contact me at <vidalt@inf.puc-rio.br>.
 
 ## Running the algorithm
 
@@ -40,8 +41,14 @@ Available options:
   -t            Sets a time limit in seconds. If this parameter is set, the code will be restart iteratively until the time limit
   -bks          Sets an optional path to a BKS in CVRPLib format. This file will be overwritten in case of improvement 
   -seed         Sets a fixed seed. Defaults to 0     
-  -veh          Sets a prescribed fleet size. Otherwise a reasonable UB on the the fleet size is calculated
+  -veh          Sets a prescribed fleet size. Otherwise a reasonable UB on the fleet size is calculated
 ```
+
+If you wish to solve instances that include duration constraints, please activate the following line of code: https://github.com/vidalt/HGS-CVRP/blob/main/Program/LocalSearch.h#L149
+
+Moreover, there exist different conventions regarding distance calculations in the academic literature.
+The default code behavior is to apply integer rounding, as it should be done on the X instances of Uchoa et al. (2017).
+To change this behavior, for example, when testing on the CMT or Golden instances, set `isRoundingInteger = false` at https://github.com/vidalt/HGS-CVRP/blob/main/Program/Params.cpp#L12
 
 ## Code structure
 
@@ -50,7 +57,7 @@ The code structure is documented in [2] and organized in the following manner:
 * **Population**: Stores the solutions of the genetic algorithm into two different groups according to their feasibility. Also includes the functions in charge of diversity management.
 * **Genetic**: Contains the main procedures of the genetic algorithm as well as the crossover.
 * **LocalSearch**: Includes the local search functions, including the SWAP* neighborhood.
-* **LocalSearch**: A small code used to represent and manage arc sectors (to efficienty restrict the SWAP* neighborhood).
+* **LocalSearch**: A small code used to represent and manage arc sectors (to efficiently restrict the SWAP* neighborhood).
 * **Params**: Stores the method parameters, instance data and I/O functions.
 * **Commandline**: Reads the line of command.
 * **Solver**: Contains all of the HGS algorithm's population mechanisms.
@@ -68,11 +75,11 @@ Similarly, contributions that require additional libraries are usually not recom
 
 There are two main types of contributions:
 * Changes that do not impact the sequence of solutions found by the HGS algorithm when running `make test` or testing other instances with a fixed seed. This is visible by comparing the average solution value in the population and diversity through a test run.
-Such contributions include refactoring, simplification and code optimization. In this case, please attach the new log obtained before and after your changes. Pull requests of this type are likely to be integrated more quickly.
+Such contributions include refactoring, simplification, and code optimization. In this case, please attach the new log obtained before and after your changes. Pull requests of this type are likely to be integrated more quickly.
 * Changes that impact the sequence of solutions found by the algorithm when running `make test`. 
-In this case, I recommend to contact me beforehand and to provide a detailed description of the changes, with detailed results on 10 runs of the algorithm on each of the 100 instances of Uchoa et al. (2017) with the same termination criterion as used in [2], before and after the changes.
+In this case, I recommend to contact me beforehand with (i) a detailed description of the changes, (ii) detailed results on 10 runs of the algorithm for each of the 100 instances of Uchoa et al. (2017) before and after the changes, using the same termination criterion as used in [2](https://arxiv.org/abs/2012.10384).
 
-If your contribution involves some components that impact the sequence of solutions, and other that do not impact it, then I recommend to make two separate pull requests to facility review of these changes.
+If your contribution involves some components that impact the sequence of solutions and others that do not impact it, then I recommend making two separate pull requests to facilitate the review of those changes.
 
 ## License
 
