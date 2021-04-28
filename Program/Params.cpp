@@ -109,8 +109,8 @@ Params::Params(std::string pathToInstance, int nbVeh, int seedRNG) : nbVehicles(
 			correlatedVertices[i].push_back(x);
 
 	// Safeguards to avoid possible numerical instability in case of instances containing arbitrarily small or large numerical values
-	if (maxDist < 0.1 || maxDist > 100000)   throw("ERROR: The distances are of very small or large scale. This could impact numerical stability. Please rescale the dataset and run again.");
-	if (maxDemand < 0.1 || maxDemand > 100000) throw("ERROR: The demand quantities are of very small or large scale. This could impact numerical stability. Please rescale the dataset and run again.");
+	if (maxDist < 0.1 || maxDist > 100000)   throw std::string("ERROR: The distances are of very small or large scale. This could impact numerical stability. Please rescale the dataset and run again.");
+	if (maxDemand < 0.1 || maxDemand > 100000) throw std::string("ERROR: The demand quantities are of very small or large scale. This could impact numerical stability. Please rescale the dataset and run again.");
 
 	// A reasonable scale for the initial values of the penalties
 	penaltyDuration = 1;
