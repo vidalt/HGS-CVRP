@@ -67,7 +67,11 @@ Params::Params(std::string pathToInstance, int nbVeh, int seedRNG) : nbVehicles(
 	if (nbVehicles == INT_MAX)
 	{
 		nbVehicles = std::ceil(1.2*totalDemand/vehicleCapacity) + 2;  // Safety margin: 20% + 2 more vehicles than the trivial bin packing LB
-		std::cout << "----- FLEET SIZE WAS NOT SPECIFIED. DEFAULT INITIALIZATION TO: " << nbVehicles << std::endl;
+		std::cout << "----- FLEET SIZE WAS NOT SPECIFIED: DEFAULT INITIALIZATION TO " << nbVehicles << " VEHICLES" << std::endl;
+	}
+	else
+	{
+		std::cout << "----- FLEET SIZE SPECIFIED IN THE COMMANDLINE: SET TO " << nbVehicles << " VEHICLES" << std::endl;
 	}
 
 	// Calculation of the distance matrix
@@ -109,8 +113,9 @@ Params::Params(std::string pathToInstance, int nbVeh, int seedRNG) : nbVehicles(
 			correlatedVertices[i].push_back(x);
 
 	// Safeguards to avoid possible numerical instability in case of instances containing arbitrarily small or large numerical values
-	if (maxDist < 0.1 || maxDist > 100000)   throw std::string("ERROR: The distances are of very small or large scale. This could impact numerical stability. Please rescale the dataset and run again.");
-	if (maxDemand < 0.1 || maxDemand > 100000) throw std::string("ERROR: The demand quantities are of very small or large scale. This could impact numerical stability. Please rescale the dataset and run again.");
+	if (maxDist < 0.1 || maxDist > 100000)   throw std::string("The distances are of very small or large scale. This could impact numerical stability. Please rescale the dataset and run again.");
+	if (maxDemand < 0.1 || maxDemand > 100000) throw std::string("The demand quantities are of very small or large scale. This could impact numerical stability. Please rescale the dataset and run again.");
+	if (nbVehicles < std::ceil(totalDemand / vehicleCapacity)) throw std::string("Fleet size is insufficient to service the considered clients.");
 
 	// A reasonable scale for the initial values of the penalties
 	penaltyDuration = 1;
