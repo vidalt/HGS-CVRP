@@ -12,10 +12,11 @@ In particular, it relies on an additional neighborhood called SWAP* which consis
 When using this algorithm (or part of it) in derived academic studies, please refer to the following works:
 
 [1] Vidal, T., Crainic, T. G., Gendreau, M., Lahrichi, N., Rei, W. (2012). 
-A hybrid genetic algorithm for multidepot and periodic vehicle routing problems. Operations Research, 60(3), 611-624. (Available [HERE](https://w1.cirrelt.ca/~vidalt/papers/HGS-CIRRELT-2011.pdf) in technical report form).
+A hybrid genetic algorithm for multidepot and periodic vehicle routing problems. Operations Research, 60(3), 611-624. 
+https://doi.org/10.1287/opre.1120.1048 (Available [HERE](https://w1.cirrelt.ca/~vidalt/papers/HGS-CIRRELT-2011.pdf) in technical report form).
 
-[2] Vidal, T. (2020). Hybrid genetic search for the CVRP: Open-source implementation and SWAP* neighborhood. Technical Report PUC-Rio. 
-Available in ArXiV: https://arxiv.org/abs/2012.10384.
+[2] Vidal, T. (2022). Hybrid genetic search for the CVRP: Open-source implementation and SWAP* neighborhood. Computers & Operations Research, 140, 105643.
+https://doi.org/10.1016/j.cor.2021.105643 (Available [HERE](https://arxiv.org/abs/2012.10384) in technical report form).
 
 ## Scope
 
@@ -24,7 +25,7 @@ It can also directly handle asymmetric distances as well as duration constraints
 
 This version of the code has been designed and calibrated for medium-scale instances with up to 1,000 customers. 
 It is **not** designed in its current form to run very-large scale instances (e.g., with over 5,000 customers), as this requires additional solution strategies (e.g., decompositions and additional neighborhood limitations).
-If you need to solve problems outside of this algorithm's scope, do not hesitate to contact me at <vidalt@inf.puc-rio.br>.
+If you need to solve problems outside of this algorithm's scope, do not hesitate to contact me at <thibaut.vidal@cirrelt.ca>.
 
 ## Running the algorithm
 
