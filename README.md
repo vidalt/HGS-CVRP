@@ -27,11 +27,35 @@ This version of the code has been designed and calibrated for medium-scale insta
 It is **not** designed in its current form to run very-large scale instances (e.g., with over 5,000 customers), as this requires additional solution strategies (e.g., decompositions and additional neighborhood limitations).
 If you need to solve problems outside of this algorithm's scope, do not hesitate to contact me at <thibaut.vidal@cirrelt.ca>.
 
+## Compiling the executable 
+
+You need [`CMake`](https://cmake.org) to compile.
+
+Build with:
+```console
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+make 
+```
+This will generate the executable file `genvrp` in the `build` directory.
+
+[//]: # (`make bin` for the executable later, the library will be built by `make lib`. Saved for futur reference.)
+
+Test with:
+```console
+ctest --verbose
+```
+
+[//]: # (`ctest -R test_bin --verbose` for testing the executable specifically. Saved for futur reference.)
+
+
 ## Running the algorithm
 
-* Enter the Program directory: `cd Program`
-* Run the make command: `make test`
-* Try another example: `./genvrp ../Instances/CVRP/X-n157-k13.vrp mySolution.sol -seed 1 -t 30`
+After building the executable, try an example: 
+```console
+./genvrp ../Instances/CVRP/X-n157-k13.vrp mySolution.sol -seed 1 -t 30
+```
 
 The following options are supported:
 ```
