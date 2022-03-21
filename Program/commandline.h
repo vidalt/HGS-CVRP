@@ -32,7 +32,7 @@ class CommandLine
 public:
 
 	int nbIter		 = 20000;		// Number of iterations without improvement until termination. Default value: 20,000 iterations
-	double timeLimit = 1.e30;		// CPU time limit until termination in seconds. Default value: a very large number, same as infinity
+	double timeLimit = DBL_MAX;		// CPU time limit until termination in seconds. Default value: infinity
 	int seed		 = 0;			// Random seed. Default value: 0
 	int nbVeh		 = INT_MAX;		// Number of vehicles. Default value: infinity
 	std::string pathInstance;		// Instance path

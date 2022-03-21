@@ -34,6 +34,7 @@ SOFTWARE.*/
 #include <cmath>
 #include <time.h>
 #include <climits>
+#include <cfloat>
 #include <algorithm>
 #include <unordered_set>
 #define MY_EPSILON 0.00001 // Precision parameter, used to avoid numerical instabilities

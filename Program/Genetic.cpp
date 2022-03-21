@@ -26,7 +26,7 @@ void Genetic::run(int maxIterNonProd, double timeLimit)
 		if (nbIter % 500 == 0) population->printState(nbIter, nbIterNonProd);
 
 		/* FOR TESTS INVOLVING SUCCESSIVE RUNS UNTIL A TIME LIMIT: WE RESET THE ALGORITHM/POPULATION EACH TIME maxIterNonProd IS ATTAINED*/
-		if (timeLimit != INT_MAX && nbIterNonProd == maxIterNonProd)
+		if (timeLimit != DBL_MAX && nbIterNonProd == maxIterNonProd)
 		{
 			population->restart();
 			nbIterNonProd = 1;
