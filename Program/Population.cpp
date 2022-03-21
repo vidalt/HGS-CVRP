@@ -56,7 +56,7 @@ bool Population::addIndividual(const Individual * indiv, bool updateFeasible)
 		if (indiv->myCostSol.penalizedCost < bestSolutionOverall.myCostSol.penalizedCost - MY_EPSILON)
 		{
 			bestSolutionOverall = *indiv;
-			searchProgress.push_back({ clock(),bestSolutionOverall.myCostSol.penalizedCost });
+			searchProgress.push_back({ clock() - params->startTime , bestSolutionOverall.myCostSol.penalizedCost });
 		}
 		return true;
 	}
@@ -199,7 +199,7 @@ Individual * Population::getBestFound()
 
 void Population::printState(int nbIter, int nbIterNoImprovement)
 {
-	std::printf("It %6d %6d | T(s) %.2f", nbIter, nbIterNoImprovement, (double)clock() / (double)CLOCKS_PER_SEC);
+	std::printf("It %6d %6d | T(s) %.2f", nbIter, nbIterNoImprovement, (double)(clock()-params->startTime)/(double)CLOCKS_PER_SEC);
 
 	if (getBestFeasible() != NULL) std::printf(" | Feas %zu %.2f %.2f", feasibleSubpopulation.size(), getBestFeasible()->myCostSol.penalizedCost, getAverageCost(feasibleSubpopulation));
 	else std::printf(" | NO-FEASIBLE");

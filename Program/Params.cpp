@@ -12,6 +12,9 @@ Params::Params(std::string pathToInstance, int nbVeh, int seedRNG) : nbVehicles(
 	isRoundingInteger = true;
 	isDurationConstraint = false;
 
+	// This marks the starting time of the algorithm
+	startTime = clock();
+
 	// Initialize RNG
 	srand(seedRNG);					
 

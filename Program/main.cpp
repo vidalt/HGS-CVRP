@@ -12,15 +12,15 @@ int main(int argc, char *argv[])
 		CommandLine commandline(argc, argv);
 
 		// Reading the data file and initializing some data structures
-		std::cout << "----- READING DATA SET: " << commandline.pathInstance << std::endl;
+		std::cout << "----- READING INSTANCE: " << commandline.pathInstance << std::endl;
 		Params params(commandline.pathInstance, commandline.nbVeh, commandline.seed);
+		std::cout << "----- INSTANCE LOADED WITH " << params.nbClients << " CLIENTS AND " << params.nbVehicles << " VEHICLES" << std::endl;
 
 		// Creating the Split and local search structures
 		Split split(&params);
 		LocalSearch localSearch(&params);
 
 		// Initial population
-		std::cout << "----- INSTANCE LOADED WITH " << params.nbClients << " CLIENTS AND " << params.nbVehicles << " VEHICLES" << std::endl;
 		std::cout << "----- BUILDING INITIAL POPULATION" << std::endl;
 		Population population(&params, &split, &localSearch);
 
@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
 		std::cout << "----- STARTING GENETIC ALGORITHM" << std::endl;
 		Genetic solver(&params, &split, &population, &localSearch);
 		solver.run(commandline.nbIter, commandline.timeLimit);
-		std::cout << "----- GENETIC ALGORITHM FINISHED, TIME SPENT: " << (double)clock()/(double)CLOCKS_PER_SEC << std::endl;
+		std::cout << "----- GENETIC ALGORITHM FINISHED, TIME SPENT: " << (double)(clock()-params.startTime)/(double)CLOCKS_PER_SEC << std::endl;
 
 		// Exporting the best solution
 		if (population.getBestFound() != NULL)

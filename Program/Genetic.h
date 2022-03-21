@@ -42,7 +42,7 @@ private:
 public:
 
     // Running the genetic algorithm until maxIterNonProd consecutive iterations or a time limit
-    void run(int maxIterNonProd, int timeLimit) ;
+    void run(int maxIterNonProd, double timeLimit) ;
 
 	// Constructor
 	Genetic(Params * params, Split * split, Population * population, LocalSearch * localSearch);

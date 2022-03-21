@@ -79,6 +79,9 @@ public:
 	std::vector < std::vector < double > > timeCost ;		// Distance matrix
 	std::vector < std::vector < int > > correlatedVertices;	// Neighborhood restrictions: For each client, list of nearby customers
 
+	/* START TIME OF THE ALGORITHM */
+	clock_t startTime;
+
 	// Initialization from a given data set
 	Params(std::string pathToInstance, int nbVeh, int seedRNG);
 };

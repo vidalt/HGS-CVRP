@@ -1,9 +1,9 @@
 #include "Genetic.h"
 
-void Genetic::run(int maxIterNonProd, int timeLimit)
+void Genetic::run(int maxIterNonProd, double timeLimit)
 {	
 	int nbIterNonProd = 1;
-	for (int nbIter = 0 ; nbIterNonProd <= maxIterNonProd && clock()/CLOCKS_PER_SEC < timeLimit ; nbIter++)
+	for (int nbIter = 0 ; nbIterNonProd <= maxIterNonProd && (double)(clock()-params->startTime)/(double)CLOCKS_PER_SEC < timeLimit ; nbIter++)
 	{	
 		/* SELECTION AND CROSSOVER */
 		crossoverOX(offspring, population->getBinaryTournament(),population->getBinaryTournament());
