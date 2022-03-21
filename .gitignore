@@ -1,3 +1,4 @@
+
 # Compiled executable and output files
 genvrp
 mySolution*
@@ -13,6 +14,15 @@ Test/CMakeCache.txt
 # IDE files
 .vscode
 .idea
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+[Xx]64/
+[Xx]86/
+*.user
+.vs/
+
 
 # Prerequisites
 *.d
@@ -46,3 +56,4 @@ Test/CMakeCache.txt
 *.exe
 *.out
 *.app
+

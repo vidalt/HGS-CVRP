@@ -1,4 +1,6 @@
 
+[![CI_Build](https://github.com/vidalt/HGS-CVRP/actions/workflows/CI_Build.yml/badge.svg)](https://github.com/vidalt/HGS-CVRP/actions/workflows/CI_Build.yml)
+
 # HGS-CVRP: A modern implementation of the Hybrid Genetic Search for the CVRP
 
 This is a modern implementation of the Hybrid Genetic Search (HGS) with Advanced Diversity Control of [1], specialized to the Capacitated Vehicle Routing Problem (CVRP).

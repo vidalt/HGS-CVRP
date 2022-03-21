@@ -34,6 +34,7 @@ SOFTWARE.*/
 #include <cmath>
 #include <time.h>
 #include <climits>
+#include <cfloat>
 #include <algorithm>
 #include <unordered_set>
 #define MY_EPSILON 0.00001 // Precision parameter, used to avoid numerical instabilities
@@ -78,6 +79,9 @@ public:
 	std::vector < Client > cli ;							// Vector containing information on each client
 	std::vector < std::vector < double > > timeCost ;		// Distance matrix
 	std::vector < std::vector < int > > correlatedVertices;	// Neighborhood restrictions: For each client, list of nearby customers
+
+	/* START TIME OF THE ALGORITHM */
+	clock_t startTime;
 
 	// Initialization from a given data set
 	Params(std::string pathToInstance, int nbVeh, int seedRNG);

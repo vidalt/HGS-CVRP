@@ -38,10 +38,12 @@ $(TARGETDIR)/Split.o: Split.h Split.cpp
 	$(CCC) $(CCFLAGS) -c Split.cpp -o $(TARGETDIR)/Split.o
 
 test: genvrp
-	./genvrp ../Instances/CVRP/X-n101-k25.vrp mySolution.sol -seed 1 
+	./genvrp ../Instances/CVRP/X-n101-k25.vrp mySolution1.sol -seed 1 -it 10000
+	./genvrp ../Instances/CVRP/X-n106-k14.vrp mySolution2.sol -seed 1 -t 30
 
 clean:
 	$(RM) \
+    $(TARGETDIR)/genvrp \
     $(TARGETDIR)/main.o \
     $(TARGETDIR)/Genetic.o \
     $(TARGETDIR)/Individual.o \
@@ -49,4 +51,3 @@ clean:
     $(TARGETDIR)/Params.o \
     $(TARGETDIR)/Population.o \
     $(TARGETDIR)/Split.o
-     
