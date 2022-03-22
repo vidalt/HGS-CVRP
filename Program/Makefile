@@ -11,7 +11,8 @@ OBJS2 = \
         $(TARGETDIR)/main.o \
         $(TARGETDIR)/Params.o \
         $(TARGETDIR)/Population.o \
-        $(TARGETDIR)/Split.o
+        $(TARGETDIR)/Split.o \
+        $(TARGETDIR)/CVRPLIB.o
 
 $(TARGETDIR)/genvrp: $(OBJS2)
 	$(CCC) $(CCFLAGS) -o $(TARGETDIR)/genvrp $(OBJS2)
@@ -37,6 +38,9 @@ $(TARGETDIR)/Population.o: Population.h Population.cpp
 $(TARGETDIR)/Split.o: Split.h Split.cpp
 	$(CCC) $(CCFLAGS) -c Split.cpp -o $(TARGETDIR)/Split.o
 
+$(TARGETDIR)/CVRPLIB.o: CVRPLIB.h CVRPLIB.cpp
+	$(CCC) $(CCFLAGS) -c CVRPLIB.cpp -o $(TARGETDIR)/CVRPLIB.o
+
 test: genvrp
 	./genvrp ../Instances/CVRP/X-n101-k25.vrp mySolution1.sol -seed 1 -it 10000
 	./genvrp ../Instances/CVRP/X-n106-k14.vrp mySolution2.sol -seed 1 -t 30
@@ -50,4 +54,7 @@ clean:
     $(TARGETDIR)/LocalSearch.o \
     $(TARGETDIR)/Params.o \
     $(TARGETDIR)/Population.o \
-    $(TARGETDIR)/Split.o
+    $(TARGETDIR)/Split.o \
+    $(TARGETDIR)/CVRPLIB.o \
+	$(TARGETDIR)/mySolution*
+
