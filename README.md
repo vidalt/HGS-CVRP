@@ -101,9 +101,9 @@ Therefore, contributions that aim to extend this approach to different variants 
 Similarly, contributions that require additional libraries are usually not recommended to ensure portability.
 
 There are two main types of contributions:
-* Changes that do not impact the sequence of solutions found by the HGS algorithm when running `make test` or testing other instances with a fixed seed. This is visible by comparing the average solution value in the population and diversity through a test run.
+* Changes that do not impact the sequence of solutions found by the HGS algorithm when running `ctest` or testing other instances with a fixed seed. This is visible by comparing the average solution value in the population and diversity through a test run.
 Such contributions include refactoring, simplification, and code optimization. In this case, please attach the new log obtained before and after your changes. Pull requests of this type are likely to be integrated more quickly.
-* Changes that impact the sequence of solutions found by the algorithm when running `make test`. 
+* Changes that impact the sequence of solutions found by the algorithm when running `ctest`. 
 In this case, I recommend to contact me beforehand with (i) a detailed description of the changes, (ii) detailed results on 10 runs of the algorithm for each of the 100 instances of Uchoa et al. (2017) before and after the changes, using the same termination criterion as used in [2](https://arxiv.org/abs/2012.10384).
 
 If your contribution involves some components that impact the sequence of solutions and others that do not impact it, then I recommend making two separate pull requests to facilitate the review of those changes.

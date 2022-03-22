@@ -19,12 +19,12 @@ add_executable(bin
         Program/main.cpp
         ${src_files}
         )
-set_target_properties(bin PROPERTIES OUTPUT_NAME genvrp)
+set_target_properties(bin PROPERTIES OUTPUT_NAME hgs)
 
 # Test Executable
 enable_testing()
 add_test(NAME    test_bin
-         COMMAND genvrp ../Instances/CVRP/X-n101-k25.vrp mySolution.sol -seed 1)
+         COMMAND hgs ../Instances/CVRP/X-n101-k25.vrp mySolution.sol -seed 1)
 
 
 
