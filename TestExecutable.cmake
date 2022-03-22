@@ -16,5 +16,5 @@ string(FIND "${solution}" "${COST}" cost_position)
 
 # if not match, throw an error
 if(${cost_position} EQUAL -1)
-    message(SEND_ERROR "Test error. Cost != ${COST}")
+    message(SEND_ERROR "Test error for ${INSTANCE}. Cost != ${COST}")
 endif()
