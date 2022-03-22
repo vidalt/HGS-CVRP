@@ -16,9 +16,10 @@ jobs:
     - uses: actions/checkout@v2
     - name: make on ${{ matrix.os }}
       run: | 
-        cd Program
+        mkdir build 
+        cd build
+        cmake .. -DCMAKE_BUILD_TYPE=Release
         make
     - name: test on ${{ matrix.os }}
       run: |
-        cd Program
-        make test
+        ctest --verbose
