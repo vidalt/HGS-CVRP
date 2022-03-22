@@ -17,8 +17,9 @@ Params::Params(
 	int seedRNG,
 	bool verbose
 )
-	: vehicleCapacity(vehicleCapacity), nbVehicles(nbVeh), verbose(verbose), durationLimit(durationLimit),
-	  isRoundingInteger(isRoundingInteger), isDurationConstraint(isDurationConstraint)
+	: verbose(verbose), isRoundingInteger(isRoundingInteger), isDurationConstraint(isDurationConstraint),
+	  nbVehicles(nbVeh), durationLimit(durationLimit), vehicleCapacity(vehicleCapacity)
+
 {
 	// This marks the starting time of the algorithm
 	startTime = clock();
