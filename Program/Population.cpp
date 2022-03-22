@@ -117,7 +117,7 @@ void Population::removeWorstBiasedFitness(SubPopulation & pop)
 
 void Population::restart()
 {
-	std::cout << "----- RESET: CREATING A NEW POPULATION -----" << std::endl;
+	if (params->verbose) std::cout << "----- RESET: CREATING A NEW POPULATION -----" << std::endl;
 	for (Individual * indiv : feasibleSubpopulation) delete indiv ;
 	for (Individual * indiv : infeasibleSubpopulation) delete indiv;
 	feasibleSubpopulation.clear();
@@ -199,18 +199,21 @@ Individual * Population::getBestFound()
 
 void Population::printState(int nbIter, int nbIterNoImprovement)
 {
-	std::printf("It %6d %6d | T(s) %.2f", nbIter, nbIterNoImprovement, (double)(clock()-params->startTime)/(double)CLOCKS_PER_SEC);
+	if (params->verbose)
+	{
+		std::printf("It %6d %6d | T(s) %.2f", nbIter, nbIterNoImprovement, (double)(clock()-params->startTime)/(double)CLOCKS_PER_SEC);
 
-	if (getBestFeasible() != NULL) std::printf(" | Feas %zu %.2f %.2f", feasibleSubpopulation.size(), getBestFeasible()->myCostSol.penalizedCost, getAverageCost(feasibleSubpopulation));
-	else std::printf(" | NO-FEASIBLE");
+		if (getBestFeasible() != NULL) std::printf(" | Feas %zu %.2f %.2f", feasibleSubpopulation.size(), getBestFeasible()->myCostSol.penalizedCost, getAverageCost(feasibleSubpopulation));
+		else std::printf(" | NO-FEASIBLE");
 
-	if (getBestInfeasible() != NULL) std::printf(" | Inf %zu %.2f %.2f", infeasibleSubpopulation.size(), getBestInfeasible()->myCostSol.penalizedCost, getAverageCost(infeasibleSubpopulation));
-	else std::printf(" | NO-INFEASIBLE");
+		if (getBestInfeasible() != NULL) std::printf(" | Inf %zu %.2f %.2f", infeasibleSubpopulation.size(), getBestInfeasible()->myCostSol.penalizedCost, getAverageCost(infeasibleSubpopulation));
+		else std::printf(" | NO-INFEASIBLE");
 
-	std::printf(" | Div %.2f %.2f", getDiversity(feasibleSubpopulation), getDiversity(infeasibleSubpopulation));
-	std::printf(" | Feas %.2f %.2f", (double)std::count(listFeasibilityLoad.begin(), listFeasibilityLoad.end(), true) / (double)listFeasibilityLoad.size(), (double)std::count(listFeasibilityDuration.begin(), listFeasibilityDuration.end(), true) / (double)listFeasibilityDuration.size());
-	std::printf(" | Pen %.2f %.2f", params->penaltyCapacity, params->penaltyDuration);
-	std::cout << std::endl;
+		std::printf(" | Div %.2f %.2f", getDiversity(feasibleSubpopulation), getDiversity(infeasibleSubpopulation));
+		std::printf(" | Feas %.2f %.2f", (double)std::count(listFeasibilityLoad.begin(), listFeasibilityLoad.end(), true) / (double)listFeasibilityLoad.size(), (double)std::count(listFeasibilityDuration.begin(), listFeasibilityDuration.end(), true) / (double)listFeasibilityDuration.size());
+		std::printf(" | Pen %.2f %.2f", params->penaltyCapacity, params->penaltyDuration);
+		std::cout << std::endl;
+	}
 }
 
 double Population::getDiversity(const SubPopulation & pop)
@@ -235,11 +238,11 @@ void Population::exportBKS(std::string fileName)
 {
 	double readCost;
 	std::vector<std::vector<int>> readSolution;
-	std::cout << "----- CHECKING FOR POSSIBLE BKS UPDATE" << std::endl;
+	if (params->verbose) std::cout << "----- CHECKING FOR POSSIBLE BKS UPDATE" << std::endl;
 	bool readOK = Individual::readCVRPLibFormat(fileName, readSolution, readCost);
 	if (bestSolutionOverall.myCostSol.penalizedCost < 1.e29 && (!readOK || bestSolutionOverall.myCostSol.penalizedCost < readCost - MY_EPSILON))
 	{
-		std::cout << "----- NEW BKS: " << bestSolutionOverall.myCostSol.penalizedCost << " !!!" << std::endl;
+		if (params->verbose) std::cout << "----- NEW BKS: " << bestSolutionOverall.myCostSol.penalizedCost << " !!!" << std::endl;
 		bestSolutionOverall.exportCVRPLibFormat(fileName);
 	}
 }

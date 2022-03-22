@@ -38,11 +38,12 @@ public:
 	std::string pathInstance;		// Instance path
 	std::string pathSolution;		// Solution path
 	std::string pathBKS = "";		// BKS path
+	bool verbose     = true;
 
 	// Reads the line of command and extracts possible options
 	CommandLine(int argc, char* argv[])
 	{
-		if (argc % 2 != 1 || argc > 13 || argc < 3)
+		if (argc % 2 != 1 || argc > 15 || argc < 3)
 		{
 			std::cout << "----- NUMBER OF COMMANDLINE ARGUMENTS IS INCORRECT: " << argc << std::endl;
 			display_help(); throw std::string("Incorrect line of command");
@@ -63,6 +64,8 @@ public:
 					seed    = atoi(argv[i+1]);
 				else if (std::string(argv[i]) == "-veh")
 					nbVeh = atoi(argv[i+1]);
+				else if (std::string(argv[i]) == "-log")
+					verbose = atoi(argv[i+1]);
 				else
 				{
 					std::cout << "----- ARGUMENT NOT RECOGNIZED: " << std::string(argv[i]) << std::endl;
@@ -76,14 +79,15 @@ public:
 	void display_help()
 	{
 		std::cout << std::endl;
-		std::cout << "-------------------------------------------------- HGS-CVRP algorithm (2020) --------------------------------------------------" << std::endl;
-		std::cout << "Call with: ./genvrp instancePath solPath [-it nbIter] [-t myCPUtime] [-bks bksPath] [-seed mySeed] [-veh nbVehicles]           " << std::endl;
-		std::cout << "[-it nbIterations] sets a maximum number of iterations without improvement. Defaults to 20,000                                 " << std::endl;
-		std::cout << "[-t myCPUtime] sets a time limit in seconds. If this parameter is set the code will be run iteratively until the time limit    " << std::endl;
-		std::cout << "[-bks bksPath] sets an optional path to a BKS. This file will be overwritten in case of improvement                            " << std::endl;
-		std::cout << "[-seed mySeed] sets a fixed seed. Defaults to 0                                                                                " << std::endl;
-		std::cout << "[-veh nbVehicles] sets a prescribed fleet size. Otherwise a reasonable UB on the the fleet size is calculated                  " << std::endl;
-		std::cout << "-------------------------------------------------------------------------------------------------------------------------------" << std::endl;
+		std::cout << "-------------------------------------------------- HGS-CVRP algorithm (2020) ------------------------------------------------------" << std::endl;
+		std::cout << "Call with: ./genvrp instancePath solPath [-it nbIter] [-t myCPUtime] [-bks bksPath] [-seed mySeed] [-veh nbVehicles] [-log verbose]" << std::endl;
+		std::cout << "[-it nbIterations] sets a maximum number of iterations without improvement. Defaults to 20,000                                     " << std::endl;
+		std::cout << "[-t myCPUtime] sets a time limit in seconds. If this parameter is set the code will be run iteratively until the time limit        " << std::endl;
+		std::cout << "[-bks bksPath] sets an optional path to a BKS. This file will be overwritten in case of improvement                                " << std::endl;
+		std::cout << "[-seed mySeed] sets a fixed seed. Defaults to 0                                                                                    " << std::endl;
+		std::cout << "[-veh nbVehicles] sets a prescribed fleet size. Otherwise a reasonable UB on the the fleet size is calculated                      " << std::endl;
+		std::cout << "[-log verbose] sets the verbose level of the algorithm log. It can be 0 or 1. Defaults to 1.                                       " << std::endl;
+		std::cout << "-----------------------------------------------------------------------------------------------------------------------------------" << std::endl;
 		std::cout << std::endl;
 	};
 };
