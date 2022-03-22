@@ -1,11 +1,5 @@
-
-# Compiled executable and output files
-genvrp
-mySolution*
-
-# Build directories
+# Build directory
 build
-cmake-build-*
 
 # Test build files
 Test/CMakeFiles/
@@ -14,6 +8,7 @@ Test/CMakeCache.txt
 # IDE files
 .vscode
 .idea
+cmake-build-*
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
