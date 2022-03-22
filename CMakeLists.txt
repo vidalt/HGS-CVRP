@@ -2,14 +2,16 @@ cmake_minimum_required(VERSION 3.15)
 project(HGS_CVRP)
 set(CMAKE_CXX_STANDARD 11)
 
-set(src_files
+set(
+        src_files
         Program/Genetic.cpp
         Program/Individual.cpp
         Program/LocalSearch.cpp
         Program/Params.cpp
         Program/Population.cpp
         Program/Split.cpp
-        )
+        Program/CVRPLIB.cpp
+)
 
 include_directories(Program)
 #include_directories(Interface)

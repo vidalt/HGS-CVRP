@@ -2,6 +2,7 @@
 #include "commandline.h"
 #include "LocalSearch.h"
 #include "Split.h"
+#include "CVRPLIB.h"
 using namespace std;
 
 int main(int argc, char *argv[])
@@ -13,7 +14,27 @@ int main(int argc, char *argv[])
 
 		// Reading the data file and initializing some data structures
 		std::cout << "----- READING INSTANCE: " << commandline.pathInstance << std::endl;
-		Params params(commandline.pathInstance, commandline.nbVeh, commandline.seed);
+		CVRPLIB cvrp(commandline.pathInstance);
+
+		// These two will be made controllable from the commandline input
+		bool verbose = true;
+		bool isRoundingInteger = true;
+
+		Params params(
+			cvrp.x_coords,
+			cvrp.y_coords,
+			cvrp.dist_mtx,
+			cvrp.service_time,
+			cvrp.demands,
+			cvrp.vehicleCapacity,
+			cvrp.durationLimit,
+			commandline.nbVeh,
+			isRoundingInteger,
+			cvrp.isDurationConstraint,
+			commandline.seed,
+			verbose
+
+		);
 		std::cout << "----- INSTANCE LOADED WITH " << params.nbClients << " CLIENTS AND " << params.nbVehicles << " VEHICLES" << std::endl;
 
 		// Creating the Split and local search structures
