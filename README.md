@@ -40,7 +40,7 @@ cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 make 
 ```
-This will generate the executable file `genvrp` in the `build` directory.
+This will generate the executable file `hgs` in the `build` directory.
 
 [//]: # (`make bin` for the executable later, the library will be built by `make lib`. Saved for futur reference.)
 
@@ -56,13 +56,13 @@ ctest --verbose
 
 After building the executable, try an example: 
 ```console
-./genvrp ../Instances/CVRP/X-n157-k13.vrp mySolution.sol -seed 1 -t 30
+./hgs ../Instances/CVRP/X-n157-k13.vrp mySolution.sol -seed 1 -t 30
 ```
 
 The following options are supported:
 ```
 Usage:
-  ./genvrp instancePath solPath [-it nbIter] [-t myCPUtime] [-bks bksPath] [-seed mySeed] [-veh nbVehicles]
+  ./hgs instancePath solPath [-it nbIter] [-t myCPUtime] [-bks bksPath] [-seed mySeed] [-veh nbVehicles]
 Available options:
   -it           Sets a maximum number of iterations without improvement. Defaults to 20,000
   -t            Sets a time limit in seconds. If this parameter is set, the code will be restart iteratively until the time limit
