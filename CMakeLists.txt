@@ -23,9 +23,14 @@ set_target_properties(bin PROPERTIES OUTPUT_NAME hgs)
 
 # Test Executable
 enable_testing()
-add_test(NAME    test_bin
-         COMMAND hgs ../Instances/CVRP/X-n101-k25.vrp mySolution.sol -seed 1)
-
+add_test(NAME    test_X-n101-k25
+         COMMAND ${CMAKE_COMMAND}   -DINSTANCE=X-n101-k25
+                                    -DCOST=27591
+                                    -P ${CMAKE_CURRENT_SOURCE_DIR}/TestExecutable.cmake)
+add_test(NAME    test_X-n106-k14
+         COMMAND ${CMAKE_COMMAND}   -DINSTANCE=X-n106-k14
+                                    -DCOST=26397
+                                    -P ${CMAKE_CURRENT_SOURCE_DIR}/TestExecutable.cmake)
 
 
 # Build Library
