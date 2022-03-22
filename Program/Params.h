@@ -69,7 +69,6 @@ public:
 	double penaltyDuration;				// Penalty for one unit of duration excess (adapted through the search)
 
 	/* DATA OF THE PROBLEM INSTANCE */
-	bool isRoundingInteger ;								// Distance calculation convention
 	bool isDurationConstraint ;								// Indicates if the problem includes duration constraints
 	int nbClients ;											// Number of clients (excluding the depot)
 	int nbVehicles ;										// Number of vehicles
@@ -79,7 +78,7 @@ public:
 	double maxDemand;										// Maximum demand of a client
 	double maxDist;											// Maximum distance between two clients
 	std::vector < Client > cli ;							// Vector containing information on each client
-	std::vector < std::vector < double > > timeCost ;		// Distance matrix
+	const std::vector < std::vector < double > >& timeCost ;		// Distance matrix
 	std::vector < std::vector < int > > correlatedVertices;	// Neighborhood restrictions: For each client, list of nearby customers
 
 	/* START TIME OF THE ALGORITHM */
@@ -94,7 +93,6 @@ public:
 		double vehicleCapacity,
 		double durationLimit,
 		int nbVeh,
-		bool isRoundingInteger,
 		bool isDurationConstraint,
 		int seedRNG,
 		bool verbose);

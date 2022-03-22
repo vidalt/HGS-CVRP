@@ -20,7 +20,7 @@ public:
 	bool isDurationConstraint = false;						// Indicates if the problem includes duration constraints
 	int nbClients ;											// Number of clients (excluding the depot)
 
-	explicit CVRPLIB(std::string pathToInstance);
+	CVRPLIB(std::string pathToInstance, bool isRoundingInteger);
 };
 
 

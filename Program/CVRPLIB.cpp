@@ -6,7 +6,8 @@
 #include <cmath>
 #include "CVRPLIB.h"
 
-CVRPLIB::CVRPLIB(std::string pathToInstance) {
+CVRPLIB::CVRPLIB(std::string pathToInstance, bool isRoundingInteger = true)
+{
 
 	std::string content, content2, content3;
 	double serviceTimeData = 0.;
@@ -51,7 +52,6 @@ CVRPLIB::CVRPLIB(std::string pathToInstance) {
 		}
 
 		// Calculating 2D Euclidean Distance
-		// Rounding to integers will occur in Params.cpp
 		// TODO: Support other types of distance functions
 		dist_mtx = std::vector < std::vector< double > >(nbClients + 1, std::vector <double>(nbClients + 1));
 		for (int i = 0; i <= nbClients; i++)
@@ -62,6 +62,8 @@ CVRPLIB::CVRPLIB(std::string pathToInstance) {
 					(x_coords[i] - x_coords[j]) * (x_coords[i] - x_coords[j])
 					+ (y_coords[i] - y_coords[j]) * (y_coords[i] - y_coords[j])
 				);
+
+				if (isRoundingInteger) dist_mtx[i][j] = round(dist_mtx[i][j]);
 			}
 		}
 

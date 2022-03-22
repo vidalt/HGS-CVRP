@@ -12,13 +12,13 @@ Params::Params(
 	double vehicleCapacity,
 	double durationLimit,
 	int nbVeh,
-	bool isRoundingInteger,
 	bool isDurationConstraint,
 	int seedRNG,
 	bool verbose
 )
-	: verbose(verbose), isRoundingInteger(isRoundingInteger), isDurationConstraint(isDurationConstraint),
-	  nbVehicles(nbVeh), durationLimit(durationLimit), vehicleCapacity(vehicleCapacity)
+	: verbose(verbose), isDurationConstraint(isDurationConstraint),
+	  nbVehicles(nbVeh), durationLimit(durationLimit), vehicleCapacity(vehicleCapacity),
+	  timeCost(dist_mtx)
 
 {
 	// This marks the starting time of the algorithm
@@ -62,23 +62,11 @@ Params::Params(
 			std::cout << "----- FLEET SIZE SPECIFIED: SET TO " << nbVehicles << " VEHICLES" << std::endl;
 	}
 
-	// Calculation of the distance matrix
+	// Calculation of the maximum distance
 	maxDist = 0.;
-	timeCost = std::vector<std::vector<double> >(nbClients + 1, std::vector<double>(nbClients + 1));
 	for (int i = 0; i <= nbClients; i++)
-	{
 		for (int j = 0; j <= nbClients; j++)
-		{
-			double d = dist_mtx[i][j];
-			if (isRoundingInteger)
-			{
-				d += 0.5;
-				d = (double)(int)d;
-			} // integer rounding
-			if (d > maxDist) maxDist = d;
-			timeCost[i][j] = d;
-		}
-	}
+			if (timeCost[i][j] > maxDist) maxDist = timeCost[i][j];
 
 	// Calculation of the correlated vertices for each customer (for the granular restriction)
 	correlatedVertices = std::vector<std::vector<int> >(nbClients + 1);

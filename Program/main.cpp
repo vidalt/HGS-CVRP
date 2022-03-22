@@ -12,13 +12,13 @@ int main(int argc, char *argv[])
 		// Reading the arguments of the program
 		CommandLine commandline(argc, argv);
 
-		// Reading the data file and initializing some data structures
-		std::cout << "----- READING INSTANCE: " << commandline.pathInstance << std::endl;
-		CVRPLIB cvrp(commandline.pathInstance);
-
 		// These two will be made controllable from the commandline input
 		bool verbose = true;
 		bool isRoundingInteger = true;
+
+		// Reading the data file and initializing some data structures
+		std::cout << "----- READING INSTANCE: " << commandline.pathInstance << std::endl;
+		CVRPLIB cvrp(commandline.pathInstance, isRoundingInteger);
 
 		Params params(
 			cvrp.x_coords,
@@ -29,7 +29,6 @@ int main(int argc, char *argv[])
 			cvrp.vehicleCapacity,
 			cvrp.durationLimit,
 			commandline.nbVeh,
-			isRoundingInteger,
 			cvrp.isDurationConstraint,
 			commandline.seed,
 			verbose
