@@ -61,15 +61,21 @@ After building the executable, try an example:
 
 The following options are supported:
 ```
-Usage:
-  ./hgs instancePath solPath [-it nbIter] [-t myCPUtime] [-bks bksPath] [-seed mySeed] [-veh nbVehicles] [-log verbose]
-Available options:
-  -it           Sets a maximum number of iterations without improvement. Defaults to 20,000
-  -t            Sets a time limit in seconds. If this parameter is set, the code will be restart iteratively until the time limit
-  -bks          Sets an optional path to a BKS in CVRPLib format. This file will be overwritten in case of improvement 
-  -seed         Sets a fixed seed. Defaults to 0     
-  -veh          Sets a prescribed fleet size. Otherwise a reasonable UB on the fleet size is calculated
-  -log          Sets the verbose level of the algorithm log. It can be 0 or 1. Defaults to 1.
+Call with: ./genvrp instancePath solPath [-it nbIter] [-t myCPUtime] [-bks bksPath] [-seed mySeed] [-veh nbVehicles] [-log verbose]
+[-it <int>] sets a maximum number of iterations without improvement. Defaults to 20,000                                     
+[-t <double>] sets a time limit in seconds. If this parameter is set the code will be run iteratively until the time limit        
+[-bks <filepath>] sets an optional path to a BKS. This file will be overwritten in case of improvement                                
+[-seed <int>] sets a fixed seed. Defaults to 0                                                                                    
+[-veh <int>] sets a prescribed fleet size. Otherwise a reasonable UB on the the fleet size is calculated                      
+[-log <bool>] sets the verbose level of the algorithm log. It can be 0 or 1. Defaults to 1.                                       
+
+Additional Arguments:
+[-nbGranular <int>] Granular search parameter, limits the number of moves in the RI local search. Defaults to 20               
+[-mu <int>] Minimum population size. Defaults to 25                                                                            
+[-lambda <int>] Number of solutions created before reaching the maximum population size (i.e., generation size). Defaults to 40
+[-nbElite <int>] Number of elite individuals. Defaults to 5                                                                    
+[-nbClose <int>] Number of closest solutions/individuals considered when calculating diversity contribution. Defaults to 4     
+[-targetFeasible <double>] target ratio of feasible individuals in the last 100 generatied individuals. Defaults to 0.2        
 ```
 If you wish to solve instances that include duration constraints, please activate the following line of code: https://github.com/vidalt/HGS-CVRP/blob/main/Program/LocalSearch.h#L149
 
