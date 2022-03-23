@@ -24,6 +24,7 @@ SOFTWARE.*/
 #define PARAMS_H
 
 #include "CircleSector.h"
+#include "AlgorithmParameters.h"
 #include <string>
 #include <vector>
 #include <list>
@@ -42,7 +43,6 @@ SOFTWARE.*/
 
 struct Client
 {
-	int custNum;			// Index of the customer
 	double coordX;			// Coordinate X
 	double coordY;			// Coordinate Y
 	double serviceDuration; // Service duration
@@ -55,12 +55,12 @@ class Params
 public:
 
 	/* PARAMETERS OF THE GENETIC ALGORITHM */
-	int nbGranular			= 20;		// Granular search parameter, limits the number of moves in the RI local search
-	int mu					= 25;		// Minimum population size
-	int lambda				= 40;		// Number of solutions created before reaching the maximum population size (i.e., generation size)
-	int nbElite				= 4;		// Number of elite individuals (reduced in HGS-2020)
-	int nbClose				= 5;		// Number of closest solutions/individuals considered when calculating diversity contribution
-	double targetFeasible   = 0.2;		// Reference proportion for the number of feasible individuals, used for the adaptation of the penalty parameters
+	int nbGranular;					// Granular search parameter, limits the number of moves in the RI local search
+	int mu;							// Minimum population size
+	int lambda;						// Number of solutions created before reaching the maximum population size (i.e., generation size)
+	int nbElite;					// Number of elite individuals (reduced in HGS-2020)
+	int nbClose;					// Number of closest solutions/individuals considered when calculating diversity contribution
+	double targetFeasible;   		// Reference proportion for the number of feasible individuals, used for the adaptation of the penalty parameters
 
 	/* ADAPTIVE PENALTY COEFFICIENTS */
 	double penaltyCapacity;				// Penalty for one unit of capacity excess (adapted through the search)
@@ -95,8 +95,8 @@ public:
 		double durationLimit,
 		int nbVeh,
 		bool isDurationConstraint,
-		int seedRNG,
-		bool verbose);
+		bool verbose,
+		const AlgorithmParameters& ap);
 };
 #endif
 

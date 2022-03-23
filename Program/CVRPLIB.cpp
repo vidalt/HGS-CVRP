@@ -37,10 +37,20 @@ CVRPLIB::CVRPLIB(std::string pathToInstance, bool isRoundingInteger = true)
 		demands = std::vector<double>(nbClients + 1);
 		service_time = std::vector<double>(nbClients + 1);
 
-		// Reading client coordinates
-		int custNum;
+		// Reading node coordinates
+		// depot must be the first element
+		// 		- i = 0 in the for-loop below, or
+		// 		- node_number = 1 in the .vrp file
+		// customers are
+		// 		- i = 1, 2, ..., nbClients in the for-loop below, or
+		// 		- node_number = 2, 3, ..., nb_Clients in the .vrp file
+		int node_number;
 		for (int i = 0; i <= nbClients; i++)
-			inputFile >> custNum >> x_coords[i] >> y_coords[i];
+		{
+			inputFile >> node_number >> x_coords[i] >> y_coords[i];
+			if (node_number != i + 1) throw std::string("The node numbering is not in order.");
+		}
+
 
 		// Reading demand information
 		inputFile >> content;

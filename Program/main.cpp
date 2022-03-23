@@ -13,12 +13,12 @@ int main(int argc, char *argv[])
 		CommandLine commandline(argc, argv);
 		bool verbose = commandline.verbose;
 
-		// These two will be made controllable from the commandline input
-		bool isRoundingInteger = true;
+		// Print all algorithm parameter values
+		if (verbose) print_algorithm_parameters(commandline.ap);
 
 		// Reading the data file and initializing some data structures
 		if (verbose) std::cout << "----- READING INSTANCE: " << commandline.pathInstance << std::endl;
-		CVRPLIB cvrp(commandline.pathInstance, isRoundingInteger);
+		CVRPLIB cvrp(commandline.pathInstance, commandline.ap.isRoundingInteger);
 
 		Params params(
 			cvrp.x_coords,
@@ -30,9 +30,8 @@ int main(int argc, char *argv[])
 			cvrp.durationLimit,
 			commandline.nbVeh,
 			cvrp.isDurationConstraint,
-			commandline.seed,
-			verbose
-
+			verbose,
+			commandline.ap
 		);
 		if (verbose) std::cout << "----- INSTANCE LOADED WITH " << params.nbClients << " CLIENTS AND " << params.nbVehicles << " VEHICLES" << std::endl;
 
@@ -47,14 +46,14 @@ int main(int argc, char *argv[])
 		// Genetic algorithm
 		if (verbose) std::cout << "----- STARTING GENETIC ALGORITHM" << std::endl;
 		Genetic solver(&params, &split, &population, &localSearch);
-		solver.run(commandline.nbIter, commandline.timeLimit);
+		solver.run(commandline.ap.nbIter, commandline.ap.timeLimit);
 		if (verbose) std::cout << "----- GENETIC ALGORITHM FINISHED, TIME SPENT: " << (double)(clock()-params.startTime)/(double)CLOCKS_PER_SEC << std::endl;
 
 		// Exporting the best solution
 		if (population.getBestFound() != NULL)
 		{
 			population.getBestFound()->exportCVRPLibFormat(commandline.pathSolution);
-			population.exportSearchProgress(commandline.pathSolution + ".PG.csv", commandline.pathInstance, commandline.seed);
+			population.exportSearchProgress(commandline.pathSolution + ".PG.csv", commandline.pathInstance, commandline.ap.seed);
 			if (commandline.pathBKS != "") population.exportBKS(commandline.pathBKS);
 		}
 	}
