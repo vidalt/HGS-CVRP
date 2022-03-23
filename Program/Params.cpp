@@ -13,10 +13,12 @@ Params::Params(
 	double durationLimit,
 	int nbVeh,
 	bool isDurationConstraint,
-	int seedRNG,
-	bool verbose
+	bool verbose,
+	const AlgorithmParameters& ap
 )
-	: isDurationConstraint(isDurationConstraint), nbVehicles(nbVeh), durationLimit(durationLimit),
+	: nbGranular(ap.nbGranular), mu(ap.mu), lambda(ap.lambda),
+	  nbElite(ap.nbElite), nbClose(ap.nbClose), targetFeasible(ap.targetFeasible),
+	  isDurationConstraint(isDurationConstraint), nbVehicles(nbVeh), durationLimit(durationLimit),
 	  vehicleCapacity(vehicleCapacity), timeCost(dist_mtx), verbose(verbose)
 {
 	// This marks the starting time of the algorithm
@@ -27,7 +29,7 @@ Params::Params(
 	maxDemand = 0.;
 
 	// Initialize RNG
-	srand(seedRNG);
+	srand(ap.seed);
 
 	cli = std::vector<Client>(nbClients + 1);
 	for (int i = 0; i <= nbClients; i++)

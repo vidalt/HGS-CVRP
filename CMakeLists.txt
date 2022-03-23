@@ -11,6 +11,7 @@ set(
         Program/Population.cpp
         Program/Split.cpp
         Program/CVRPLIB.cpp
+        Program/AlgorithmParameters.cpp
 )
 
 include_directories(Program)
