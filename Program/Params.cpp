@@ -34,7 +34,6 @@ Params::Params(
 	cli = std::vector<Client>(nbClients + 1);
 	for (int i = 0; i <= nbClients; i++)
 	{
-		cli[i].custNum = i - 1;
 		cli[i].coordX = x_coords[i]; // These coordinates can be potentially zero.
 		cli[i].coordY = y_coords[i];
 		cli[i].serviceDuration = service_time[i];
