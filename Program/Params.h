@@ -43,7 +43,6 @@ SOFTWARE.*/
 
 struct Client
 {
-	int custNum;			// Index of the customer
 	double coordX;			// Coordinate X
 	double coordY;			// Coordinate Y
 	double serviceDuration; // Service duration

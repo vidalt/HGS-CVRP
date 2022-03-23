@@ -15,10 +15,10 @@ struct AlgorithmParameters {
 	int nbClose;			// Number of closest solutions/individuals considered when calculating diversity contribution
 	double targetFeasible;	// Reference proportion for the number of feasible individuals, used for the adaptation of the penalty parameters
 
-	int seed;
+	int seed;				// Random seed. Default value: 0
 	int nbIter;				// Number of iterations without improvement until termination. Default value: 20,000 iterations
 	double timeLimit;		// CPU time limit until termination in seconds. Default value: infinity
-	char isRoundingInteger; // Random seed. Default value: 0
+	char isRoundingInteger; // rounding the distances or not. Default value: 1. This is char, not bool, for C compatibility
 };
 
 
