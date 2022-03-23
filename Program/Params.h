@@ -54,8 +54,6 @@ class Params
 {
 public:
 
-	bool verbose = true;
-
 	/* PARAMETERS OF THE GENETIC ALGORITHM */
 	int nbGranular			= 20;		// Granular search parameter, limits the number of moves in the RI local search
 	int mu					= 25;		// Minimum population size
@@ -83,6 +81,9 @@ public:
 
 	/* START TIME OF THE ALGORITHM */
 	clock_t startTime;
+
+	/* Controls verbose level throughout the iterations */
+	bool verbose;
 
 	// Initialization from a given data set
 	Params(const std::vector<double>& x_coords,

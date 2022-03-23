@@ -62,15 +62,15 @@ After building the executable, try an example:
 The following options are supported:
 ```
 Usage:
-  ./hgs instancePath solPath [-it nbIter] [-t myCPUtime] [-bks bksPath] [-seed mySeed] [-veh nbVehicles]
+  ./hgs instancePath solPath [-it nbIter] [-t myCPUtime] [-bks bksPath] [-seed mySeed] [-veh nbVehicles] [-log verbose]
 Available options:
   -it           Sets a maximum number of iterations without improvement. Defaults to 20,000
   -t            Sets a time limit in seconds. If this parameter is set, the code will be restart iteratively until the time limit
   -bks          Sets an optional path to a BKS in CVRPLib format. This file will be overwritten in case of improvement 
   -seed         Sets a fixed seed. Defaults to 0     
   -veh          Sets a prescribed fleet size. Otherwise a reasonable UB on the fleet size is calculated
+  -log          Sets the verbose level of the algorithm log. It can be 0 or 1. Defaults to 1.
 ```
-
 If you wish to solve instances that include duration constraints, please activate the following line of code: https://github.com/vidalt/HGS-CVRP/blob/main/Program/LocalSearch.h#L149
 
 Moreover, there exist different conventions regarding distance calculations in the academic literature.
