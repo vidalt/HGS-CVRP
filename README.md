@@ -40,7 +40,7 @@ cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 make 
 ```
-This will generate the executable file `genvrp` in the `build` directory.
+This will generate the executable file `hgs` in the `build` directory.
 
 [//]: # (`make bin` for the executable later, the library will be built by `make lib`. Saved for futur reference.)
 
@@ -56,7 +56,7 @@ ctest --verbose
 
 After building the executable, try an example: 
 ```console
-./genvrp ../Instances/CVRP/X-n157-k13.vrp mySolution.sol -seed 1 -t 30
+./hgs ../Instances/CVRP/X-n157-k13.vrp mySolution.sol -seed 1 -t 30
 ```
 
 The following options are supported:
