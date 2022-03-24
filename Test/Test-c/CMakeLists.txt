@@ -10,5 +10,6 @@ add_executable(test_c_interface
         ${CMAKE_SOURCE_DIR}/Program/AlgorithmParameters.h
         )
 
-target_link_libraries(test_c_interface lib)
+target_link_libraries(test_c_interface -lm lib)
+# need -lm to link math library
 
