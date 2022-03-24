@@ -12,16 +12,15 @@ set(
         Program/Split.cpp
         Program/CVRPLIB.cpp
         Program/AlgorithmParameters.cpp
-)
+        Program/C_Interface.cpp)
 
 include_directories(Program)
-#include_directories(Interface)
 
 # Build Executable
 add_executable(bin
         Program/main.cpp
-        ${src_files}
-        )
+        ${src_files})
+
 set_target_properties(bin PROPERTIES OUTPUT_NAME hgs)
 
 # Test Executable
@@ -37,15 +36,10 @@ add_test(NAME    test_X-n106-k14
 
 
 # Build Library
-#add_library(lib SHARED
-#        ${src_files}
-#        Interface/C_Interface.cpp
-#        Interface/C_Interface.h
-#        )
-#set_target_properties(lib PROPERTIES OUTPUT_NAME hgscvrp)
+add_library(lib SHARED ${src_files})
+set_target_properties(lib PROPERTIES OUTPUT_NAME hgscvrp)
 
 # Test Library
-#add_subdirectory(Test)
-#enable_testing()
-#add_test(NAME c_test
-#        COMMAND c_test)
+add_subdirectory(Test/Test-c/)
+add_test(NAME       test_c_interface
+         COMMAND    test_c_interface)
