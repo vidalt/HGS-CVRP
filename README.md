@@ -42,15 +42,10 @@ make
 ```
 This will generate the executable file `hgs` in the `build` directory.
 
-[//]: # (`make bin` for the executable later, the library will be built by `make lib`. Saved for futur reference.)
-
 Test with:
 ```console
 ctest --verbose
 ```
-
-[//]: # (`ctest -R test_bin --verbose` for testing the executable specifically. Saved for futur reference.)
-
 
 ## Running the algorithm
 
@@ -61,7 +56,7 @@ After building the executable, try an example:
 
 The following options are supported:
 ```
-Call with: ./genvrp instancePath solPath [-it nbIter] [-t myCPUtime] [-bks bksPath] [-seed mySeed] [-veh nbVehicles] [-log verbose]
+Call with: ./hgs instancePath solPath [-it nbIter] [-t myCPUtime] [-bks bksPath] [-seed mySeed] [-veh nbVehicles] [-log verbose]
 [-it <int>] sets a maximum number of iterations without improvement. Defaults to 20,000                                     
 [-t <double>] sets a time limit in seconds. If this parameter is set the code will be run iteratively until the time limit        
 [-bks <filepath>] sets an optional path to a BKS. This file will be overwritten in case of improvement                                
