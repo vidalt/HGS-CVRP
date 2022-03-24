@@ -32,4 +32,5 @@ jobs:
     - name: test lib on ${{ matrix.os }}
       run: |
         cd build
-        ctest -R "test_c_interface" --verbose
+        make test_c_interface
+        ctest -R test_c_interface --verbose
