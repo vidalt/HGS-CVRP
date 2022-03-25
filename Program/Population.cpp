@@ -130,12 +130,12 @@ void Population::managePenalties()
 {
 	// Setting some bounds [0.1,1000] to the penalty values for safety
 	double fractionFeasibleLoad = (double)std::count(listFeasibilityLoad.begin(), listFeasibilityLoad.end(), true) / (double)listFeasibilityLoad.size();
-	if (fractionFeasibleLoad < params->targetFeasible - 0.05 && params->penaltyCapacity < 1000) params->penaltyCapacity = std::min<double>(params->penaltyCapacity * 1.2,1000.);
+	if (fractionFeasibleLoad < params->targetFeasible - 0.05 && params->penaltyCapacity < 100000.) params->penaltyCapacity = std::min<double>(params->penaltyCapacity * 1.2,100000.);
 	else if (fractionFeasibleLoad > params->targetFeasible + 0.05 && params->penaltyCapacity > 0.1) params->penaltyCapacity = std::max<double>(params->penaltyCapacity * 0.85, 0.1);
 
 	// Setting some bounds [0.1,1000] to the penalty values for safety
 	double fractionFeasibleDuration = (double)std::count(listFeasibilityDuration.begin(), listFeasibilityDuration.end(), true) / (double)listFeasibilityDuration.size();
-	if (fractionFeasibleDuration < params->targetFeasible - 0.05 && params->penaltyDuration < 1000)	params->penaltyDuration = std::min<double>(params->penaltyDuration * 1.2,1000.);
+	if (fractionFeasibleDuration < params->targetFeasible - 0.05 && params->penaltyDuration < 100000.)	params->penaltyDuration = std::min<double>(params->penaltyDuration * 1.2,100000.);
 	else if (fractionFeasibleDuration > params->targetFeasible + 0.05 && params->penaltyDuration > 0.1) params->penaltyDuration = std::max<double>(params->penaltyDuration * 0.85, 0.1);
 
 	// Update the evaluations

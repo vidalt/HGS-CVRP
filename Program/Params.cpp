@@ -66,7 +66,7 @@ Params::Params(std::string pathToInstance, int nbVeh, int seedRNG) : nbVehicles(
 	// Default initialization if the number of vehicles has not been provided by the user
 	if (nbVehicles == INT_MAX)
 	{
-		nbVehicles = std::ceil(1.2*totalDemand/vehicleCapacity) + 2;  // Safety margin: 20% + 2 more vehicles than the trivial bin packing LB
+		nbVehicles = std::ceil(1.3*totalDemand/vehicleCapacity) + 3;  // Safety margin: 30% + 3 more vehicles than the trivial bin packing LB
 		std::cout << "----- FLEET SIZE WAS NOT SPECIFIED: DEFAULT INITIALIZATION TO " << nbVehicles << " VEHICLES" << std::endl;
 	}
 	else
