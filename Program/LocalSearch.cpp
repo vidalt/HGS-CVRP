@@ -16,7 +16,8 @@ void LocalSearch::run(Individual * indiv, double penaltyCapacityLS, double penal
 	searchCompleted = false;
 	for (loopID = 0; !searchCompleted; loopID++)
 	{
-		searchCompleted = true;
+		if (loopID > 1) // Allows at least two loops since some moves involving empty routes are not checked at the first loop
+			searchCompleted = true;
 
 		/* CLASSICAL ROUTE IMPROVEMENT (RI) MOVES SUBJECT TO A PROXIMITY RESTRICTION */
 		for (int posU = 0; posU < params->nbClients; posU++)
