@@ -33,7 +33,7 @@ extern "C"
 #endif
 struct Solution *solve_cvrp_dist_mtx(
 	int n, double* x, double* y, double *dist_mtx, double *serv_time, double *dem,
-	double vehicleCapacity, double durationLimit, char isRoundingInteger, char isDurationConstraint,
+	double vehicleCapacity, double durationLimit, char isDurationConstraint,
 	int max_nbVeh, struct AlgorithmParameters *ap, char verbose);
 
 #ifdef __cplusplus

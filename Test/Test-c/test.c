@@ -72,20 +72,20 @@ int main()
 
 	struct Solution *sol2 = solve_cvrp_dist_mtx(
 		n, x, y, (double*)dist_mtx, s, d,
-		v_cap, duration_limit, isRoundingInteger, isDurationConstraint,
+		v_cap, duration_limit, isDurationConstraint,
 		max_nbVeh, &ap, verbose);
 
 	print_solution(sol2);
-	assert(sol2->cost == 34);
+	assert(round(sol2->cost) == 32);
 
 	double zero[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 	struct Solution *sol3 = solve_cvrp_dist_mtx(
 		n, zero, zero, (double*)dist_mtx, s, d,
-		v_cap, duration_limit, isRoundingInteger, isDurationConstraint,
+		v_cap, duration_limit, isDurationConstraint,
 		max_nbVeh, &ap, verbose);
 
 	print_solution(sol3);
-	assert(sol2->cost == sol3->cost);
+	assert(round(sol2->cost) == round(sol3->cost));
 
 
 	return 0;

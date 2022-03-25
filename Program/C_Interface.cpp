@@ -123,7 +123,7 @@ extern "C" Solution *solve_cvrp(
 
 extern "C" Solution *solve_cvrp_dist_mtx(
 	int n, double *x, double *y, double *dist_mtx, double *serv_time, double *dem,
-	double vehicleCapacity, double durationLimit, char isRoundingInteger, char isDurationConstraint,
+	double vehicleCapacity, double durationLimit, char isDurationConstraint,
 	int max_nbVeh, AlgorithmParameters *ap, char verbose)
 {
 	Solution *result;
@@ -138,8 +138,6 @@ extern "C" Solution *solve_cvrp_dist_mtx(
 		for (int i = 0; i < n; i++) { // row
 			for (int j = 0; j < n; j++) { // column
 				distance_matrix[i][j] = dist_mtx[n * i + j];
-				if (isRoundingInteger)
-					distance_matrix[i][j] = std::round(distance_matrix[i][j]);
 			}
 		}
 
