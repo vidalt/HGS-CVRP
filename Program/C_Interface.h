@@ -5,7 +5,6 @@
 #ifndef C_INTERFACE_H
 #define C_INTERFACE_H
 #include "AlgorithmParameters.h"
-#include<stdio.h>
 
 struct SolutionRoute
 {
@@ -42,12 +41,5 @@ extern "C"
 #endif
 void delete_solution(struct Solution * sol);
 
-
-#ifdef __cplusplus
-extern "C"
-#endif
-void hello_hgs(int i) {
-	printf("Hello, HGS i=%d\n", i);
-}
 
 #endif //C_INTERFACE_H
