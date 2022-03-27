@@ -70,18 +70,23 @@ void LocalSearch::run(Individual * indiv, double penaltyCapacityLS, double penal
 			}
 		}
 
-		/* (SWAP*) MOVES LIMITED TO ROUTE PAIRS WHOSE CIRCLE SECTORS OVERLAP */
-		for (int rU = 0; rU < params->nbVehicles; rU++)
+		if (params->useCoordinates)
 		{
-			routeU = &routes[orderRoutes[rU]];
-			int lastTestSWAPStarRouteU = routeU->whenLastTestedSWAPStar;
-			routeU->whenLastTestedSWAPStar = nbMoves;
-			for (int rV = 0; rV < params->nbVehicles; rV++)
+			/* (SWAP*) MOVES LIMITED TO ROUTE PAIRS WHOSE CIRCLE SECTORS OVERLAP */
+			for (int rU = 0; rU < params->nbVehicles; rU++)
 			{
-				routeV = &routes[orderRoutes[rV]];
-				if (routeU->nbCustomers > 0 && routeV->nbCustomers > 0 && routeU->cour < routeV->cour && (loopID == 0 || std::max<int>(routeU->whenLastModified, routeV->whenLastModified) > lastTestSWAPStarRouteU))
-					if (CircleSector::overlap(routeU->sector, routeV->sector))
-						swapStar();
+				routeU = &routes[orderRoutes[rU]];
+				int lastTestSWAPStarRouteU = routeU->whenLastTestedSWAPStar;
+				routeU->whenLastTestedSWAPStar = nbMoves;
+				for (int rV = 0; rV < params->nbVehicles; rV++)
+				{
+					routeV = &routes[orderRoutes[rV]];
+					if (routeU->nbCustomers > 0 && routeV->nbCustomers > 0 && routeU->cour < routeV->cour
+						&& (loopID == 0 || std::max<int>(routeU->whenLastModified, routeV->whenLastModified)
+							> lastTestSWAPStarRouteU))
+						if (CircleSector::overlap(routeU->sector, routeV->sector))
+							swapStar();
+				}
 			}
 		}
 	}

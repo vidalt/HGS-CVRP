@@ -88,5 +88,19 @@ int main()
 	assert(round(sol2->cost) == round(sol3->cost));
 
 
+	struct Solution *sol4 = solve_cvrp_dist_mtx(
+		n, NULL, NULL, (double*)dist_mtx, s, d,
+		v_cap, duration_limit, isDurationConstraint,
+		max_nbVeh, &ap, verbose);
+
+	print_solution(sol4);
+	assert(round(sol2->cost) == round(sol4->cost));
+
+
+	delete_solution(sol);
+	delete_solution(sol2);
+	delete_solution(sol3);
+	delete_solution(sol4);
+
 	return 0;
 }

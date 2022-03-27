@@ -86,30 +86,31 @@ extern "C" Solution *solve_cvrp(
 		std::vector<double> service_time(serv_time, serv_time + n);
 		std::vector<double> demands(dem, dem + n);
 
-		std::vector < std::vector< double > > dist_mtx = std::vector < std::vector< double > >(n + 1, std::vector <double>(n + 1));
-		for (int i = 0; i <= n; i++)
+		std::vector<std::vector<double> > distance_matrix(n, std::vector<double>(n));
+		for (int i = 0; i < n; i++)
 		{
-			for (int j = 0; j <= n; j++)
+			for (int j = 0; j < n; j++)
 			{
-				dist_mtx[i][j] = std::sqrt(
+				distance_matrix[i][j] = std::sqrt(
 					(x_coords[i] - x_coords[j])*(x_coords[i] - x_coords[j])
 					+ (y_coords[i] - y_coords[j])*(y_coords[i] - y_coords[j])
 				);
 				if (isRoundingInteger)
-					dist_mtx[i][j] = std::round(dist_mtx[i][j]);
+					distance_matrix[i][j] = std::round(distance_matrix[i][j]);
 			}
 		}
 
 		Params params(
 			x_coords,
 			y_coords,
-			dist_mtx,
+			distance_matrix,
 			service_time,
 			demands,
 			vehicleCapacity,
 			durationLimit,
 			max_nbVeh,
 			isDurationConstraint,
+			true,
 			verbose,
 			*ap
 		);
@@ -127,10 +128,17 @@ extern "C" Solution *solve_cvrp_dist_mtx(
 	int max_nbVeh, AlgorithmParameters *ap, char verbose)
 {
 	Solution *result;
+	std::vector<double> x_coords;
+	std::vector<double> y_coords;
+	bool useCoordinates = false;
 
 	try {
-		std::vector<double> x_coords(x, x + n);
-		std::vector<double> y_coords(y, y + n);
+		if (x != nullptr && y != nullptr) {
+			x_coords = {x, x + n};
+			y_coords = {y, y + n};
+			useCoordinates = true;
+		}
+
 		std::vector<double> service_time(serv_time, serv_time + n);
 		std::vector<double> demands(dem, dem + n);
 
@@ -151,6 +159,7 @@ extern "C" Solution *solve_cvrp_dist_mtx(
 			durationLimit,
 			max_nbVeh,
 			isDurationConstraint,
+			useCoordinates,
 			verbose,
 			*ap
 		);
