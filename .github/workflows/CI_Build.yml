@@ -23,7 +23,7 @@ jobs:
     - name: test bin on ${{ matrix.os }}
       run: |
         cd build
-        ctest -R "test_X[\w\d-]*" --verbose
+        ctest -R bin --verbose
     - name: make lib on ${{ matrix.os }}
       run: |
         cd build
@@ -32,5 +32,5 @@ jobs:
     - name: test lib on ${{ matrix.os }}
       run: |
         cd build
-        make test_c_interface
-        ctest -R test_c_interface --verbose
+        make lib_test_c
+        ctest -R lib --verbose
