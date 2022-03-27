@@ -38,13 +38,13 @@ Build with:
 mkdir build
 cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
-make 
+make bin
 ```
 This will generate the executable file `hgs` in the `build` directory.
 
 Test with:
 ```console
-ctest --verbose
+ctest -R bin --verbose
 ```
 
 ## Running the algorithm
@@ -90,6 +90,27 @@ The code structure is documented in [2] and organized in the following manner:
 * **Commandline**: Reads the line of command.
 * **Solver**: Contains all of the HGS algorithm's population mechanisms.
 * **main**: Main code to start the algorithm.
+
+
+## Compiling the shared library
+
+You can also build a shared library so that you can call the HGS-CVRP algorithm from your code.
+
+```console
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+make lib
+```
+This will generate the library file, `libhgscvrp.so` (Linux), `libhgscvrp.dylib` (macOS), or `hgscvrp.dll` (Windows),
+in the `build` directory.
+
+To test calling the shared library from a C code:
+```console
+make lib_test_c
+ctest -R lib --verbose
+```
+
 
 ## Contributing
 
