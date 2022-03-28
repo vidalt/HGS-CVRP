@@ -37,6 +37,7 @@ int main()
 	struct AlgorithmParameters ap;
 	ap = default_algorithm_parameters();
 	ap.timeLimit = 1.73; // seconds
+	ap.nbIter = 10000; // iterations
 
 	// Problem Data
 	int n = 10;
