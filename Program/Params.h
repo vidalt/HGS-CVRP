@@ -83,7 +83,7 @@ public:
 	clock_t startTime;
 
 	/* On/Off SWAP* search based on the coordinates */
-	bool useCoordinates;
+	bool useSwapStar;
 
 	/* Controls verbose level throughout the iterations */
 	bool verbose;
@@ -98,7 +98,6 @@ public:
 		double durationLimit,
 		int nbVeh,
 		bool isDurationConstraint,
-		bool useCoordinates,
 		bool verbose,
 		const AlgorithmParameters& ap);
 };

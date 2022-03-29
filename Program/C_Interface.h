@@ -26,7 +26,7 @@ extern "C"
 struct Solution * solve_cvrp(
 	int n, double* x, double* y, double* serv_time, double* dem,
 	double vehicleCapacity, double durationLimit, char isRoundingInteger, char isDurationConstraint,
-	int max_nbVeh, struct AlgorithmParameters* ap, char verbose);
+	int max_nbVeh, const struct AlgorithmParameters* ap, char verbose);
 
 #ifdef __cplusplus
 extern "C"
@@ -34,7 +34,7 @@ extern "C"
 struct Solution *solve_cvrp_dist_mtx(
 	int n, double* x, double* y, double *dist_mtx, double *serv_time, double *dem,
 	double vehicleCapacity, double durationLimit, char isDurationConstraint,
-	int max_nbVeh, struct AlgorithmParameters *ap, char verbose);
+	int max_nbVeh, const struct AlgorithmParameters *ap, char verbose);
 
 #ifdef __cplusplus
 extern "C"

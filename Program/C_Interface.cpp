@@ -47,7 +47,7 @@ Solution *prepare_solution(Population &population, Params &params)
 	return sol;
 }
 
-Solution *run_hgs_cvrp(Params &params, AlgorithmParameters &ap)
+Solution *run_hgs_cvrp(Params &params, const AlgorithmParameters &ap)
 {
 	// Creating the Split and local search structures
 	Split split(&params);
@@ -76,7 +76,7 @@ Solution *run_hgs_cvrp(Params &params, AlgorithmParameters &ap)
 extern "C" Solution *solve_cvrp(
 	int n, double *x, double *y, double *serv_time, double *dem,
 	double vehicleCapacity, double durationLimit, char isRoundingInteger, char isDurationConstraint,
-	int max_nbVeh, AlgorithmParameters *ap, char verbose)
+	int max_nbVeh, const AlgorithmParameters *ap, char verbose)
 {
 	Solution *result;
 
@@ -110,7 +110,6 @@ extern "C" Solution *solve_cvrp(
 			durationLimit,
 			max_nbVeh,
 			isDurationConstraint,
-			true,
 			verbose,
 			*ap
 		);
@@ -125,18 +124,21 @@ extern "C" Solution *solve_cvrp(
 extern "C" Solution *solve_cvrp_dist_mtx(
 	int n, double *x, double *y, double *dist_mtx, double *serv_time, double *dem,
 	double vehicleCapacity, double durationLimit, char isDurationConstraint,
-	int max_nbVeh, AlgorithmParameters *ap, char verbose)
+	int max_nbVeh, const AlgorithmParameters *ap, char verbose)
 {
 	Solution *result;
 	std::vector<double> x_coords;
 	std::vector<double> y_coords;
-	bool useCoordinates = false;
+
+	// copy the algorithm parameters
+	AlgorithmParameters new_ap = *ap;
 
 	try {
 		if (x != nullptr && y != nullptr) {
 			x_coords = {x, x + n};
 			y_coords = {y, y + n};
-			useCoordinates = true;
+		} else {
+			new_ap.useSwapStar = 0;
 		}
 
 		std::vector<double> service_time(serv_time, serv_time + n);
@@ -159,11 +161,10 @@ extern "C" Solution *solve_cvrp_dist_mtx(
 			durationLimit,
 			max_nbVeh,
 			isDurationConstraint,
-			useCoordinates,
 			verbose,
-			*ap
+			new_ap
 		);
-		result = run_hgs_cvrp(params, *ap);
+		result = run_hgs_cvrp(params, new_ap);
 	}
 	catch (const std::string &e) { std::cout << "EXCEPTION | " << e << std::endl; }
 	catch (const std::exception &e) { std::cout << "EXCEPTION | " << e.what() << std::endl; }

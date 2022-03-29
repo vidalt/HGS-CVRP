@@ -13,14 +13,13 @@ Params::Params(
 	double durationLimit,
 	int nbVeh,
 	bool isDurationConstraint,
-	bool useCoordinates,
 	bool verbose,
 	const AlgorithmParameters& ap
 )
 	: nbGranular(ap.nbGranular), mu(ap.mu), lambda(ap.lambda),
 	  nbElite(ap.nbElite), nbClose(ap.nbClose), targetFeasible(ap.targetFeasible),
 	  isDurationConstraint(isDurationConstraint), nbVehicles(nbVeh), durationLimit(durationLimit),
-	  vehicleCapacity(vehicleCapacity), timeCost(dist_mtx), useCoordinates(useCoordinates), verbose(verbose)
+	  vehicleCapacity(vehicleCapacity), timeCost(dist_mtx), useSwapStar(ap.useSwapStar), verbose(verbose)
 {
 	// This marks the starting time of the algorithm
 	startTime = clock();
@@ -35,8 +34,8 @@ Params::Params(
 	cli = std::vector<Client>(nbClients + 1);
 	for (int i = 0; i <= nbClients; i++)
 	{
-		// If useCoordinates==false, x_coords and y_coords may be empty.
-		if (useCoordinates)
+		// If useSwapStar==false, x_coords and y_coords may be empty.
+		if (useSwapStar)
 		{
 			cli[i].coordX = x_coords[i];
 			cli[i].coordY = y_coords[i];

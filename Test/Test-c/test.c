@@ -32,10 +32,8 @@ void print_solution(struct Solution * sol) {
 }
 int main()
 {
-
 	// Preparing algorithm parameters
-	struct AlgorithmParameters ap;
-	ap = default_algorithm_parameters();
+	struct AlgorithmParameters ap = default_algorithm_parameters();
 	ap.timeLimit = 1.73; // seconds
 	ap.nbIter = 10000; // iterations
 
@@ -52,6 +50,9 @@ int main()
 	int max_nbVeh = 2;
 	char verbose = 1;
 
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////
+	printf("-------- test.c #1 -----\n");
 	// Solve
 	struct Solution *sol = solve_cvrp(
 		n, x, y, s, d,
@@ -62,6 +63,11 @@ int main()
 	// Test if the solution is correct
 	assert(sol->cost == 29);
 
+	// The default value of useSwapStart should have not changed.
+	assert(ap.useSwapStar == 1);
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////
+	printf("-------- test.c #2 -----\n");
 	// Test #2: solve by dist_mtx
 	double dist_mtx[n][n];
 	for (int i=0; i < n; i++) {
@@ -79,6 +85,15 @@ int main()
 	print_solution(sol2);
 	assert(round(sol2->cost) == 32);
 
+	// The default value of useSwapStart should have not changed.
+	assert(ap.useSwapStar == 1);
+
+
+
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////
+	printf("-------- test.c #3 -----\n");
+
 	double zero[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 	struct Solution *sol3 = solve_cvrp_dist_mtx(
 		n, zero, zero, (double*)dist_mtx, s, d,
@@ -88,6 +103,11 @@ int main()
 	print_solution(sol3);
 	assert(round(sol2->cost) == round(sol3->cost));
 
+	// The default value of useSwapStart should have not changed.
+	assert(ap.useSwapStar == 1);
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////
+	printf("-------- test.c #4 -----\n");
 
 	struct Solution *sol4 = solve_cvrp_dist_mtx(
 		n, NULL, NULL, (double*)dist_mtx, s, d,
@@ -97,11 +117,30 @@ int main()
 	print_solution(sol4);
 	assert(round(sol2->cost) == round(sol4->cost));
 
+	// The default value of useSwapStart should have not changed.
+	assert(ap.useSwapStar == 1);
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////
+	printf("-------- test.c #5 -----\n");
+
+	ap.useSwapStar = 0;
+	struct Solution *sol5 = solve_cvrp_dist_mtx(
+		n, NULL, NULL, (double*)dist_mtx, s, d,
+		v_cap, duration_limit, isDurationConstraint,
+		max_nbVeh, &ap, verbose);
+
+	print_solution(sol5);
+	assert(round(sol2->cost) == round(sol4->cost));
+
+	assert(ap.useSwapStar == 0);
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	delete_solution(sol);
 	delete_solution(sol2);
 	delete_solution(sol3);
 	delete_solution(sol4);
+	delete_solution(sol5);
 
 	return 0;
 }

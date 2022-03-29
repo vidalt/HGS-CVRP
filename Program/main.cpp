@@ -30,7 +30,6 @@ int main(int argc, char *argv[])
 			cvrp.durationLimit,
 			commandline.nbVeh,
 			cvrp.isDurationConstraint,
-			true,
 			verbose,
 			commandline.ap
 		);
