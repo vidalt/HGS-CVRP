@@ -75,12 +75,18 @@ public:
 	double totalDemand ;									// Total demand required by the clients
 	double maxDemand;										// Maximum demand of a client
 	double maxDist;											// Maximum distance between two clients
-	std::vector < Client > cli ;							// Vector containing information on each client
-	const std::vector < std::vector < double > >& timeCost ;		// Distance matrix
-	std::vector < std::vector < int > > correlatedVertices;	// Neighborhood restrictions: For each client, list of nearby customers
+	std::vector< Client > cli ;								// Vector containing information on each client
+	const std::vector< std::vector< double > >& timeCost;	// Distance matrix
+	std::vector< std::vector< int > > correlatedVertices;	// Neighborhood restrictions: For each client, list of nearby customers
 
 	/* START TIME OF THE ALGORITHM */
 	clock_t startTime;
+
+	/* On/Off SWAP* search based on the coordinates */
+	bool useSwapStar;
+
+	/* check if valid coordinates are provided */
+	bool areCoordinatesProvided = false;
 
 	/* Controls verbose level throughout the iterations */
 	bool verbose;

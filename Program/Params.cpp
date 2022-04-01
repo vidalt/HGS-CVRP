@@ -19,7 +19,7 @@ Params::Params(
 	: nbGranular(ap.nbGranular), mu(ap.mu), lambda(ap.lambda),
 	  nbElite(ap.nbElite), nbClose(ap.nbClose), targetFeasible(ap.targetFeasible),
 	  isDurationConstraint(isDurationConstraint), nbVehicles(nbVeh), durationLimit(durationLimit),
-	  vehicleCapacity(vehicleCapacity), timeCost(dist_mtx), verbose(verbose)
+	  vehicleCapacity(vehicleCapacity), timeCost(dist_mtx), useSwapStar(ap.useSwapStar), verbose(verbose)
 {
 	// This marks the starting time of the algorithm
 	startTime = clock();
@@ -31,16 +31,30 @@ Params::Params(
 	// Initialize RNG
 	srand(ap.seed);
 
+	// check if valid coordinates are provided
+	areCoordinatesProvided = (demands.size() == x_coords.size()) && (demands.size() == x_coords.size());
+
+
 	cli = std::vector<Client>(nbClients + 1);
 	for (int i = 0; i <= nbClients; i++)
 	{
-		cli[i].coordX = x_coords[i]; // These coordinates can be potentially zero.
-		cli[i].coordY = y_coords[i];
-		cli[i].serviceDuration = service_time[i];
-		// polarAngle can be potentially zero.
-		cli[i].polarAngle = CircleSector::positive_mod(
-			32768. * atan2(cli[i].coordY - cli[0].coordY, cli[i].coordX - cli[0].coordX) / PI);
+		// If useSwapStar==false, x_coords and y_coords may be empty.
+		if (useSwapStar && areCoordinatesProvided)
+		{
+			cli[i].coordX = x_coords[i];
+			cli[i].coordY = y_coords[i];
+			cli[i].polarAngle = CircleSector::positive_mod(
+				32768. * atan2(cli[i].coordY - cli[0].coordY, cli[i].coordX - cli[0].coordX) / PI);
+		}
+		else
+		{
+			// Is this part necessary?
+			cli[i].coordX = 0.0;
+			cli[i].coordY = 0.0;
+			cli[i].polarAngle = 0.0;
+		}
 
+		cli[i].serviceDuration = service_time[i];
 		cli[i].demand = demands[i];
 		if (cli[i].demand > maxDemand) maxDemand = cli[i].demand;
 		totalDemand += cli[i].demand;
@@ -49,7 +63,7 @@ Params::Params(
 	// Default initialization if the number of vehicles has not been provided by the user
 	if (nbVehicles == INT_MAX)
 	{
-		nbVehicles = std::ceil(1.3*totalDemand/vehicleCapacity) + 3;  // Safety margin: 30% + 3 more vehicles than the trivial bin packing LB
+		nbVehicles = (int)std::ceil(1.3*totalDemand/vehicleCapacity) + 3;  // Safety margin: 30% + 3 more vehicles than the trivial bin packing LB
 		if (verbose) 
 			std::cout << "----- FLEET SIZE WAS NOT SPECIFIED: DEFAULT INITIALIZATION TO " << nbVehicles << " VEHICLES" << std::endl;
 	}

@@ -32,5 +32,6 @@ jobs:
     - name: test lib on ${{ matrix.os }}
       run: |
         cd build
+        cmake .. -DCMAKE_BUILD_TYPE=Debug -G "Unix Makefiles"        
         make lib_test_c
         ctest -R lib --verbose
