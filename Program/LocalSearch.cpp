@@ -70,7 +70,7 @@ void LocalSearch::run(Individual * indiv, double penaltyCapacityLS, double penal
 			}
 		}
 
-		if (params->useSwapStar)
+		if (params->useSwapStar && params->areCoordinatesProvided)
 		{
 			/* (SWAP*) MOVES LIMITED TO ROUTE PAIRS WHOSE CIRCLE SECTORS OVERLAP */
 			for (int rU = 0; rU < params->nbVehicles; rU++)

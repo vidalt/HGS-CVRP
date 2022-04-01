@@ -31,11 +31,15 @@ Params::Params(
 	// Initialize RNG
 	srand(ap.seed);
 
+	// check if valid coordinates are provided
+	areCoordinatesProvided = (demands.size() == x_coords.size()) && (demands.size() == x_coords.size());
+
+
 	cli = std::vector<Client>(nbClients + 1);
 	for (int i = 0; i <= nbClients; i++)
 	{
 		// If useSwapStar==false, x_coords and y_coords may be empty.
-		if (useSwapStar)
+		if (useSwapStar && areCoordinatesProvided)
 		{
 			cli[i].coordX = x_coords[i];
 			cli[i].coordY = y_coords[i];

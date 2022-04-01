@@ -130,15 +130,10 @@ extern "C" Solution *solve_cvrp_dist_mtx(
 	std::vector<double> x_coords;
 	std::vector<double> y_coords;
 
-	// copy the algorithm parameters
-	AlgorithmParameters new_ap = *ap;
-
 	try {
 		if (x != nullptr && y != nullptr) {
 			x_coords = {x, x + n};
 			y_coords = {y, y + n};
-		} else {
-			new_ap.useSwapStar = 0;
 		}
 
 		std::vector<double> service_time(serv_time, serv_time + n);
@@ -162,9 +157,9 @@ extern "C" Solution *solve_cvrp_dist_mtx(
 			max_nbVeh,
 			isDurationConstraint,
 			verbose,
-			new_ap
+			*ap
 		);
-		result = run_hgs_cvrp(params, new_ap);
+		result = run_hgs_cvrp(params, *ap);
 	}
 	catch (const std::string &e) { std::cout << "EXCEPTION | " << e << std::endl; }
 	catch (const std::exception &e) { std::cout << "EXCEPTION | " << e.what() << std::endl; }
