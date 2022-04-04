@@ -82,6 +82,12 @@ public:
 	/* START TIME OF THE ALGORITHM */
 	clock_t startTime;
 
+	/* On/Off SWAP* search based on the coordinates */
+	bool useSwapStar;
+
+	/* check if valid coordinates are provided */
+	bool areCoordinatesProvided;
+
 	/* Controls verbose level throughout the iterations */
 	bool verbose;
 
