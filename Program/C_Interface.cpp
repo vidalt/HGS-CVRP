@@ -47,7 +47,7 @@ Solution *prepare_solution(Population &population, Params &params)
 	return sol;
 }
 
-Solution *run_hgs_cvrp(Params &params, AlgorithmParameters &ap)
+Solution *run_hgs_cvrp(Params &params, const AlgorithmParameters &ap)
 {
 	// Creating the Split and local search structures
 	Split split(&params);
@@ -76,7 +76,7 @@ Solution *run_hgs_cvrp(Params &params, AlgorithmParameters &ap)
 extern "C" Solution *solve_cvrp(
 	int n, double *x, double *y, double *serv_time, double *dem,
 	double vehicleCapacity, double durationLimit, char isRoundingInteger, char isDurationConstraint,
-	int max_nbVeh, AlgorithmParameters *ap, char verbose)
+	int max_nbVeh, const AlgorithmParameters *ap, char verbose)
 {
 	Solution *result;
 
@@ -86,24 +86,24 @@ extern "C" Solution *solve_cvrp(
 		std::vector<double> service_time(serv_time, serv_time + n);
 		std::vector<double> demands(dem, dem + n);
 
-		std::vector < std::vector< double > > dist_mtx = std::vector < std::vector< double > >(n + 1, std::vector <double>(n + 1));
-		for (int i = 0; i <= n; i++)
+		std::vector<std::vector<double> > distance_matrix(n, std::vector<double>(n));
+		for (int i = 0; i < n; i++)
 		{
-			for (int j = 0; j <= n; j++)
+			for (int j = 0; j < n; j++)
 			{
-				dist_mtx[i][j] = std::sqrt(
+				distance_matrix[i][j] = std::sqrt(
 					(x_coords[i] - x_coords[j])*(x_coords[i] - x_coords[j])
 					+ (y_coords[i] - y_coords[j])*(y_coords[i] - y_coords[j])
 				);
 				if (isRoundingInteger)
-					dist_mtx[i][j] = std::round(dist_mtx[i][j]);
+					distance_matrix[i][j] = std::round(distance_matrix[i][j]);
 			}
 		}
 
 		Params params(
 			x_coords,
 			y_coords,
-			dist_mtx,
+			distance_matrix,
 			service_time,
 			demands,
 			vehicleCapacity,
@@ -124,13 +124,18 @@ extern "C" Solution *solve_cvrp(
 extern "C" Solution *solve_cvrp_dist_mtx(
 	int n, double *x, double *y, double *dist_mtx, double *serv_time, double *dem,
 	double vehicleCapacity, double durationLimit, char isDurationConstraint,
-	int max_nbVeh, AlgorithmParameters *ap, char verbose)
+	int max_nbVeh, const AlgorithmParameters *ap, char verbose)
 {
 	Solution *result;
+	std::vector<double> x_coords;
+	std::vector<double> y_coords;
 
 	try {
-		std::vector<double> x_coords(x, x + n);
-		std::vector<double> y_coords(y, y + n);
+		if (x != nullptr && y != nullptr) {
+			x_coords = {x, x + n};
+			y_coords = {y, y + n};
+		}
+
 		std::vector<double> service_time(serv_time, serv_time + n);
 		std::vector<double> demands(dem, dem + n);
 

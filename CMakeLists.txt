@@ -25,14 +25,14 @@ set_target_properties(bin PROPERTIES OUTPUT_NAME hgs)
 
 # Test Executable
 include(CTest)
-add_test(NAME    test_X-n101-k25
+add_test(NAME    bin_test_X-n101-k25
          COMMAND ${CMAKE_COMMAND}   -DINSTANCE=X-n101-k25
                                     -DCOST=27591
-                                    -P ${CMAKE_CURRENT_SOURCE_DIR}/TestExecutable.cmake)
-add_test(NAME    test_X-n106-k14
+                                    -P ${CMAKE_CURRENT_SOURCE_DIR}/Test/TestExecutable.cmake)
+add_test(NAME    bin_test_X-n106-k14
          COMMAND ${CMAKE_COMMAND}   -DINSTANCE=X-n110-k13
                                     -DCOST=14971
-                                    -P ${CMAKE_CURRENT_SOURCE_DIR}/TestExecutable.cmake)
+                                    -P ${CMAKE_CURRENT_SOURCE_DIR}/Test/TestExecutable.cmake)
 
 
 # Build Library
@@ -41,5 +41,6 @@ set_target_properties(lib PROPERTIES OUTPUT_NAME hgscvrp)
 
 # Test Library
 add_subdirectory(Test/Test-c/)
-add_test(NAME       test_c_interface
-         COMMAND    test_c_interface)
+add_test(NAME       lib_test_c
+         COMMAND    lib_test_c)
+
