@@ -34,6 +34,16 @@ add_test(NAME    bin_test_X-n106-k14
                                     -DCOST=14971
                                     -P ${CMAKE_CURRENT_SOURCE_DIR}/Test/TestExecutable.cmake)
 
+# Test Executable: Instances with Duration, without Rounding
+add_test(NAME    bin_test_CMT6
+        COMMAND ${CMAKE_COMMAND}    -DINSTANCE=CMT6
+                                    -DCOST=555.43
+                                    -P ${CMAKE_CURRENT_SOURCE_DIR}/Test/TestExecutableWithoutRounding.cmake)
+add_test(NAME    bin_test_CMT7
+        COMMAND ${CMAKE_COMMAND}    -DINSTANCE=CMT7
+                                    -DCOST=909.675
+                                    -P ${CMAKE_CURRENT_SOURCE_DIR}/Test/TestExecutableWithoutRounding.cmake)
+
 
 # Build Library
 add_library(lib SHARED ${src_files})
