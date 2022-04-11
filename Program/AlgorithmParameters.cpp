@@ -20,7 +20,6 @@ struct AlgorithmParameters default_algorithm_parameters() {
 	ap.seed = 0;
 	ap.nbIter = 20000;
 	ap.timeLimit = DBL_MAX;
-	ap.isRoundingInteger = 1;
 	ap.useSwapStar = 1;
 
 	return ap;
@@ -38,7 +37,6 @@ void print_algorithm_parameters(const AlgorithmParameters & ap)
 	std::cout << "---- seed              is set to " << ap.seed << std::endl;
 	std::cout << "---- nbIter            is set to " << ap.nbIter << std::endl;
 	std::cout << "---- timeLimit         is set to " << ap.timeLimit << std::endl;
-	std::cout << "---- isRoundingInteger is set to " << static_cast<unsigned>(ap.isRoundingInteger) << std::endl;
 	std::cout << "---- useSwapStar       is set to " << static_cast<unsigned>(ap.useSwapStar) << std::endl;
 	std::cout << "==================================================" << std::endl;
 }

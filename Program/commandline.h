@@ -38,6 +38,7 @@ public:
 	std::string pathSolution;		// Solution path
 	std::string pathBKS = "";		// BKS path
 	bool verbose     = true;
+	bool isRoundingInteger = true;
 
 	// Reads the line of command and extracts possible options
 	CommandLine(int argc, char* argv[])
@@ -64,7 +65,7 @@ public:
 				else if (std::string(argv[i]) == "-veh")
 					nbVeh = atoi(argv[i+1]);
 				else if (std::string(argv[i]) == "-round")
-					ap.isRoundingInteger = atoi(argv[i+1]);
+					isRoundingInteger = atoi(argv[i+1]);
 				else if (std::string(argv[i]) == "-log")
 					verbose = atoi(argv[i+1]);
 				else if (std::string(argv[i]) == "-nbGranular")

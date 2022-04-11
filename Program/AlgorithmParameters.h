@@ -18,7 +18,6 @@ struct AlgorithmParameters {
 	int seed;				// Random seed. Default value: 0
 	int nbIter;				// Number of iterations without improvement until termination. Default value: 20,000 iterations
 	double timeLimit;		// CPU time limit until termination in seconds. Default value: infinity
-	char isRoundingInteger; // rounding the distances or not. Default value: 1. This is char, not bool, for C compatibility
 	char useSwapStar;		// Use SWAP* local search or not. Default value: 1. Only available when coordinates are provided.
 };
 

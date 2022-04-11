@@ -45,7 +45,7 @@ int main()
 	double d[] = {0, 2, 3, 1, 2, 3, 1, 2, 3, 1};
 	double v_cap = 10;
 	double duration_limit = 100000000;
-	char isRoundingInteger = ap.isRoundingInteger;
+	char isRoundingInteger = 1;
 	char isDurationConstraint = 0;
 	int max_nbVeh = 2;
 	char verbose = 1;
