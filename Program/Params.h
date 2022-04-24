@@ -86,7 +86,7 @@ public:
 	bool useSwapStar;
 
 	/* check if valid coordinates are provided */
-	bool areCoordinatesProvided = false;
+	bool areCoordinatesProvided;
 
 	/* Controls verbose level throughout the iterations */
 	bool verbose;

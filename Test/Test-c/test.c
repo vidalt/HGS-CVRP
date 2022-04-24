@@ -45,7 +45,7 @@ int main()
 	double d[] = {0, 2, 3, 1, 2, 3, 1, 2, 3, 1};
 	double v_cap = 10;
 	double duration_limit = 100000000;
-	char isRoundingInteger = ap.isRoundingInteger;
+	char isRoundingInteger = 1;
 	char isDurationConstraint = 0;
 	int max_nbVeh = 2;
 	char verbose = 1;
@@ -136,11 +136,69 @@ int main()
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	printf("-------- test.c #6 (redundant duration constraint) -----\n");
+
+	ap.useSwapStar = 0;
+	duration_limit = 1000;
+	isDurationConstraint = 1;
+	struct Solution *sol6 = solve_cvrp_dist_mtx(
+		n, NULL, NULL, (double*)dist_mtx, s, d,
+		v_cap, duration_limit, isDurationConstraint,
+		max_nbVeh, &ap, verbose);
+
+	print_solution(sol6);
+	assert(round(sol5->cost) == round(sol6->cost));
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	printf("-------- test.c #7 (tight duration constraint) -----\n");
+
+	double rounded_dist_mtx[n][n];
+	for (int i=0; i < n; i++) {
+		for (int j=0; j< n; j++) {
+			rounded_dist_mtx[i][j] = sqrt( (x[i] - x[j]) * (x[i] - x[j]) + (y[i] - y[j]) * (y[i] - y[j]));
+			rounded_dist_mtx[i][j] = round(rounded_dist_mtx[i][j]);
+			printf("%d ", (int) rounded_dist_mtx[i][j]);
+		}
+		printf("\n");
+	}
+
+	ap.useSwapStar = 1;
+	ap.seed = 12;
+	max_nbVeh = 5;
+	duration_limit = 18;
+	isDurationConstraint = 1;
+	struct Solution *sol7 = solve_cvrp_dist_mtx(
+		n, NULL, NULL, (double*)rounded_dist_mtx, s, d,
+		v_cap, duration_limit, isDurationConstraint,
+		max_nbVeh, &ap, verbose);
+
+	print_solution(sol7);
+
+	int tail, head;
+	for (int r = 0; r < sol7->n_routes; r ++) {
+		struct SolutionRoute route = sol7->routes[r];
+		double duration = 0.0;
+		for (int k = 0; k < route.length - 1; k ++) {
+			tail = route.path[k];
+			head = route.path[k+1];
+			duration += rounded_dist_mtx[tail][head];
+		}
+		assert(duration <= duration_limit);
+		printf("route #%d duration = %f\n", r, duration);
+	}
+	printf("duration_limit = %f\n", duration_limit);
+	assert(sol7->cost == 42);
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	delete_solution(sol);
 	delete_solution(sol2);
 	delete_solution(sol3);
 	delete_solution(sol4);
 	delete_solution(sol5);
+	delete_solution(sol6);
+	delete_solution(sol7);
 
 	return 0;
 }

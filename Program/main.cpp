@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
 
 		// Reading the data file and initializing some data structures
 		if (verbose) std::cout << "----- READING INSTANCE: " << commandline.pathInstance << std::endl;
-		CVRPLIB cvrp(commandline.pathInstance, commandline.ap.isRoundingInteger);
+		CVRPLIB cvrp(commandline.pathInstance, commandline.isRoundingInteger);
 
 		Params params(
 			cvrp.x_coords,

@@ -146,8 +146,8 @@ private:
 	void setLocalVariablesRouteV(); // Initializes some local variables and distances associated to routeV to avoid always querying the same values in the distance matrix
 
 	// Functions in charge of excess load and duration penalty calculations
-	// #define penaltyExcessDuration(x) _penaltyExcessDuration(x)
-	#define penaltyExcessDuration(x) 0. // <--- Use this line instead of the previous one to save some CPU time if your problem does not include duration constraints
+	 #define penaltyExcessDuration(x) _penaltyExcessDuration(x)
+	// #define penaltyExcessDuration(x) 0. // <--- Use this line instead of the previous one to save some CPU time if your problem does not include duration constraints
 	inline double _penaltyExcessDuration(double myDuration) {return std::max<double>(0., myDuration - params->durationLimit)*penaltyDurationLS;}
 	inline double penaltyExcessLoad(double myLoad) {return std::max<double>(0., myLoad - params->vehicleCapacity)*penaltyCapacityLS;}
 

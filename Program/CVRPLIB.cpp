@@ -84,7 +84,7 @@ CVRPLIB::CVRPLIB(std::string pathToInstance, bool isRoundingInteger = true)
 		if (content3 != "EOF") throw std::string("Unexpected data in input file: " + content3);
 	}
 	else
-		throw std::invalid_argument("Impossible to open instance file: " + pathToInstance);
+		throw std::string("Impossible to open instance file: " + pathToInstance);
 
 
 }
