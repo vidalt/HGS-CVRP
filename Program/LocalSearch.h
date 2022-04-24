@@ -141,6 +141,7 @@ private:
 	double loadU, loadX, loadV, loadY;
 	double serviceU, serviceX, serviceV, serviceY;
 	double penaltyCapacityLS, penaltyDurationLS ;
+	bool intraRouteMove ;
 
 	void setLocalVariablesRouteU(); // Initializes some local variables and distances associated to routeU to avoid always querying the same values in the distance matrix
 	void setLocalVariablesRouteV(); // Initializes some local variables and distances associated to routeV to avoid always querying the same values in the distance matrix
@@ -150,19 +151,19 @@ private:
 
 	/* RELOCATE MOVES */
 	// (Legacy notations: move1...move9 from Prins 2004)
-	bool move1 (); // If U is a client node, remove U and insert it after V
-	bool move2 (); // If U and X are client nodes, remove them and insert (U,X) after V
-	bool move3 (); // If U and X are client nodes, remove them and insert (X,U) after V
+	bool move1(); // If U is a client node, remove U and insert it after V
+	bool move2(); // If U and X are client nodes, remove them and insert (U,X) after V
+	bool move3(); // If U and X are client nodes, remove them and insert (X,U) after V
 
 	/* SWAP MOVES */
-	bool move4 (); // If U and V are client nodes, swap U and V
-	bool move5 (); // If U, X and V are client nodes, swap (U,X) and V
-	bool move6 (); // If (U,X) and (V,Y) are client nodes, swap (U,X) and (V,Y) 
+	bool move4(); // If U and V are client nodes, swap U and V
+	bool move5(); // If U, X and V are client nodes, swap (U,X) and V
+	bool move6(); // If (U,X) and (V,Y) are client nodes, swap (U,X) and (V,Y) 
 	 
 	/* 2-OPT and 2-OPT* MOVES */
-	bool move7 (); // If route(U) == route(V), replace (U,X) and (V,Y) by (U,V) and (X,Y)
-	bool move8 (); // If route(U) != route(V), replace (U,X) and (V,Y) by (U,V) and (X,Y)
-	bool move9 (); // If route(U) != route(V), replace (U,X) and (V,Y) by (U,Y) and (V,X)
+	bool move7(); // If route(U) == route(V), replace (U,X) and (V,Y) by (U,V) and (X,Y)
+	bool move8(); // If route(U) != route(V), replace (U,X) and (V,Y) by (U,V) and (X,Y)
+	bool move9(); // If route(U) != route(V), replace (U,X) and (V,Y) by (U,Y) and (V,X)
 
 	/* SUB-ROUTINES FOR EFFICIENT SWAP* EVALUATIONS */
 	bool swapStar(); // Calculates all SWAP* between routeU and routeV and apply the best improving move

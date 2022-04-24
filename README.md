@@ -73,9 +73,8 @@ Additional Arguments:
 [-nbClose <int>] Number of closest solutions/individuals considered when calculating diversity contribution. Defaults to 4     
 [-targetFeasible <double>] target ratio of feasible individuals in the last 100 generatied individuals. Defaults to 0.2        
 ```
-If you wish to solve instances that include duration constraints, please activate the following line of code: https://github.com/vidalt/HGS-CVRP/blob/main/Program/LocalSearch.h#L149
 
-Moreover, there exist different conventions regarding distance calculations in the academic literature.
+There exist different conventions regarding distance calculations in the academic literature.
 The default code behavior is to apply integer rounding, as it should be done on the X instances of Uchoa et al. (2017).
 To change this behavior, for example, when testing on the CMT or Golden instances, set `isRoundingInteger = false` at https://github.com/vidalt/HGS-CVRP/blob/main/Program/Params.cpp#L12
 
@@ -112,24 +111,23 @@ make lib_test_c
 ctest -R lib --verbose
 ```
 
-
 ## Contributing
 
-Thank you for your interest in this code.
-Your help is welcome to maintain and improve this code.
-Before any major pull request or contribution, I recommend to contact me by email at <vidalt@inf.puc-rio.br>.
+Thank you very much for your interest in this code.
+This code is still actively maintained and evolving, and we definitely welcome pull requests and contributions seeking to improve the code in terms of readability, usability and performance.
+Development is conducted in the `dev` branch. I recommend to contact me beforehand at <thibaut.vidal@polymtl.ca> before any major rework.
 
-The goal of this code is to stay **simple** and **specialized** to the CVRP. 
+As a general guideline, the goal of this code is to stay **simple**, **stand-alone** and **specialized** to the CVRP. 
 Therefore, contributions that aim to extend this approach to different variants of the vehicle routing problem should usually remain in a separate repository.
-Similarly, contributions that require additional libraries are usually not recommended to ensure portability.
+Similarly, contributions that require additional libraries or increase the conceptual complexity of the method are not generally recommended.
+Indeed, when developing (meta-)heuristics, it seems always possible to do a bit better at the cost of extra conceptual complexity.
+The goal of this code is to find a good trade-off between algorithm simplicity and performance. This code can still evolve, but only if the magnitude of the improvements are significant in relation to the extra complexity required.
 
 There are two main types of contributions:
 * Changes that do not impact the sequence of solutions found by the HGS algorithm when running `ctest` or testing other instances with a fixed seed. This is visible by comparing the average solution value in the population and diversity through a test run.
 Such contributions include refactoring, simplification, and code optimization. In this case, please attach the new log obtained before and after your changes. Pull requests of this type are likely to be integrated more quickly.
 * Changes that impact the sequence of solutions found by the algorithm when running `ctest`. 
 In this case, I recommend to contact me beforehand with (i) a detailed description of the changes, (ii) detailed results on 10 runs of the algorithm for each of the 100 instances of Uchoa et al. (2017) before and after the changes, using the same termination criterion as used in [2](https://arxiv.org/abs/2012.10384).
-
-If your contribution involves some components that impact the sequence of solutions and others that do not impact it, then I recommend making two separate pull requests to facilitate the review of those changes.
 
 ## License
 
