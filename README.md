@@ -76,7 +76,7 @@ Additional Arguments:
 
 There exist different conventions regarding distance calculations in the academic literature.
 The default code behavior is to apply integer rounding, as it should be done on the X instances of Uchoa et al. (2017).
-To change this behavior, for example, when testing on the CMT or Golden instances, set `isRoundingInteger = false` at https://github.com/vidalt/HGS-CVRP/blob/main/Program/Params.cpp#L12
+To change this behavior, for example, when testing on the CMT or Golden instances, give a flag `-round 0`, when you run the executable.
 
 ## Code structure
 
