@@ -2,7 +2,7 @@
 
 void Population::generatePopulation()
 {
-	for (int i = 0; i < 4*params->mu; i++)
+	for (int i = 0; i < 4*params->ap.mu; i++)
 	{
 		Individual * randomIndiv = new Individual(params);
 		split->generalSplit(randomIndiv, params->nbVehicles);
@@ -45,8 +45,8 @@ bool Population::addIndividual(const Individual * indiv, bool updateFeasible)
 	subpop.emplace(subpop.begin() + place, myIndividual);
 
 	// Trigger a survivor selection if the maximimum population size is exceeded
-	if ((int)subpop.size() > params->mu + params->lambda)
-		while ((int)subpop.size() > params->mu)
+	if ((int)subpop.size() > params->ap.mu + params->ap.lambda)
+		while ((int)subpop.size() > params->ap.mu)
 			removeWorstBiasedFitness(subpop);
 
 	// Track best solution
@@ -69,7 +69,7 @@ void Population::updateBiasedFitnesses(SubPopulation & pop)
 	// Ranking the individuals based on their diversity contribution (decreasing order of distance)
 	std::vector <std::pair <double, int> > ranking;
 	for (int i = 0 ; i < (int)pop.size(); i++) 
-		ranking.push_back({-pop[i]->averageBrokenPairsDistanceClosest(params->nbClose),i});
+		ranking.push_back({-pop[i]->averageBrokenPairsDistanceClosest(params->ap.nbClose),i});
 	std::sort(ranking.begin(), ranking.end());
 
 	// Updating the biased fitness values
@@ -81,10 +81,10 @@ void Population::updateBiasedFitnesses(SubPopulation & pop)
 		{
 			double divRank = (double)i / (double)(pop.size() - 1); // Ranking from 0 to 1
 			double fitRank = (double)ranking[i].second / (double)(pop.size() - 1);
-			if ((int)pop.size() <= params->nbElite) // Elite individuals cannot be smaller than population size
+			if ((int)pop.size() <= params->ap.nbElite) // Elite individuals cannot be smaller than population size
 				pop[ranking[i].second]->biasedFitness = fitRank;
 			else 
-				pop[ranking[i].second]->biasedFitness = fitRank + (1.0 - (double)params->nbElite / (double)pop.size()) * divRank;
+				pop[ranking[i].second]->biasedFitness = fitRank + (1.0 - (double)params->ap.nbElite / (double)pop.size()) * divRank;
 		}
 	}
 }
@@ -130,13 +130,13 @@ void Population::managePenalties()
 {
 	// Setting some bounds [0.1,1000] to the penalty values for safety
 	double fractionFeasibleLoad = (double)std::count(listFeasibilityLoad.begin(), listFeasibilityLoad.end(), true) / (double)listFeasibilityLoad.size();
-	if (fractionFeasibleLoad < params->targetFeasible - 0.05 && params->penaltyCapacity < 100000.) params->penaltyCapacity = std::min<double>(params->penaltyCapacity * 1.2,100000.);
-	else if (fractionFeasibleLoad > params->targetFeasible + 0.05 && params->penaltyCapacity > 0.1) params->penaltyCapacity = std::max<double>(params->penaltyCapacity * 0.85, 0.1);
+	if (fractionFeasibleLoad < params->ap.targetFeasible - 0.05 && params->penaltyCapacity < 100000.) params->penaltyCapacity = std::min<double>(params->penaltyCapacity * 1.2,100000.);
+	else if (fractionFeasibleLoad > params->ap.targetFeasible + 0.05 && params->penaltyCapacity > 0.1) params->penaltyCapacity = std::max<double>(params->penaltyCapacity * 0.85, 0.1);
 
 	// Setting some bounds [0.1,1000] to the penalty values for safety
 	double fractionFeasibleDuration = (double)std::count(listFeasibilityDuration.begin(), listFeasibilityDuration.end(), true) / (double)listFeasibilityDuration.size();
-	if (fractionFeasibleDuration < params->targetFeasible - 0.05 && params->penaltyDuration < 100000.)	params->penaltyDuration = std::min<double>(params->penaltyDuration * 1.2,100000.);
-	else if (fractionFeasibleDuration > params->targetFeasible + 0.05 && params->penaltyDuration > 0.1) params->penaltyDuration = std::max<double>(params->penaltyDuration * 0.85, 0.1);
+	if (fractionFeasibleDuration < params->ap.targetFeasible - 0.05 && params->penaltyDuration < 100000.)	params->penaltyDuration = std::min<double>(params->penaltyDuration * 1.2,100000.);
+	else if (fractionFeasibleDuration > params->ap.targetFeasible + 0.05 && params->penaltyDuration > 0.1) params->penaltyDuration = std::max<double>(params->penaltyDuration * 0.85, 0.1);
 
 	// Update the evaluations
 	for (int i = 0; i < (int)infeasibleSubpopulation.size(); i++)
@@ -219,7 +219,7 @@ void Population::printState(int nbIter, int nbIterNoImprovement)
 double Population::getDiversity(const SubPopulation & pop)
 {
 	double average = 0.;
-	int size = std::min<int>(params->mu, pop.size()); // Only monitoring the "mu" better solutions to avoid too much noise in the measurements
+	int size = std::min<int>(params->ap.mu, pop.size()); // Only monitoring the "mu" better solutions to avoid too much noise in the measurements
 	for (int i = 0; i < size; i++) average += pop[i]->averageBrokenPairsDistanceClosest(size);
 	if (size > 0) return average / (double)size;
 	else return -1.0;
@@ -228,7 +228,7 @@ double Population::getDiversity(const SubPopulation & pop)
 double Population::getAverageCost(const SubPopulation & pop)
 {
 	double average = 0.;
-	int size = std::min<int>(params->mu, pop.size()); // Only monitoring the "mu" better solutions to avoid too much noise in the measurements
+	int size = std::min<int>(params->ap.mu, pop.size()); // Only monitoring the "mu" better solutions to avoid too much noise in the measurements
 	for (int i = 0; i < size; i++) average += pop[i]->myCostSol.penalizedCost;
 	if (size > 0) return average / (double)size;
 	else return -1.0;

@@ -10,7 +10,7 @@ void LocalSearch::run(Individual * indiv, double penaltyCapacityLS, double penal
 	std::random_shuffle(orderNodes.begin(), orderNodes.end());
 	std::random_shuffle(orderRoutes.begin(), orderRoutes.end());
 	for (int i = 1; i <= params->nbClients; i++)
-		if (std::rand() % params->nbGranular == 0)  // Designed to use O(nbGranular x n) time overall to avoid possible bottlenecks
+		if (std::rand() % params->ap.nbGranular == 0)  // Designed to use O(nbGranular x n) time overall to avoid possible bottlenecks
 			std::random_shuffle(params->correlatedVertices[i].begin(), params->correlatedVertices[i].end());
 
 	searchCompleted = false;
@@ -70,7 +70,7 @@ void LocalSearch::run(Individual * indiv, double penaltyCapacityLS, double penal
 			}
 		}
 
-		if (params->useSwapStar && params->areCoordinatesProvided)
+		if (params->ap.useSwapStar == 1 && params->areCoordinatesProvided)
 		{
 			/* (SWAP*) MOVES LIMITED TO ROUTE PAIRS WHOSE CIRCLE SECTORS OVERLAP */
 			for (int rU = 0; rU < params->nbVehicles; rU++)

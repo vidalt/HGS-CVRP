@@ -16,10 +16,8 @@ Params::Params(
 	bool verbose,
 	const AlgorithmParameters& ap
 )
-	: nbGranular(ap.nbGranular), mu(ap.mu), lambda(ap.lambda),
-	  nbElite(ap.nbElite), nbClose(ap.nbClose), targetFeasible(ap.targetFeasible),
-	  isDurationConstraint(isDurationConstraint), nbVehicles(nbVeh), durationLimit(durationLimit),
-	  vehicleCapacity(vehicleCapacity), timeCost(dist_mtx), useSwapStar(ap.useSwapStar), verbose(verbose)
+	: ap(ap), isDurationConstraint(isDurationConstraint), nbVehicles(nbVeh), durationLimit(durationLimit),
+	  vehicleCapacity(vehicleCapacity), timeCost(dist_mtx), verbose(verbose)
 {
 	// This marks the starting time of the algorithm
 	startTime = clock();
@@ -34,12 +32,11 @@ Params::Params(
 	// check if valid coordinates are provided
 	areCoordinatesProvided = (demands.size() == x_coords.size()) && (demands.size() == x_coords.size());
 
-
 	cli = std::vector<Client>(nbClients + 1);
 	for (int i = 0; i <= nbClients; i++)
 	{
 		// If useSwapStar==false, x_coords and y_coords may be empty.
-		if (useSwapStar && areCoordinatesProvided)
+		if (ap.useSwapStar == 1 && areCoordinatesProvided)
 		{
 			cli[i].coordX = x_coords[i];
 			cli[i].coordY = y_coords[i];
@@ -48,10 +45,11 @@ Params::Params(
 		}
 		else
 		{
-			// Is this part necessary?
 			cli[i].coordX = 0.0;
 			cli[i].coordY = 0.0;
 			cli[i].polarAngle = 0.0;
+			if (verbose)
+				std::cout << "----- NO COORDINATES HAVE BEEN PROVIDED, SWAP* NEIGHBORHOOD IS DEACTIVATED BY DEFAULT" << std::endl;
 		}
 
 		cli[i].serviceDuration = service_time[i];
@@ -90,7 +88,7 @@ Params::Params(
 			if (i != j) orderProximity.emplace_back(timeCost[i][j], j);
 		std::sort(orderProximity.begin(), orderProximity.end());
 
-		for (int j = 0; j < std::min<int>(nbGranular, nbClients - 1); j++)
+		for (int j = 0; j < std::min<int>(ap.nbGranular, nbClients - 1); j++)
 		{
 			// If i is correlated with j, then j should be correlated with i
 			setCorrelatedVertices[i].insert(orderProximity[j].second);

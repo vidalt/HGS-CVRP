@@ -46,27 +46,25 @@ Solution *prepare_solution(Population &population, Params &params)
 	return sol;
 }
 
-Solution *run_hgs_cvrp(Params &params, const AlgorithmParameters &ap)
+Solution *run_hgs_cvrp(Params &params)
 {
 	// Creating the Split and local search structures
 	Split split(&params);
 	LocalSearch localSearch(&params);
 
-	bool verbose = params.verbose;
-
 	// Initial population
-	if (verbose) {
-		std::cout << "----- INSTANCE LOADED WITH " << params.nbClients << " CLIENTS AND " << params.nbVehicles
-				  << " VEHICLES" << std::endl;
+	if (params.verbose) 
+	{
+		std::cout << "----- INSTANCE LOADED WITH " << params.nbClients << " CLIENTS AND " << params.nbVehicles << " VEHICLES" << std::endl;
 		std::cout << "----- BUILDING INITIAL POPULATION" << std::endl;
 	}
 	Population population(&params, &split, &localSearch);
 
 	// Genetic algorithm
-	if (verbose) std::cout << "----- STARTING GENETIC ALGORITHM" << std::endl;
+	if (params.verbose) std::cout << "----- STARTING GENETIC ALGORITHM" << std::endl;
 	Genetic solver(&params, &split, &population, &localSearch);
-	solver.run(ap.nbIter, ap.timeLimit);
-	if (verbose)
+	solver.run();
+	if (params.verbose)
 		std::cout << "----- GENETIC ALGORITHM FINISHED, TIME SPENT: " << (double)(clock()-params.startTime)/(double)CLOCKS_PER_SEC << " s" << std::endl;
 
 	return prepare_solution(population, params);
@@ -112,7 +110,7 @@ extern "C" Solution *solve_cvrp(
 			verbose,
 			*ap
 		);
-		result = run_hgs_cvrp(params, *ap);
+		result = run_hgs_cvrp(params);
 	}
 	catch (const std::string &e) { std::cout << "EXCEPTION | " << e << std::endl; }
 	catch (const std::exception &e) { std::cout << "EXCEPTION | " << e.what() << std::endl; }
@@ -158,7 +156,7 @@ extern "C" Solution *solve_cvrp_dist_mtx(
 			verbose,
 			*ap
 		);
-		result = run_hgs_cvrp(params, *ap);
+		result = run_hgs_cvrp(params);
 	}
 	catch (const std::string &e) { std::cout << "EXCEPTION | " << e << std::endl; }
 	catch (const std::exception &e) { std::cout << "EXCEPTION | " << e.what() << std::endl; }

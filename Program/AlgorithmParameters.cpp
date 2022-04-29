@@ -36,6 +36,6 @@ void print_algorithm_parameters(const AlgorithmParameters & ap)
 	std::cout << "---- seed              is set to " << ap.seed << std::endl;
 	std::cout << "---- nbIter            is set to " << ap.nbIter << std::endl;
 	std::cout << "---- timeLimit         is set to " << ap.timeLimit << std::endl;
-	std::cout << "---- useSwapStar       is set to " << static_cast<unsigned>(ap.useSwapStar) << std::endl;
+	std::cout << "---- useSwapStar       is set to " << ap.useSwapStar << std::endl;
 	std::cout << "==================================================" << std::endl;
 }

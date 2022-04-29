@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 		// Genetic algorithm
 		if (verbose) std::cout << "----- STARTING GENETIC ALGORITHM" << std::endl;
 		Genetic solver(&params, &split, &population, &localSearch);
-		solver.run(commandline.ap.nbIter, commandline.ap.timeLimit);
+		solver.run();
 		if (verbose) std::cout << "----- GENETIC ALGORITHM FINISHED, TIME SPENT: " << (double)(clock()-params.startTime)/(double)CLOCKS_PER_SEC << std::endl;
 
 		// Exporting the best solution

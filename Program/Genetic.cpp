@@ -1,9 +1,9 @@
 #include "Genetic.h"
 
-void Genetic::run(int maxIterNonProd, double timeLimit)
+void Genetic::run()
 {	
 	int nbIterNonProd = 1;
-	for (int nbIter = 0 ; nbIterNonProd <= maxIterNonProd && (timeLimit == 0 || (double)(clock()-params->startTime)/(double)CLOCKS_PER_SEC < timeLimit) ; nbIter++)
+	for (int nbIter = 0 ; nbIterNonProd <= params->ap.nbIter && (params->ap.timeLimit == 0 || (double)(clock()-params->startTime)/(double)CLOCKS_PER_SEC < params->ap.timeLimit) ; nbIter++)
 	{	
 		/* SELECTION AND CROSSOVER */
 		crossoverOX(offspring, population->getBinaryTournament(),population->getBinaryTournament());
@@ -26,7 +26,7 @@ void Genetic::run(int maxIterNonProd, double timeLimit)
 		if (nbIter % 500 == 0) population->printState(nbIter, nbIterNonProd);
 
 		/* FOR TESTS INVOLVING SUCCESSIVE RUNS UNTIL A TIME LIMIT: WE RESET THE ALGORITHM/POPULATION EACH TIME maxIterNonProd IS ATTAINED*/
-		if (timeLimit != 0 && nbIterNonProd == maxIterNonProd)
+		if (params->ap.timeLimit != 0 && nbIterNonProd == params->ap.nbIter)
 		{
 			population->restart();
 			nbIterNonProd = 1;
