@@ -13,10 +13,10 @@ void Genetic::run()
 		/* LOCAL SEARCH */
 		localSearch.run(offspring, params.penaltyCapacity, params.penaltyDuration);
 		bool isNewBest = population.addIndividual(offspring,true);
-		if (!offspring.isFeasible && std::rand()%2 == 0) // Repair half of the solutions in case of infeasibility
+		if (!offspring.eval.isFeasible && std::rand()%2 == 0) // Repair half of the solutions in case of infeasibility
 		{
 			localSearch.run(offspring, params.penaltyCapacity*10., params.penaltyDuration*10.);
-			if (offspring.isFeasible) isNewBest = (population.addIndividual(offspring,false) || isNewBest);
+			if (offspring.eval.isFeasible) isNewBest = (population.addIndividual(offspring,false) || isNewBest);
 		}
 
 		/* TRACKING THE NUMBER OF ITERATIONS SINCE LAST SOLUTION IMPROVEMENT */
@@ -70,7 +70,7 @@ void Genetic::crossoverOX(Individual & result, const Individual & parent1, const
 	}
 
 	// Complete the individual with the Split algorithm
-	split.generalSplit(result, parent1.myCostSol.nbRoutes);
+	split.generalSplit(result, parent1.eval.nbRoutes);
 }
 
 Genetic::Genetic(Params & params) : 

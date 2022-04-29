@@ -2,7 +2,7 @@
 
 void Individual::evaluateCompleteCost()
 {
-	myCostSol = CostSol();
+	eval = EvalIndiv();
 	for (int r = 0; r < params.nbVehicles; r++)
 	{
 		if (!chromR[r].empty())
@@ -21,15 +21,15 @@ void Individual::evaluateCompleteCost()
 			}
 			successors[chromR[r][chromR[r].size()-1]] = 0;
 			distance += params.timeCost[chromR[r][chromR[r].size()-1]][0];
-			myCostSol.distance += distance;
-			myCostSol.nbRoutes++;
-			if (load > params.vehicleCapacity) myCostSol.capacityExcess += load - params.vehicleCapacity;
-			if (distance + service > params.durationLimit) myCostSol.durationExcess += distance + service - params.durationLimit;
+			eval.distance += distance;
+			eval.nbRoutes++;
+			if (load > params.vehicleCapacity) eval.capacityExcess += load - params.vehicleCapacity;
+			if (distance + service > params.durationLimit) eval.durationExcess += distance + service - params.durationLimit;
 		}
 	}
 
-	myCostSol.penalizedCost = myCostSol.distance + myCostSol.capacityExcess*params.penaltyCapacity + myCostSol.durationExcess*params.penaltyDuration;
-	isFeasible = (myCostSol.capacityExcess < MY_EPSILON && myCostSol.durationExcess < MY_EPSILON);
+	eval.penalizedCost = eval.distance + eval.capacityExcess*params.penaltyCapacity + eval.durationExcess*params.penaltyDuration;
+	eval.isFeasible = (eval.capacityExcess < MY_EPSILON && eval.durationExcess < MY_EPSILON);
 }
 
 void Individual::removeProximity(Individual * indiv)
@@ -65,7 +65,7 @@ double Individual::averageBrokenPairsDistanceClosest(int nbClosest)
 
 void Individual::exportCVRPLibFormat(std::string fileName)
 {
-	if (params.verbose) std::cout << "----- WRITING SOLUTION WITH VALUE " << myCostSol.penalizedCost << " IN : " << fileName << std::endl;
+	if (params.verbose) std::cout << "----- WRITING SOLUTION WITH VALUE " << eval.penalizedCost << " IN : " << fileName << std::endl;
 	std::ofstream myfile(fileName);
 	if (myfile.is_open())
 	{
@@ -78,7 +78,7 @@ void Individual::exportCVRPLibFormat(std::string fileName)
 				myfile << std::endl;
 			}
 		}
-		myfile << "Cost " << myCostSol.penalizedCost << std::endl;
+		myfile << "Cost " << eval.penalizedCost << std::endl;
 		myfile << "Time " << (double)(clock()-params.startTime)/(double)CLOCKS_PER_SEC << std::endl;
 	}
 	else std::cout << "----- IMPOSSIBLE TO OPEN: " << fileName << std::endl;
@@ -117,13 +117,12 @@ bool Individual::readCVRPLibFormat(std::string fileName, std::vector<std::vector
 
 Individual& Individual::operator=(const Individual & indiv)
 {
-	myCostSol = indiv.myCostSol;
+	eval = indiv.eval;
 	chromT = indiv.chromT;
 	chromR = indiv.chromR;
 	successors = indiv.successors;
 	predecessors = indiv.predecessors;
 	indivsPerProximity = indiv.indivsPerProximity;
-	isFeasible = indiv.isFeasible;
 	biasedFitness = indiv.biasedFitness;
 	return *this;
 }
@@ -140,5 +139,5 @@ Individual::Individual(const Params & params, bool generate) : params(params)
 		std::random_shuffle(chromT.begin(), chromT.end());
 	}
 	else
-		myCostSol.penalizedCost = 1.e30;
+		eval.penalizedCost = 1.e30;
 }

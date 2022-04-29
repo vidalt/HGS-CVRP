@@ -22,7 +22,7 @@ Solution *prepare_solution(Population &population, Params &params)
 		auto best = population.getBestFound();
 
 		// setting the cost
-		sol->cost = best->myCostSol.penalizedCost;
+		sol->cost = best->eval.penalizedCost;
 
 		// finding out the number of routes in the best individual
 		int n_routes = 0;

@@ -9,10 +9,10 @@ void Population::generatePopulation()
 		split.generalSplit(randomIndiv, params.nbVehicles);
 		localSearch.run(randomIndiv, params.penaltyCapacity, params.penaltyDuration);
 		addIndividual(randomIndiv, true);
-		if (!randomIndiv.isFeasible && std::rand() % 2 == 0)  // Repair half of the solutions in case of infeasibility
+		if (!randomIndiv.eval.isFeasible && std::rand() % 2 == 0)  // Repair half of the solutions in case of infeasibility
 		{
 			localSearch.run(randomIndiv, params.penaltyCapacity*10., params.penaltyDuration*10.);
-			if (randomIndiv.isFeasible) addIndividual(randomIndiv, false);
+			if (randomIndiv.eval.isFeasible) addIndividual(randomIndiv, false);
 		}
 	}
 }
@@ -21,14 +21,14 @@ bool Population::addIndividual(const Individual & indiv, bool updateFeasible)
 {
 	if (updateFeasible)
 	{
-		listFeasibilityLoad.push_back(indiv.myCostSol.capacityExcess < MY_EPSILON);
-		listFeasibilityDuration.push_back(indiv.myCostSol.durationExcess < MY_EPSILON);
+		listFeasibilityLoad.push_back(indiv.eval.capacityExcess < MY_EPSILON);
+		listFeasibilityDuration.push_back(indiv.eval.durationExcess < MY_EPSILON);
 		listFeasibilityLoad.pop_front();
 		listFeasibilityDuration.pop_front();
 	}
 
 	// Find the adequate subpopulation in relation to the individual feasibility
-	SubPopulation & subpop = (indiv.isFeasible) ? feasibleSubpopulation : infeasibleSubpopulation;
+	SubPopulation & subpop = (indiv.eval.isFeasible) ? feasibleSubpopulation : infeasibleSubpopulation;
 
 	// Create a copy of the individual and updade the proximity structures calculating inter-individual distances
 	Individual * myIndividual = new Individual(indiv);
@@ -41,7 +41,7 @@ bool Population::addIndividual(const Individual & indiv, bool updateFeasible)
 
 	// Identify the correct location in the population and insert the individual
 	int place = (int)subpop.size();
-	while (place > 0 && subpop[place - 1]->myCostSol.penalizedCost > indiv.myCostSol.penalizedCost - MY_EPSILON) place--;
+	while (place > 0 && subpop[place - 1]->eval.penalizedCost > indiv.eval.penalizedCost - MY_EPSILON) place--;
 	subpop.emplace(subpop.begin() + place, myIndividual);
 
 	// Trigger a survivor selection if the maximimum population size is exceeded
@@ -50,13 +50,13 @@ bool Population::addIndividual(const Individual & indiv, bool updateFeasible)
 			removeWorstBiasedFitness(subpop);
 
 	// Track best solution
-	if (indiv.isFeasible && indiv.myCostSol.penalizedCost < bestSolutionRestart.myCostSol.penalizedCost - MY_EPSILON)
+	if (indiv.eval.isFeasible && indiv.eval.penalizedCost < bestSolutionRestart.eval.penalizedCost - MY_EPSILON)
 	{
 		bestSolutionRestart = indiv;
-		if (indiv.myCostSol.penalizedCost < bestSolutionOverall.myCostSol.penalizedCost - MY_EPSILON)
+		if (indiv.eval.penalizedCost < bestSolutionOverall.eval.penalizedCost - MY_EPSILON)
 		{
 			bestSolutionOverall = indiv;
-			searchProgress.push_back({ clock() - params.startTime , bestSolutionOverall.myCostSol.penalizedCost });
+			searchProgress.push_back({ clock() - params.startTime , bestSolutionOverall.eval.penalizedCost });
 		}
 		return true;
 	}
@@ -140,16 +140,16 @@ void Population::managePenalties()
 
 	// Update the evaluations
 	for (int i = 0; i < (int)infeasibleSubpopulation.size(); i++)
-		infeasibleSubpopulation[i]->myCostSol.penalizedCost = infeasibleSubpopulation[i]->myCostSol.distance
-		+ params.penaltyCapacity * infeasibleSubpopulation[i]->myCostSol.capacityExcess
-		+ params.penaltyDuration * infeasibleSubpopulation[i]->myCostSol.durationExcess;
+		infeasibleSubpopulation[i]->eval.penalizedCost = infeasibleSubpopulation[i]->eval.distance
+		+ params.penaltyCapacity * infeasibleSubpopulation[i]->eval.capacityExcess
+		+ params.penaltyDuration * infeasibleSubpopulation[i]->eval.durationExcess;
 
 	// If needed, reorder the individuals in the infeasible subpopulation since the penalty values have changed (simple bubble sort for the sake of simplicity)
 	for (int i = 0; i < (int)infeasibleSubpopulation.size(); i++)
 	{
 		for (int j = 0; j < (int)infeasibleSubpopulation.size() - i - 1; j++)
 		{
-			if (infeasibleSubpopulation[j]->myCostSol.penalizedCost > infeasibleSubpopulation[j + 1]->myCostSol.penalizedCost + MY_EPSILON)
+			if (infeasibleSubpopulation[j]->eval.penalizedCost > infeasibleSubpopulation[j + 1]->eval.penalizedCost + MY_EPSILON)
 			{
 				Individual * indiv = infeasibleSubpopulation[j];
 				infeasibleSubpopulation[j] = infeasibleSubpopulation[j + 1];
@@ -193,7 +193,7 @@ Individual * Population::getBestInfeasible ()
 
 Individual * Population::getBestFound()
 {
-	if (bestSolutionOverall.myCostSol.penalizedCost < 1.e29) return &bestSolutionOverall;
+	if (bestSolutionOverall.eval.penalizedCost < 1.e29) return &bestSolutionOverall;
 	else return NULL;
 }
 
@@ -203,10 +203,10 @@ void Population::printState(int nbIter, int nbIterNoImprovement)
 	{
 		std::printf("It %6d %6d | T(s) %.2f", nbIter, nbIterNoImprovement, (double)(clock()-params.startTime)/(double)CLOCKS_PER_SEC);
 
-		if (getBestFeasible() != NULL) std::printf(" | Feas %zu %.2f %.2f", feasibleSubpopulation.size(), getBestFeasible()->myCostSol.penalizedCost, getAverageCost(feasibleSubpopulation));
+		if (getBestFeasible() != NULL) std::printf(" | Feas %zu %.2f %.2f", feasibleSubpopulation.size(), getBestFeasible()->eval.penalizedCost, getAverageCost(feasibleSubpopulation));
 		else std::printf(" | NO-FEASIBLE");
 
-		if (getBestInfeasible() != NULL) std::printf(" | Inf %zu %.2f %.2f", infeasibleSubpopulation.size(), getBestInfeasible()->myCostSol.penalizedCost, getAverageCost(infeasibleSubpopulation));
+		if (getBestInfeasible() != NULL) std::printf(" | Inf %zu %.2f %.2f", infeasibleSubpopulation.size(), getBestInfeasible()->eval.penalizedCost, getAverageCost(infeasibleSubpopulation));
 		else std::printf(" | NO-INFEASIBLE");
 
 		std::printf(" | Div %.2f %.2f", getDiversity(feasibleSubpopulation), getDiversity(infeasibleSubpopulation));
@@ -229,7 +229,7 @@ double Population::getAverageCost(const SubPopulation & pop)
 {
 	double average = 0.;
 	int size = std::min<int>(params.ap.mu, pop.size()); // Only monitoring the "mu" better solutions to avoid too much noise in the measurements
-	for (int i = 0; i < size; i++) average += pop[i]->myCostSol.penalizedCost;
+	for (int i = 0; i < size; i++) average += pop[i]->eval.penalizedCost;
 	if (size > 0) return average / (double)size;
 	else return -1.0;
 }
@@ -240,9 +240,9 @@ void Population::exportBKS(std::string fileName)
 	std::vector<std::vector<int>> readSolution;
 	if (params.verbose) std::cout << "----- CHECKING FOR POSSIBLE BKS UPDATE" << std::endl;
 	bool readOK = Individual::readCVRPLibFormat(fileName, readSolution, readCost);
-	if (bestSolutionOverall.myCostSol.penalizedCost < 1.e29 && (!readOK || bestSolutionOverall.myCostSol.penalizedCost < readCost - MY_EPSILON))
+	if (bestSolutionOverall.eval.penalizedCost < 1.e29 && (!readOK || bestSolutionOverall.eval.penalizedCost < readCost - MY_EPSILON))
 	{
-		if (params.verbose) std::cout << "----- NEW BKS: " << bestSolutionOverall.myCostSol.penalizedCost << " !!!" << std::endl;
+		if (params.verbose) std::cout << "----- NEW BKS: " << bestSolutionOverall.eval.penalizedCost << " !!!" << std::endl;
 		bestSolutionOverall.exportCVRPLibFormat(fileName);
 	}
 }

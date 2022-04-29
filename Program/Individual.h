@@ -25,14 +25,14 @@ SOFTWARE.*/
 
 #include "Params.h"
 
-struct CostSol
+struct EvalIndiv
 {
-	double penalizedCost;		// Penalized cost of the solution
-	int nbRoutes;				// Number of routes
-	double distance;			// Total distance
-	double capacityExcess;		// Sum of excess load in all routes
-	double durationExcess;		// Sum of excess duration in all routes
-	CostSol() { penalizedCost = 0.; nbRoutes = 0; distance = 0.; capacityExcess = 0.; durationExcess = 0.; }
+	double penalizedCost = 0.;		// Penalized cost of the solution
+	int nbRoutes = 0;				// Number of routes
+	double distance = 0.;			// Total distance
+	double capacityExcess = 0.;		// Sum of excess load in all routes
+	double durationExcess = 0.;		// Sum of excess duration in all routes
+	bool isFeasible = false;		// Feasibility status of the individual
 };
 
 class Individual
@@ -40,13 +40,12 @@ class Individual
 public:
 
   const Params & params ;													// Problem parameters
-  CostSol myCostSol;														// Solution cost parameters
+  EvalIndiv eval;															// Solution cost parameters
   std::vector < int > chromT ;												// Giant tour representing the individual
   std::vector < std::vector <int> > chromR ;								// For each vehicle, the associated sequence of deliveries (complete solution)
   std::vector < int > successors ;											// For each node, the successor in the solution (can be the depot 0)
   std::vector < int > predecessors ;										// For each node, the predecessor in the solution (can be the depot 0)
   std::multiset < std::pair < double, Individual* > > indivsPerProximity ;	// The other individuals in the population, ordered by increasing proximity (the set container follows a natural ordering based on the first value of the pair)
-  bool isFeasible;															// Feasibility status of the individual
   double biasedFitness;														// Biased fitness of the solution
 
   // Measuring cost of a solution from the information of chromR
