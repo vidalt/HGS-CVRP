@@ -3,7 +3,6 @@
 //
 
 #include "AlgorithmParameters.h"
-#include <cfloat>
 #include <iostream>
 
 extern "C"
@@ -19,7 +18,7 @@ struct AlgorithmParameters default_algorithm_parameters() {
 
 	ap.seed = 0;
 	ap.nbIter = 20000;
-	ap.timeLimit = DBL_MAX;
+	ap.timeLimit = 0;
 	ap.useSwapStar = 1;
 
 	return ap;
