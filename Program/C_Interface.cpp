@@ -13,9 +13,8 @@
 
 Solution *prepare_solution(Population &population, Params &params)
 {
-
 	// Preparing the best solution
-	auto *sol = new Solution;
+	Solution *sol = new Solution;
 	sol->time = (double)(clock() - params.startTime) / (double)CLOCKS_PER_SEC;
 
 	if (population.getBestFound() != nullptr) {
@@ -166,9 +165,6 @@ extern "C" Solution *solve_cvrp_dist_mtx(
 
 	return result;
 }
-
-
-
 
 extern "C" void delete_solution(Solution *sol)
 {
