@@ -48,8 +48,6 @@ Params::Params(
 			cli[i].coordX = 0.0;
 			cli[i].coordY = 0.0;
 			cli[i].polarAngle = 0.0;
-			if (verbose)
-				std::cout << "----- NO COORDINATES HAVE BEEN PROVIDED, SWAP* NEIGHBORHOOD IS DEACTIVATED BY DEFAULT" << std::endl;
 		}
 
 		cli[i].serviceDuration = service_time[i];
@@ -57,6 +55,9 @@ Params::Params(
 		if (cli[i].demand > maxDemand) maxDemand = cli[i].demand;
 		totalDemand += cli[i].demand;
 	}
+
+	if (verbose && ap.useSwapStar == 1 && !areCoordinatesProvided)
+		std::cout << "----- NO COORDINATES HAVE BEEN PROVIDED, SWAP* NEIGHBORHOOD WILL BE DEACTIVATED BY DEFAULT" << std::endl;
 
 	// Default initialization if the number of vehicles has not been provided by the user
 	if (nbVehicles == INT_MAX)
