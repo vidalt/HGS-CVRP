@@ -2,6 +2,7 @@
 
 void Population::generatePopulation()
 {
+	if (params->verbose) std::cout << "----- BUILDING INITIAL POPULATION" << std::endl;
 	for (int i = 0; i < 4*params->ap.mu && (i == 0 || params->ap.timeLimit == 0 || (double)(clock() - params->startTime) / (double)CLOCKS_PER_SEC < params->ap.timeLimit) ; i++)
 	{
 		Individual * randomIndiv = new Individual(params);
