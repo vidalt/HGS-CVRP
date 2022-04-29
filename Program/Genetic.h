@@ -30,7 +30,7 @@ class Genetic
 {
 private:
 
-	Params * params;				// Problem parameters
+	Params & params;				// Problem parameters
 	Split split;					// Split algorithm
 	LocalSearch localSearch;		// Local Search structure
 
@@ -40,13 +40,13 @@ public:
 	Individual offspring;			// First individual to be used as input for the crossover
 
 	// OX Crossover
-	void crossoverOX(Individual * result, const Individual * parent1, const Individual * parent2);
+	void crossoverOX(Individual & result, const Individual & parent1, const Individual & parent2);
 
     // Running the genetic algorithm until maxIterNonProd consecutive iterations or a time limit
     void run() ;
 
 	// Constructor
-	Genetic(Params * params);
+	Genetic(Params & params);
 
 	// Destructor
 	~Genetic(void);

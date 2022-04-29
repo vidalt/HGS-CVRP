@@ -89,7 +89,7 @@ extern "C" Solution *solve_cvrp(
 		);
 
 		// Running HGS  and returning the result
-		Genetic solver(&params);
+		Genetic solver(params);
 		solver.run();
 		result = prepare_solution(solver.population, params);
 	}
@@ -139,7 +139,7 @@ extern "C" Solution *solve_cvrp_dist_mtx(
 		);
 		
 		// Running HGS  and returning the result
-		Genetic solver(&params);
+		Genetic solver(params);
 		solver.run();
 		result = prepare_solution(solver.population, params);
 	}

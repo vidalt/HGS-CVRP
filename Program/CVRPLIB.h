@@ -15,8 +15,8 @@ public:
 	std::vector< std::vector<double> > dist_mtx;
 	std::vector<double> service_time;
 	std::vector<double> demands;
-	double durationLimit = 1.e30;									// Route duration limit
-	double vehicleCapacity = 1.e30;									// Capacity limit
+	double durationLimit = 1.e30;							// Route duration limit
+	double vehicleCapacity = 1.e30;							// Capacity limit
 	bool isDurationConstraint = false;						// Indicates if the problem includes duration constraints
 	int nbClients ;											// Number of clients (excluding the depot)
 

@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 		);
 
 		// Running HGS
-		Genetic solver(&params);
+		Genetic solver(params);
 		solver.run();
 		
 		// Exporting the best solution

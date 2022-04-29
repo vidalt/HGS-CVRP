@@ -2,16 +2,16 @@
 
 void Population::generatePopulation()
 {
-	if (params->verbose) std::cout << "----- BUILDING INITIAL POPULATION" << std::endl;
-	for (int i = 0; i < 4*params->ap.mu && (i == 0 || params->ap.timeLimit == 0 || (double)(clock() - params->startTime) / (double)CLOCKS_PER_SEC < params->ap.timeLimit) ; i++)
+	if (params.verbose) std::cout << "----- BUILDING INITIAL POPULATION" << std::endl;
+	for (int i = 0; i < 4*params.ap.mu && (i == 0 || params.ap.timeLimit == 0 || (double)(clock() - params.startTime) / (double)CLOCKS_PER_SEC < params.ap.timeLimit) ; i++)
 	{
-		Individual * randomIndiv = new Individual(params);
-		split->generalSplit(randomIndiv, params->nbVehicles);
-		localSearch->run(randomIndiv, params->penaltyCapacity, params->penaltyDuration);
+		Individual * randomIndiv = new Individual(&params);
+		split.generalSplit(randomIndiv, params.nbVehicles);
+		localSearch.run(randomIndiv, params.penaltyCapacity, params.penaltyDuration);
 		addIndividual(randomIndiv, true);
 		if (!randomIndiv->isFeasible && std::rand() % 2 == 0)  // Repair half of the solutions in case of infeasibility
 		{
-			localSearch->run(randomIndiv, params->penaltyCapacity*10., params->penaltyDuration*10.);
+			localSearch.run(randomIndiv, params.penaltyCapacity*10., params.penaltyDuration*10.);
 			if (randomIndiv->isFeasible) addIndividual(randomIndiv, false);
 		}
 		delete randomIndiv;
@@ -46,8 +46,8 @@ bool Population::addIndividual(const Individual * indiv, bool updateFeasible)
 	subpop.emplace(subpop.begin() + place, myIndividual);
 
 	// Trigger a survivor selection if the maximimum population size is exceeded
-	if ((int)subpop.size() > params->ap.mu + params->ap.lambda)
-		while ((int)subpop.size() > params->ap.mu)
+	if ((int)subpop.size() > params.ap.mu + params.ap.lambda)
+		while ((int)subpop.size() > params.ap.mu)
 			removeWorstBiasedFitness(subpop);
 
 	// Track best solution
@@ -57,7 +57,7 @@ bool Population::addIndividual(const Individual * indiv, bool updateFeasible)
 		if (indiv->myCostSol.penalizedCost < bestSolutionOverall.myCostSol.penalizedCost - MY_EPSILON)
 		{
 			bestSolutionOverall = *indiv;
-			searchProgress.push_back({ clock() - params->startTime , bestSolutionOverall.myCostSol.penalizedCost });
+			searchProgress.push_back({ clock() - params.startTime , bestSolutionOverall.myCostSol.penalizedCost });
 		}
 		return true;
 	}
@@ -70,7 +70,7 @@ void Population::updateBiasedFitnesses(SubPopulation & pop)
 	// Ranking the individuals based on their diversity contribution (decreasing order of distance)
 	std::vector <std::pair <double, int> > ranking;
 	for (int i = 0 ; i < (int)pop.size(); i++) 
-		ranking.push_back({-pop[i]->averageBrokenPairsDistanceClosest(params->ap.nbClose),i});
+		ranking.push_back({-pop[i]->averageBrokenPairsDistanceClosest(params.ap.nbClose),i});
 	std::sort(ranking.begin(), ranking.end());
 
 	// Updating the biased fitness values
@@ -82,10 +82,10 @@ void Population::updateBiasedFitnesses(SubPopulation & pop)
 		{
 			double divRank = (double)i / (double)(pop.size() - 1); // Ranking from 0 to 1
 			double fitRank = (double)ranking[i].second / (double)(pop.size() - 1);
-			if ((int)pop.size() <= params->ap.nbElite) // Elite individuals cannot be smaller than population size
+			if ((int)pop.size() <= params.ap.nbElite) // Elite individuals cannot be smaller than population size
 				pop[ranking[i].second]->biasedFitness = fitRank;
 			else 
-				pop[ranking[i].second]->biasedFitness = fitRank + (1.0 - (double)params->ap.nbElite / (double)pop.size()) * divRank;
+				pop[ranking[i].second]->biasedFitness = fitRank + (1.0 - (double)params.ap.nbElite / (double)pop.size()) * divRank;
 		}
 	}
 }
@@ -118,7 +118,7 @@ void Population::removeWorstBiasedFitness(SubPopulation & pop)
 
 void Population::restart()
 {
-	if (params->verbose) std::cout << "----- RESET: CREATING A NEW POPULATION -----" << std::endl;
+	if (params.verbose) std::cout << "----- RESET: CREATING A NEW POPULATION -----" << std::endl;
 	for (Individual * indiv : feasibleSubpopulation) delete indiv ;
 	for (Individual * indiv : infeasibleSubpopulation) delete indiv;
 	feasibleSubpopulation.clear();
@@ -131,19 +131,19 @@ void Population::managePenalties()
 {
 	// Setting some bounds [0.1,1000] to the penalty values for safety
 	double fractionFeasibleLoad = (double)std::count(listFeasibilityLoad.begin(), listFeasibilityLoad.end(), true) / (double)listFeasibilityLoad.size();
-	if (fractionFeasibleLoad < params->ap.targetFeasible - 0.05 && params->penaltyCapacity < 100000.) params->penaltyCapacity = std::min<double>(params->penaltyCapacity * 1.2,100000.);
-	else if (fractionFeasibleLoad > params->ap.targetFeasible + 0.05 && params->penaltyCapacity > 0.1) params->penaltyCapacity = std::max<double>(params->penaltyCapacity * 0.85, 0.1);
+	if (fractionFeasibleLoad < params.ap.targetFeasible - 0.05 && params.penaltyCapacity < 100000.) params.penaltyCapacity = std::min<double>(params.penaltyCapacity * 1.2,100000.);
+	else if (fractionFeasibleLoad > params.ap.targetFeasible + 0.05 && params.penaltyCapacity > 0.1) params.penaltyCapacity = std::max<double>(params.penaltyCapacity * 0.85, 0.1);
 
 	// Setting some bounds [0.1,1000] to the penalty values for safety
 	double fractionFeasibleDuration = (double)std::count(listFeasibilityDuration.begin(), listFeasibilityDuration.end(), true) / (double)listFeasibilityDuration.size();
-	if (fractionFeasibleDuration < params->ap.targetFeasible - 0.05 && params->penaltyDuration < 100000.)	params->penaltyDuration = std::min<double>(params->penaltyDuration * 1.2,100000.);
-	else if (fractionFeasibleDuration > params->ap.targetFeasible + 0.05 && params->penaltyDuration > 0.1) params->penaltyDuration = std::max<double>(params->penaltyDuration * 0.85, 0.1);
+	if (fractionFeasibleDuration < params.ap.targetFeasible - 0.05 && params.penaltyDuration < 100000.)	params.penaltyDuration = std::min<double>(params.penaltyDuration * 1.2,100000.);
+	else if (fractionFeasibleDuration > params.ap.targetFeasible + 0.05 && params.penaltyDuration > 0.1) params.penaltyDuration = std::max<double>(params.penaltyDuration * 0.85, 0.1);
 
 	// Update the evaluations
 	for (int i = 0; i < (int)infeasibleSubpopulation.size(); i++)
 		infeasibleSubpopulation[i]->myCostSol.penalizedCost = infeasibleSubpopulation[i]->myCostSol.distance
-		+ params->penaltyCapacity * infeasibleSubpopulation[i]->myCostSol.capacityExcess
-		+ params->penaltyDuration * infeasibleSubpopulation[i]->myCostSol.durationExcess;
+		+ params.penaltyCapacity * infeasibleSubpopulation[i]->myCostSol.capacityExcess
+		+ params.penaltyDuration * infeasibleSubpopulation[i]->myCostSol.durationExcess;
 
 	// If needed, reorder the individuals in the infeasible subpopulation since the penalty values have changed (simple bubble sort for the sake of simplicity)
 	for (int i = 0; i < (int)infeasibleSubpopulation.size(); i++)
@@ -200,9 +200,9 @@ Individual * Population::getBestFound()
 
 void Population::printState(int nbIter, int nbIterNoImprovement)
 {
-	if (params->verbose)
+	if (params.verbose)
 	{
-		std::printf("It %6d %6d | T(s) %.2f", nbIter, nbIterNoImprovement, (double)(clock()-params->startTime)/(double)CLOCKS_PER_SEC);
+		std::printf("It %6d %6d | T(s) %.2f", nbIter, nbIterNoImprovement, (double)(clock()-params.startTime)/(double)CLOCKS_PER_SEC);
 
 		if (getBestFeasible() != NULL) std::printf(" | Feas %zu %.2f %.2f", feasibleSubpopulation.size(), getBestFeasible()->myCostSol.penalizedCost, getAverageCost(feasibleSubpopulation));
 		else std::printf(" | NO-FEASIBLE");
@@ -212,7 +212,7 @@ void Population::printState(int nbIter, int nbIterNoImprovement)
 
 		std::printf(" | Div %.2f %.2f", getDiversity(feasibleSubpopulation), getDiversity(infeasibleSubpopulation));
 		std::printf(" | Feas %.2f %.2f", (double)std::count(listFeasibilityLoad.begin(), listFeasibilityLoad.end(), true) / (double)listFeasibilityLoad.size(), (double)std::count(listFeasibilityDuration.begin(), listFeasibilityDuration.end(), true) / (double)listFeasibilityDuration.size());
-		std::printf(" | Pen %.2f %.2f", params->penaltyCapacity, params->penaltyDuration);
+		std::printf(" | Pen %.2f %.2f", params.penaltyCapacity, params.penaltyDuration);
 		std::cout << std::endl;
 	}
 }
@@ -220,7 +220,7 @@ void Population::printState(int nbIter, int nbIterNoImprovement)
 double Population::getDiversity(const SubPopulation & pop)
 {
 	double average = 0.;
-	int size = std::min<int>(params->ap.mu, pop.size()); // Only monitoring the "mu" better solutions to avoid too much noise in the measurements
+	int size = std::min<int>(params.ap.mu, pop.size()); // Only monitoring the "mu" better solutions to avoid too much noise in the measurements
 	for (int i = 0; i < size; i++) average += pop[i]->averageBrokenPairsDistanceClosest(size);
 	if (size > 0) return average / (double)size;
 	else return -1.0;
@@ -229,7 +229,7 @@ double Population::getDiversity(const SubPopulation & pop)
 double Population::getAverageCost(const SubPopulation & pop)
 {
 	double average = 0.;
-	int size = std::min<int>(params->ap.mu, pop.size()); // Only monitoring the "mu" better solutions to avoid too much noise in the measurements
+	int size = std::min<int>(params.ap.mu, pop.size()); // Only monitoring the "mu" better solutions to avoid too much noise in the measurements
 	for (int i = 0; i < size; i++) average += pop[i]->myCostSol.penalizedCost;
 	if (size > 0) return average / (double)size;
 	else return -1.0;
@@ -239,11 +239,11 @@ void Population::exportBKS(std::string fileName)
 {
 	double readCost;
 	std::vector<std::vector<int>> readSolution;
-	if (params->verbose) std::cout << "----- CHECKING FOR POSSIBLE BKS UPDATE" << std::endl;
+	if (params.verbose) std::cout << "----- CHECKING FOR POSSIBLE BKS UPDATE" << std::endl;
 	bool readOK = Individual::readCVRPLibFormat(fileName, readSolution, readCost);
 	if (bestSolutionOverall.myCostSol.penalizedCost < 1.e29 && (!readOK || bestSolutionOverall.myCostSol.penalizedCost < readCost - MY_EPSILON))
 	{
-		if (params->verbose) std::cout << "----- NEW BKS: " << bestSolutionOverall.myCostSol.penalizedCost << " !!!" << std::endl;
+		if (params.verbose) std::cout << "----- NEW BKS: " << bestSolutionOverall.myCostSol.penalizedCost << " !!!" << std::endl;
 		bestSolutionOverall.exportCVRPLibFormat(fileName);
 	}
 }
@@ -255,7 +255,7 @@ void Population::exportSearchProgress(std::string fileName, std::string instance
 		myfile << instanceName << ";" << seedRNG << ";" << state.second << ";" << (double)state.first / (double)CLOCKS_PER_SEC << std::endl;
 }
 
-Population::Population(Params * params, Split * split, LocalSearch * localSearch) : params(params), split(split), localSearch(localSearch)
+Population::Population(Params & params, Split & split, LocalSearch & localSearch) : params(params), split(split), localSearch(localSearch)
 {
 	listFeasibilityLoad = std::list<bool>(100, true);
 	listFeasibilityDuration = std::list<bool>(100, true);
