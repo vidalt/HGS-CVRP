@@ -2,7 +2,7 @@
 
 void Population::generatePopulation()
 {
-	for (int i = 0; i < 4*params->ap.mu; i++)
+	for (int i = 0; i < 4*params->ap.mu && (i == 0 || params->ap.timeLimit == 0 || (double)(clock() - params->startTime) / (double)CLOCKS_PER_SEC < params->ap.timeLimit) ; i++)
 	{
 		Individual * randomIndiv = new Individual(params);
 		split->generalSplit(randomIndiv, params->nbVehicles);
