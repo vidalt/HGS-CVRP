@@ -101,15 +101,15 @@ class Split
  }
 
   // Split for unlimited fleet
-  int splitSimple(Individual * indiv);
+  int splitSimple(Individual & indiv);
 
   // Split for limited fleet
-  int splitLF(Individual * indiv);
+  int splitLF(Individual & indiv);
 
 public:
 
   // General Split function (tests the unlimited fleet, and only if it does not produce a feasible solution, runs the Split algorithm for limited fleet)
-  void generalSplit(Individual * indiv, int nbMaxVehicles);
+  void generalSplit(Individual & indiv, int nbMaxVehicles);
 
   // Constructor
   Split(Params & params);

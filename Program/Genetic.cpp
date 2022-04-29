@@ -11,11 +11,11 @@ void Genetic::run()
 		crossoverOX(offspring, *population.getBinaryTournament(),*population.getBinaryTournament());
 
 		/* LOCAL SEARCH */
-		localSearch.run(&offspring, params.penaltyCapacity, params.penaltyDuration);
+		localSearch.run(offspring, params.penaltyCapacity, params.penaltyDuration);
 		bool isNewBest = population.addIndividual(&offspring,true);
 		if (!offspring.isFeasible && std::rand()%2 == 0) // Repair half of the solutions in case of infeasibility
 		{
-			localSearch.run(&offspring, params.penaltyCapacity*10., params.penaltyDuration*10.);
+			localSearch.run(offspring, params.penaltyCapacity*10., params.penaltyDuration*10.);
 			if (offspring.isFeasible) isNewBest = (population.addIndividual(&offspring,false) || isNewBest);
 		}
 
@@ -70,7 +70,7 @@ void Genetic::crossoverOX(Individual & result, const Individual & parent1, const
 	}
 
 	// Complete the individual with the Split algorithm
-	split.generalSplit(&result, parent1.myCostSol.nbRoutes);
+	split.generalSplit(result, parent1.myCostSol.nbRoutes);
 }
 
 Genetic::Genetic(Params & params) : 

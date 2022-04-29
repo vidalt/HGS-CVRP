@@ -6,12 +6,12 @@ void Population::generatePopulation()
 	for (int i = 0; i < 4*params.ap.mu && (i == 0 || params.ap.timeLimit == 0 || (double)(clock() - params.startTime) / (double)CLOCKS_PER_SEC < params.ap.timeLimit) ; i++)
 	{
 		Individual * randomIndiv = new Individual(&params);
-		split.generalSplit(randomIndiv, params.nbVehicles);
-		localSearch.run(randomIndiv, params.penaltyCapacity, params.penaltyDuration);
+		split.generalSplit(*randomIndiv, params.nbVehicles);
+		localSearch.run(*randomIndiv, params.penaltyCapacity, params.penaltyDuration);
 		addIndividual(randomIndiv, true);
 		if (!randomIndiv->isFeasible && std::rand() % 2 == 0)  // Repair half of the solutions in case of infeasibility
 		{
-			localSearch.run(randomIndiv, params.penaltyCapacity*10., params.penaltyDuration*10.);
+			localSearch.run(*randomIndiv, params.penaltyCapacity*10., params.penaltyDuration*10.);
 			if (randomIndiv->isFeasible) addIndividual(randomIndiv, false);
 		}
 		delete randomIndiv;

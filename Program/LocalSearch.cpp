@@ -1,6 +1,6 @@
 #include "LocalSearch.h" 
 
-void LocalSearch::run(Individual * indiv, double penaltyCapacityLS, double penaltyDurationLS)
+void LocalSearch::run(Individual & indiv, double penaltyCapacityLS, double penaltyDurationLS)
 {
 	this->penaltyCapacityLS = penaltyCapacityLS;
 	this->penaltyDurationLS = penaltyDurationLS;
@@ -716,7 +716,7 @@ void LocalSearch::updateRouteData(Route * myRoute)
 	}
 }
 
-void LocalSearch::loadIndividual(Individual * indiv)
+void LocalSearch::loadIndividual(const Individual & indiv)
 {
 	emptyRoutes.clear();
 	nbMoves = 0; 
@@ -727,16 +727,16 @@ void LocalSearch::loadIndividual(Individual * indiv)
 		Route * myRoute = &routes[r];
 		myDepot->prev = myDepotFin;
 		myDepotFin->next = myDepot;
-		if (!indiv->chromR[r].empty())
+		if (!indiv.chromR[r].empty())
 		{
-			Node * myClient = &clients[indiv->chromR[r][0]];
+			Node * myClient = &clients[indiv.chromR[r][0]];
 			myClient->route = myRoute;
 			myClient->prev = myDepot;
 			myDepot->next = myClient;
-			for (int i = 1; i < (int)indiv->chromR[r].size(); i++)
+			for (int i = 1; i < (int)indiv.chromR[r].size(); i++)
 			{
 				Node * myClientPred = myClient;
-				myClient = &clients[indiv->chromR[r][i]]; 
+				myClient = &clients[indiv.chromR[r][i]]; 
 				myClient->prev = myClientPred;
 				myClientPred->next = myClient;
 				myClient->route = myRoute;
@@ -759,7 +759,7 @@ void LocalSearch::loadIndividual(Individual * indiv)
 		clients[i].whenLastTestedRI = -1;
 }
 
-void LocalSearch::exportIndividual(Individual * indiv)
+void LocalSearch::exportIndividual(Individual & indiv)
 {
 	std::vector < std::pair <double, int> > routePolarAngles ;
 	for (int r = 0; r < params.nbVehicles; r++)
@@ -769,18 +769,18 @@ void LocalSearch::exportIndividual(Individual * indiv)
 	int pos = 0;
 	for (int r = 0; r < params.nbVehicles; r++)
 	{
-		indiv->chromR[r].clear();
+		indiv.chromR[r].clear();
 		Node * node = depots[routePolarAngles[r].second].next;
 		while (!node->isDepot)
 		{
-			indiv->chromT[pos] = node->cour;
-			indiv->chromR[r].push_back(node->cour);
+			indiv.chromT[pos] = node->cour;
+			indiv.chromR[r].push_back(node->cour);
 			node = node->next;
 			pos++;
 		}
 	}
 
-	indiv->evaluateCompleteCost();
+	indiv.evaluateCompleteCost();
 }
 
 LocalSearch::LocalSearch(Params & params) : params (params)

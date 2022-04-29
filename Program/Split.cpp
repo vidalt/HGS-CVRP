@@ -1,6 +1,6 @@
 #include "Split.h" 
 
-void Split::generalSplit(Individual * indiv, int nbMaxVehicles)
+void Split::generalSplit(Individual & indiv, int nbMaxVehicles)
 {
 	// Do not apply Split with fewer vehicles than the trivial (LP) bin packing bound
 	maxVehicles = std::max<int>(nbMaxVehicles, std::ceil(params.totalDemand/params.vehicleCapacity));
@@ -9,11 +9,11 @@ void Split::generalSplit(Individual * indiv, int nbMaxVehicles)
 	// Direct application of the code located at https://github.com/vidalt/Split-Library
 	for (int i = 1; i <= params.nbClients; i++)
 	{
-		cliSplit[i].demand = params.cli[indiv->chromT[i - 1]].demand;
-		cliSplit[i].serviceTime = params.cli[indiv->chromT[i - 1]].serviceDuration;
-		cliSplit[i].d0_x = params.timeCost[0][indiv->chromT[i - 1]];
-		cliSplit[i].dx_0 = params.timeCost[indiv->chromT[i - 1]][0];
-		if (i < params.nbClients) cliSplit[i].dnext = params.timeCost[indiv->chromT[i - 1]][indiv->chromT[i]];
+		cliSplit[i].demand = params.cli[indiv.chromT[i - 1]].demand;
+		cliSplit[i].serviceTime = params.cli[indiv.chromT[i - 1]].serviceDuration;
+		cliSplit[i].d0_x = params.timeCost[0][indiv.chromT[i - 1]];
+		cliSplit[i].dx_0 = params.timeCost[indiv.chromT[i - 1]][0];
+		if (i < params.nbClients) cliSplit[i].dnext = params.timeCost[indiv.chromT[i - 1]][indiv.chromT[i]];
 		else cliSplit[i].dnext = -1.e30;
 		sumLoad[i] = sumLoad[i - 1] + cliSplit[i].demand;
 		sumService[i] = sumService[i - 1] + cliSplit[i].serviceTime;
@@ -25,10 +25,10 @@ void Split::generalSplit(Individual * indiv, int nbMaxVehicles)
 		splitLF(indiv);
 
 	// Build up the rest of the Individual structure
-	indiv->evaluateCompleteCost();
+	indiv.evaluateCompleteCost();
 }
 
-int Split::splitSimple(Individual * indiv)
+int Split::splitSimple(Individual & indiv)
 {
 	// Reinitialize the potential structures
 	potential[0][0] = 0;
@@ -92,15 +92,15 @@ int Split::splitSimple(Individual * indiv)
 
 	// Filling the chromR structure
 	for (int k = params.nbVehicles - 1; k >= maxVehicles; k--)
-		indiv->chromR[k].clear();
+		indiv.chromR[k].clear();
 
 	int end = params.nbClients;
 	for (int k = maxVehicles - 1; k >= 0; k--)
 	{
-		indiv->chromR[k].clear();
+		indiv.chromR[k].clear();
 		int begin = pred[0][end];
 		for (int ii = begin; ii < end; ii++)
-			indiv->chromR[k].push_back(indiv->chromT[ii]);
+			indiv.chromR[k].push_back(indiv.chromT[ii]);
 		end = begin;
 	}
 
@@ -109,7 +109,7 @@ int Split::splitSimple(Individual * indiv)
 }
 
 // Split for problems with limited fleet
-int Split::splitLF(Individual * indiv)
+int Split::splitLF(Individual & indiv)
 {
 	// Initialize the potential structures
 	potential[0][0] = 0;
@@ -193,15 +193,15 @@ int Split::splitLF(Individual * indiv)
 
 	// Filling the chromR structure
 	for (int k = params.nbVehicles-1; k >= nbRoutes ; k--)
-		indiv->chromR[k].clear();
+		indiv.chromR[k].clear();
 
 	int end = params.nbClients;
 	for (int k = nbRoutes - 1; k >= 0; k--)
 	{
-		indiv->chromR[k].clear();
+		indiv.chromR[k].clear();
 		int begin = pred[k+1][end];
 		for (int ii = begin; ii < end; ii++)
-			indiv->chromR[k].push_back(indiv->chromT[ii]);
+			indiv.chromR[k].push_back(indiv.chromT[ii]);
 		end = begin;
 	}
 

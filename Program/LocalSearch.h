@@ -178,13 +178,13 @@ private:
 	public:
 
 	// Run the local search with the specified penalty values
-	void run(Individual * indiv, double penaltyCapacityLS, double penaltyDurationLS);
+	void run(Individual & indiv, double penaltyCapacityLS, double penaltyDurationLS);
 
 	// Loading an initial solution into the local search
-	void loadIndividual(Individual * indiv);
+	void loadIndividual(const Individual & indiv);
 
 	// Exporting the LS solution into an individual and calculating the penalized cost according to the original penalty weights from Params
-	void exportIndividual(Individual * indiv);
+	void exportIndividual(Individual & indiv);
 
 	// Constructor
 	LocalSearch(Params & params);
