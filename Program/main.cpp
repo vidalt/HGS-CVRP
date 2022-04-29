@@ -33,21 +33,16 @@ int main(int argc, char *argv[])
 			commandline.ap
 		);
 
-		// Initializing the different building blocks of the HGS algorithm
-		Split split(&params);
-		LocalSearch localSearch(&params);
-		Population population(&params, &split, &localSearch);
-		Genetic solver(&params, &split, &population, &localSearch);
-
-		// Running the algorithm
+		// Running HGS
+		Genetic solver(&params);
 		solver.run();
 		
 		// Exporting the best solution
-		if (population.getBestFound() != NULL)
+		if (solver.population.getBestFound() != NULL)
 		{
-			population.getBestFound()->exportCVRPLibFormat(commandline.pathSolution);
-			population.exportSearchProgress(commandline.pathSolution + ".PG.csv", commandline.pathInstance, commandline.ap.seed);
-			if (commandline.pathBKS != "") population.exportBKS(commandline.pathBKS);
+			solver.population.getBestFound()->exportCVRPLibFormat(commandline.pathSolution);
+			solver.population.exportSearchProgress(commandline.pathSolution + ".PG.csv", commandline.pathInstance, commandline.ap.seed);
+			if (commandline.pathBKS != "") solver.population.exportBKS(commandline.pathBKS);
 		}
 	}
 	catch (const string& e) { std::cout << "EXCEPTION | " << e << std::endl; }

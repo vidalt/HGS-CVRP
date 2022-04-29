@@ -8,15 +8,15 @@ void Genetic::run()
 	for (nbIter = 0 ; nbIterNonProd <= params->ap.nbIter && (params->ap.timeLimit == 0 || (double)(clock()-params->startTime)/(double)CLOCKS_PER_SEC < params->ap.timeLimit) ; nbIter++)
 	{	
 		/* SELECTION AND CROSSOVER */
-		crossoverOX(offspring, population->getBinaryTournament(),population->getBinaryTournament());
+		crossoverOX(&offspring, population.getBinaryTournament(),population.getBinaryTournament());
 
 		/* LOCAL SEARCH */
-		localSearch->run(offspring, params->penaltyCapacity, params->penaltyDuration);
-		bool isNewBest = population->addIndividual(offspring,true);
-		if (!offspring->isFeasible && std::rand()%2 == 0) // Repair half of the solutions in case of infeasibility
+		localSearch.run(&offspring, params->penaltyCapacity, params->penaltyDuration);
+		bool isNewBest = population.addIndividual(&offspring,true);
+		if (!offspring.isFeasible && std::rand()%2 == 0) // Repair half of the solutions in case of infeasibility
 		{
-			localSearch->run(offspring, params->penaltyCapacity*10., params->penaltyDuration*10.);
-			if (offspring->isFeasible) isNewBest = (population->addIndividual(offspring,false) || isNewBest);
+			localSearch.run(&offspring, params->penaltyCapacity*10., params->penaltyDuration*10.);
+			if (offspring.isFeasible) isNewBest = (population.addIndividual(&offspring,false) || isNewBest);
 		}
 
 		/* TRACKING THE NUMBER OF ITERATIONS SINCE LAST SOLUTION IMPROVEMENT */
@@ -24,17 +24,17 @@ void Genetic::run()
 		else nbIterNonProd ++ ;
 
 		/* DIVERSIFICATION, PENALTY MANAGEMENT AND TRACES */
-		if (nbIter % 100 == 0) population->managePenalties() ;
-		if (nbIter % 500 == 0) population->printState(nbIter, nbIterNonProd);
+		if (nbIter % 100 == 0) population.managePenalties() ;
+		if (nbIter % 500 == 0) population.printState(nbIter, nbIterNonProd);
 
 		/* FOR TESTS INVOLVING SUCCESSIVE RUNS UNTIL A TIME LIMIT: WE RESET THE ALGORITHM/POPULATION EACH TIME maxIterNonProd IS ATTAINED*/
 		if (params->ap.timeLimit != 0 && nbIterNonProd == params->ap.nbIter)
 		{
-			population->restart();
+			population.restart();
 			nbIterNonProd = 1;
 		}
 	}
-	if (params->verbose) std::cout << "----- GENETIC ALGORITHM FINISHED AFTER " << nbIter << " iterations. TIME SPENT: " << (double)(clock() - params->startTime) / (double)CLOCKS_PER_SEC << std::endl;
+	if (params->verbose) std::cout << "----- GENETIC ALGORITHM FINISHED AFTER " << nbIter << " ITERATIONS. TIME SPENT: " << (double)(clock() - params->startTime) / (double)CLOCKS_PER_SEC << std::endl;
 }
 
 void Genetic::crossoverOX(Individual * result, const Individual * parent1, const Individual * parent2)
@@ -68,15 +68,14 @@ void Genetic::crossoverOX(Individual * result, const Individual * parent1, const
 	}
 
 	// Completing the individual with the Split algorithm
-	split->generalSplit(result, parent1->myCostSol.nbRoutes);
+	split.generalSplit(result, parent1->myCostSol.nbRoutes);
 }
 
-Genetic::Genetic(Params * params, Split * split, Population * population, LocalSearch * localSearch) : params(params), split(split), population(population), localSearch(localSearch)
-{
-	offspring = new Individual(params);
-}
+Genetic::Genetic(Params * params) : 
+	params(params), 
+	split(params),
+	localSearch(params),
+	population(params,&this->split,&this->localSearch),
+	offspring(params){}
 
-Genetic::~Genetic(void)
-{ 
-	delete offspring ;
-}
+Genetic::~Genetic(void){}

@@ -26,7 +26,7 @@ Solution *prepare_solution(Population &population, Params &params)
 
 		// finding out the number of routes in the best individual
 		int n_routes = 0;
-		for (int k = 0; k < best->params->nbVehicles; k++)
+		for (int k = 0; k < params.nbVehicles; k++)
 			if (!best->chromR[k].empty()) ++n_routes;
 
 		// filling out the route information
@@ -88,15 +88,10 @@ extern "C" Solution *solve_cvrp(
 			*ap
 		);
 
-		// Initializing the different building blocks of the HGS algorithm
-		Split split(&params);
-		LocalSearch localSearch(&params);
-		Population population(&params, &split, &localSearch);
-		Genetic solver(&params, &split, &population, &localSearch);
-
-		// Running the algorithm and returning the result
+		// Running HGS  and returning the result
+		Genetic solver(&params);
 		solver.run();
-		result = prepare_solution(population, params);
+		result = prepare_solution(solver.population, params);
 	}
 	catch (const std::string &e) { std::cout << "EXCEPTION | " << e << std::endl; }
 	catch (const std::exception &e) { std::cout << "EXCEPTION | " << e.what() << std::endl; }
@@ -143,15 +138,10 @@ extern "C" Solution *solve_cvrp_dist_mtx(
 			*ap
 		);
 		
-		// Initializing the different building blocks of the HGS algorithm
-		Split split(&params);
-		LocalSearch localSearch(&params);
-		Population population(&params, &split, &localSearch);
-		Genetic solver(&params, &split, &population, &localSearch);
-
-		// Running the algorithm and returning the result
+		// Running HGS  and returning the result
+		Genetic solver(&params);
 		solver.run();
-		result = prepare_solution(population, params);
+		result = prepare_solution(solver.population, params);
 	}
 	catch (const std::string &e) { std::cout << "EXCEPTION | " << e << std::endl; }
 	catch (const std::exception &e) { std::cout << "EXCEPTION | " << e.what() << std::endl; }
