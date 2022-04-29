@@ -8,15 +8,15 @@ void Genetic::run()
 	for (nbIter = 0 ; nbIterNonProd <= params.ap.nbIter && (params.ap.timeLimit == 0 || (double)(clock()-params.startTime)/(double)CLOCKS_PER_SEC < params.ap.timeLimit) ; nbIter++)
 	{	
 		/* SELECTION AND CROSSOVER */
-		crossoverOX(offspring, *population.getBinaryTournament(),*population.getBinaryTournament());
+		crossoverOX(offspring, population.getBinaryTournament(),population.getBinaryTournament());
 
 		/* LOCAL SEARCH */
 		localSearch.run(offspring, params.penaltyCapacity, params.penaltyDuration);
-		bool isNewBest = population.addIndividual(&offspring,true);
+		bool isNewBest = population.addIndividual(offspring,true);
 		if (!offspring.isFeasible && std::rand()%2 == 0) // Repair half of the solutions in case of infeasibility
 		{
 			localSearch.run(offspring, params.penaltyCapacity*10., params.penaltyDuration*10.);
-			if (offspring.isFeasible) isNewBest = (population.addIndividual(&offspring,false) || isNewBest);
+			if (offspring.isFeasible) isNewBest = (population.addIndividual(offspring,false) || isNewBest);
 		}
 
 		/* TRACKING THE NUMBER OF ITERATIONS SINCE LAST SOLUTION IMPROVEMENT */
@@ -78,6 +78,6 @@ Genetic::Genetic(Params & params) :
 	split(params),
 	localSearch(params),
 	population(params,this->split,this->localSearch),
-	offspring(&params){}
+	offspring(params,true){}
 
 Genetic::~Genetic(void){}

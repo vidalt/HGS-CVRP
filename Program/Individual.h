@@ -25,13 +25,11 @@ SOFTWARE.*/
 
 #include "Params.h"
 
-class Individual;
-
 struct CostSol
 {
 	double penalizedCost;		// Penalized cost of the solution
 	int nbRoutes;				// Number of routes
-	double distance;			// Total Distance
+	double distance;			// Total distance
 	double capacityExcess;		// Sum of excess load in all routes
 	double durationExcess;		// Sum of excess duration in all routes
 	CostSol() { penalizedCost = 0.; nbRoutes = 0; distance = 0.; capacityExcess = 0.; durationExcess = 0.; }
@@ -41,7 +39,7 @@ class Individual
 {
 public:
 
-  Params * params ;															// Problem parameters
+  const Params & params ;													// Problem parameters
   CostSol myCostSol;														// Solution cost parameters
   std::vector < int > chromT ;												// Giant tour representing the individual
   std::vector < std::vector <int> > chromR ;								// For each vehicle, the associated sequence of deliveries (complete solution)
@@ -58,7 +56,7 @@ public:
   void removeProximity(Individual * indiv);
 
   // Distance measure with another individual
-  double brokenPairsDistance(Individual * indiv2);
+  double brokenPairsDistance(const Individual & indiv2);
 
   // Returns the average distance of this individual with the nbClosest individuals
   double averageBrokenPairsDistanceClosest(int nbClosest) ;
@@ -69,10 +67,10 @@ public:
   // Reads a solution in CVRPLib format, returns TRUE if the process worked, or FALSE if the file does not exist or is not readable
   static bool readCVRPLibFormat(std::string fileName, std::vector<std::vector<int>> & readSolution, double & readCost);
 
-  // Constructor: random individual
-  Individual(Params * params);
+  // Constructor: random individual if generate = true, empty individual if generate = false
+  Individual(const Params & params, bool generate);
 
-  // Constructor: empty individual
-  Individual();
+  // Custom copy constructor
+  Individual& operator=(const Individual & indiv);
 };
 #endif

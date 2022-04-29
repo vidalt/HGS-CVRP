@@ -5,44 +5,43 @@ void Population::generatePopulation()
 	if (params.verbose) std::cout << "----- BUILDING INITIAL POPULATION" << std::endl;
 	for (int i = 0; i < 4*params.ap.mu && (i == 0 || params.ap.timeLimit == 0 || (double)(clock() - params.startTime) / (double)CLOCKS_PER_SEC < params.ap.timeLimit) ; i++)
 	{
-		Individual * randomIndiv = new Individual(&params);
-		split.generalSplit(*randomIndiv, params.nbVehicles);
-		localSearch.run(*randomIndiv, params.penaltyCapacity, params.penaltyDuration);
+		Individual randomIndiv(params,true);
+		split.generalSplit(randomIndiv, params.nbVehicles);
+		localSearch.run(randomIndiv, params.penaltyCapacity, params.penaltyDuration);
 		addIndividual(randomIndiv, true);
-		if (!randomIndiv->isFeasible && std::rand() % 2 == 0)  // Repair half of the solutions in case of infeasibility
+		if (!randomIndiv.isFeasible && std::rand() % 2 == 0)  // Repair half of the solutions in case of infeasibility
 		{
-			localSearch.run(*randomIndiv, params.penaltyCapacity*10., params.penaltyDuration*10.);
-			if (randomIndiv->isFeasible) addIndividual(randomIndiv, false);
+			localSearch.run(randomIndiv, params.penaltyCapacity*10., params.penaltyDuration*10.);
+			if (randomIndiv.isFeasible) addIndividual(randomIndiv, false);
 		}
-		delete randomIndiv;
 	}
 }
 
-bool Population::addIndividual(const Individual * indiv, bool updateFeasible)
+bool Population::addIndividual(const Individual & indiv, bool updateFeasible)
 {
 	if (updateFeasible)
 	{
-		listFeasibilityLoad.push_back(indiv->myCostSol.capacityExcess < MY_EPSILON);
-		listFeasibilityDuration.push_back(indiv->myCostSol.durationExcess < MY_EPSILON);
+		listFeasibilityLoad.push_back(indiv.myCostSol.capacityExcess < MY_EPSILON);
+		listFeasibilityDuration.push_back(indiv.myCostSol.durationExcess < MY_EPSILON);
 		listFeasibilityLoad.pop_front();
 		listFeasibilityDuration.pop_front();
 	}
 
 	// Find the adequate subpopulation in relation to the individual feasibility
-	SubPopulation & subpop = (indiv->isFeasible) ? feasibleSubpopulation : infeasibleSubpopulation;
+	SubPopulation & subpop = (indiv.isFeasible) ? feasibleSubpopulation : infeasibleSubpopulation;
 
 	// Create a copy of the individual and updade the proximity structures calculating inter-individual distances
-	Individual * myIndividual = new Individual(*indiv);
+	Individual * myIndividual = new Individual(indiv);
 	for (Individual * myIndividual2 : subpop)
 	{
-		double myDistance = myIndividual->brokenPairsDistance(myIndividual2);
+		double myDistance = myIndividual->brokenPairsDistance(*myIndividual2);
 		myIndividual2->indivsPerProximity.insert({ myDistance, myIndividual });
 		myIndividual->indivsPerProximity.insert({ myDistance, myIndividual2 });
 	}
 
 	// Identify the correct location in the population and insert the individual
 	int place = (int)subpop.size();
-	while (place > 0 && subpop[place - 1]->myCostSol.penalizedCost > indiv->myCostSol.penalizedCost - MY_EPSILON) place--;
+	while (place > 0 && subpop[place - 1]->myCostSol.penalizedCost > indiv.myCostSol.penalizedCost - MY_EPSILON) place--;
 	subpop.emplace(subpop.begin() + place, myIndividual);
 
 	// Trigger a survivor selection if the maximimum population size is exceeded
@@ -51,12 +50,12 @@ bool Population::addIndividual(const Individual * indiv, bool updateFeasible)
 			removeWorstBiasedFitness(subpop);
 
 	// Track best solution
-	if (indiv->isFeasible && indiv->myCostSol.penalizedCost < bestSolutionRestart.myCostSol.penalizedCost - MY_EPSILON)
+	if (indiv.isFeasible && indiv.myCostSol.penalizedCost < bestSolutionRestart.myCostSol.penalizedCost - MY_EPSILON)
 	{
-		bestSolutionRestart = *indiv;
-		if (indiv->myCostSol.penalizedCost < bestSolutionOverall.myCostSol.penalizedCost - MY_EPSILON)
+		bestSolutionRestart = indiv;
+		if (indiv.myCostSol.penalizedCost < bestSolutionOverall.myCostSol.penalizedCost - MY_EPSILON)
 		{
-			bestSolutionOverall = *indiv;
+			bestSolutionOverall = indiv;
 			searchProgress.push_back({ clock() - params.startTime , bestSolutionOverall.myCostSol.penalizedCost });
 		}
 		return true;
@@ -123,7 +122,7 @@ void Population::restart()
 	for (Individual * indiv : infeasibleSubpopulation) delete indiv;
 	feasibleSubpopulation.clear();
 	infeasibleSubpopulation.clear();
-	bestSolutionRestart = Individual();
+	bestSolutionRestart = Individual(params,false);
 	generatePopulation();
 }
 
@@ -160,7 +159,7 @@ void Population::managePenalties()
 	}
 }
 
-Individual * Population::getBinaryTournament ()
+const Individual & Population::getBinaryTournament ()
 {
 	Individual * individual1 ;
 	Individual * individual2 ;
@@ -176,8 +175,8 @@ Individual * Population::getBinaryTournament ()
 	if (place2 >= (int)feasibleSubpopulation.size()) individual2 = infeasibleSubpopulation[place2 - feasibleSubpopulation.size()] ;
 	else individual2 = feasibleSubpopulation[place2] ;
 
-	if (individual1->biasedFitness < individual2->biasedFitness) return individual1 ;
-	else return individual2 ;		
+	if (individual1->biasedFitness < individual2->biasedFitness) return *individual1 ;
+	else return *individual2 ;		
 }
 
 Individual * Population::getBestFeasible ()
@@ -255,7 +254,7 @@ void Population::exportSearchProgress(std::string fileName, std::string instance
 		myfile << instanceName << ";" << seedRNG << ";" << state.second << ";" << (double)state.first / (double)CLOCKS_PER_SEC << std::endl;
 }
 
-Population::Population(Params & params, Split & split, LocalSearch & localSearch) : params(params), split(split), localSearch(localSearch)
+Population::Population(Params & params, Split & split, LocalSearch & localSearch) : params(params), split(split), localSearch(localSearch), bestSolutionRestart(params,false), bestSolutionOverall(params, false)
 {
 	listFeasibilityLoad = std::list<bool>(100, true);
 	listFeasibilityDuration = std::list<bool>(100, true);

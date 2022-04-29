@@ -209,7 +209,7 @@ int Split::splitLF(Individual & indiv)
 	return (end == 0);
 }
 
-Split::Split(Params & params): params(params)
+Split::Split(const Params & params): params(params)
 {
 	// Structures of the linear Split
 	cliSplit = std::vector <ClientSplit>(params.nbClients + 1);
