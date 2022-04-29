@@ -28,14 +28,11 @@ SOFTWARE.*/
 
 class Genetic
 {
-private:
+public:
 
 	Params & params;				// Problem parameters
 	Split split;					// Split algorithm
 	LocalSearch localSearch;		// Local Search structure
-
-public:
-
 	Population population;			// Population (public for now to give access to the solutions, but should be be improved later on)
 	Individual offspring;			// First individual to be used as input for the crossover
 
@@ -47,9 +44,6 @@ public:
 
 	// Constructor
 	Genetic(Params & params);
-
-	// Destructor
-	~Genetic(void);
 };
 
 #endif

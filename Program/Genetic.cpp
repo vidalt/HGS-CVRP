@@ -80,4 +80,3 @@ Genetic::Genetic(Params & params) :
 	population(params,this->split,this->localSearch),
 	offspring(params,true){}
 
-Genetic::~Genetic(void){}
