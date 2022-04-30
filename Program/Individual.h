@@ -59,9 +59,6 @@ public:
   // Exports a solution in CVRPLib format (adds a final line with the computational time)
   void exportCVRPLibFormat(std::string fileName);
 
-  // Reads a solution in CVRPLib format, returns TRUE if the process worked, or FALSE if the file does not exist or is not readable
-  static bool readCVRPLibFormat(std::string fileName, std::vector<std::vector<int>> & readSolution, double & readCost);
-
   // Constructor: random individual if generate = true, empty individual if generate = false
   Individual(const Params & params, bool generate);
 };

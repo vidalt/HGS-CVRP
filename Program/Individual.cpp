@@ -71,37 +71,6 @@ void Individual::exportCVRPLibFormat(std::string fileName)
 	else std::cout << "----- IMPOSSIBLE TO OPEN: " << fileName << std::endl;
 }
 
-bool Individual::readCVRPLibFormat(std::string fileName, std::vector<std::vector<int>> & readSolution, double & readCost)
-{
-	readSolution.clear();
-	std::ifstream inputFile(fileName);
-	if (inputFile.is_open())
-	{
-		std::string inputString;
-		inputFile >> inputString;
-		// Loops as long as the first line keyword is "Route"
-		for (int r = 0; inputString == "Route" ; r++) 
-		{
-			readSolution.push_back(std::vector<int>());
-			inputFile >> inputString;
-			getline(inputFile, inputString);
-			std::stringstream ss(inputString);
-			int inputCustomer;
-			while (ss >> inputCustomer) // Loops as long as there is an integer to read
-				readSolution[r].push_back(inputCustomer);
-			inputFile >> inputString;
-		}
-		if (inputString == "Cost")
-		{
-			inputFile >> readCost;
-			return true;
-		}
-		else std::cout << "----- UNEXPECTED WORD IN SOLUTION FORMAT: " << inputString << std::endl;
-	}
-	else std::cout << "----- IMPOSSIBLE TO OPEN: " << fileName << std::endl;
-	return false;
-}
-
 Individual::Individual(const Params & params, bool generate)
 {
 	if (generate)

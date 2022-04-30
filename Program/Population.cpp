@@ -245,19 +245,6 @@ double Population::getAverageCost(const SubPopulation & pop)
 	else return -1.0;
 }
 
-void Population::exportBKS(std::string fileName)
-{
-	double readCost;
-	std::vector<std::vector<int>> readSolution;
-	if (params.verbose) std::cout << "----- CHECKING FOR POSSIBLE BKS UPDATE" << std::endl;
-	bool readOK = Individual::readCVRPLibFormat(fileName, readSolution, readCost);
-	if (bestSolutionOverall.eval.penalizedCost < 1.e29 && (!readOK || bestSolutionOverall.eval.penalizedCost < readCost - MY_EPSILON))
-	{
-		if (params.verbose) std::cout << "WRITING NEW BKS !!! WITH VALUE " << bestSolutionOverall.eval.penalizedCost << " IN " << fileName << std::endl;
-		bestSolutionOverall.exportCVRPLibFormat(fileName);
-	}
-}
-
 void Population::exportSearchProgress(std::string fileName, std::string instanceName, int seedRNG)
 {
 	std::ofstream myfile(fileName);

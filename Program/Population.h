@@ -89,9 +89,6 @@ class Population
    // Returns the average solution value among the 50% best individuals in the subpopulation
    double getAverageCost(const SubPopulation & pop);
 
-   // Overwrites a solution written in a file if the current solution is better
-   void exportBKS(std::string fileName);
-
    // Exports in a file the history of solution improvements
    void exportSearchProgress(std::string fileName, std::string instanceName, int seedRNG);
 
