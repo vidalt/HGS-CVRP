@@ -50,15 +50,6 @@ public:
   // Measuring cost and feasibility of an Individual from the information of chromR (needs chromR filled and access to Params)
   void evaluateCompleteCost(const Params & params);
 
-  // Removing an individual in the structure of proximity
-  void removeProximity(Individual * indiv);
-
-  // Returns the average distance of this individual with the nbClosest individuals
-  double averageBrokenPairsDistanceClosest(int nbClosest) ;
-
-  // Exports a solution in CVRPLib format (adds a final line with the computational time)
-  void exportCVRPLibFormat(std::string fileName);
-
   // Constructor: random individual if generate = true, empty individual if generate = false
   Individual(const Params & params, bool generate);
 };

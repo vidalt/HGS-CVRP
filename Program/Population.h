@@ -69,19 +69,22 @@ class Population
    const Individual & getBinaryTournament();
 
    // Accesses the best feasible individual
-   Individual * getBestFeasible();
+   const Individual * getBestFeasible();
 
    // Accesses the best infeasible individual
-   Individual * getBestInfeasible();
+   const Individual * getBestInfeasible();
 
    // Accesses the best found solution at all time
-   Individual * getBestFound();
+   const Individual * getBestFound();
 
    // Prints population state
    void printState(int nbIter, int nbIterNoImprovement);
 
    // Distance measure between two individuals, used for diversity calculations
    double brokenPairsDistance(const Individual & indiv1, const Individual & indiv2);
+
+   // Returns the average broken pairs distance of this individual with the nbClosest individuals in the population
+   double averageBrokenPairsDistanceClosest(const Individual & indiv, int nbClosest);
 
    // Returns the average diversity value among the 50% best individuals in the subpopulation
    double getDiversity(const SubPopulation & pop);
@@ -90,7 +93,10 @@ class Population
    double getAverageCost(const SubPopulation & pop);
 
    // Exports in a file the history of solution improvements
-   void exportSearchProgress(std::string fileName, std::string instanceName, int seedRNG);
+   void exportSearchProgress(std::string fileName, std::string instanceName);
+
+   // Exports an Individual in CVRPLib format
+   void exportCVRPLibFormat(const Individual & indiv, std::string fileName);
 
    // Constructor
    Population(Params & params, Split & split, LocalSearch & localSearch);

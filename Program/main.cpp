@@ -19,19 +19,8 @@ int main(int argc, char *argv[])
 		if (commandline.verbose) std::cout << "----- READING INSTANCE: " << commandline.pathInstance << std::endl;
 		CVRPLIB cvrp(commandline.pathInstance, commandline.isRoundingInteger);
 
-		Params params(
-			cvrp.x_coords,
-			cvrp.y_coords,
-			cvrp.dist_mtx,
-			cvrp.service_time,
-			cvrp.demands,
-			cvrp.vehicleCapacity,
-			cvrp.durationLimit,
-			commandline.nbVeh,
-			cvrp.isDurationConstraint,
-			commandline.verbose,
-			commandline.ap
-		);
+		Params params(cvrp.x_coords,cvrp.y_coords,cvrp.dist_mtx,cvrp.service_time,cvrp.demands,
+			          cvrp.vehicleCapacity,cvrp.durationLimit,commandline.nbVeh,cvrp.isDurationConstraint,commandline.verbose,commandline.ap);
 
 		// Running HGS
 		Genetic solver(params);
@@ -41,7 +30,7 @@ int main(int argc, char *argv[])
 		if (solver.population.getBestFound() != NULL)
 		{
 			if (params.verbose) std::cout << "----- WRITING BEST SOLUTION IN : " << commandline.pathSolution << std::endl;
-			solver.population.getBestFound()->exportCVRPLibFormat(commandline.pathSolution);
+			solver.population.exportCVRPLibFormat(*solver.population.getBestFound(),commandline.pathSolution);
 			solver.population.exportSearchProgress(commandline.pathSolution + ".PG.csv", commandline.pathInstance, commandline.ap.seed);
 		}
 	}

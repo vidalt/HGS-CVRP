@@ -39,12 +39,12 @@ bool Population::addIndividual(const Individual & indiv, bool updateFeasible)
 		myIndividual->indivsPerProximity.insert({ myDistance, myIndividual2 });
 	}
 
-	// Identify the correct location in the population and insert the individual
+	// Identify the correct location in the subpopulation and insert the individual
 	int place = (int)subpop.size();
 	while (place > 0 && subpop[place - 1]->eval.penalizedCost > indiv.eval.penalizedCost - MY_EPSILON) place--;
 	subpop.emplace(subpop.begin() + place, myIndividual);
 
-	// Trigger a survivor selection if the maximimum population size is exceeded
+	// Trigger a survivor selection if the maximimum subpopulation size is exceeded
 	if ((int)subpop.size() > params.ap.mu + params.ap.lambda)
 		while ((int)subpop.size() > params.ap.mu)
 			removeWorstBiasedFitness(subpop);
@@ -52,7 +52,7 @@ bool Population::addIndividual(const Individual & indiv, bool updateFeasible)
 	// Track best solution
 	if (indiv.eval.isFeasible && indiv.eval.penalizedCost < bestSolutionRestart.eval.penalizedCost - MY_EPSILON)
 	{
-		bestSolutionRestart = indiv;
+		bestSolutionRestart = indiv; // Copy
 		if (indiv.eval.penalizedCost < bestSolutionOverall.eval.penalizedCost - MY_EPSILON)
 		{
 			bestSolutionOverall = indiv;
@@ -69,7 +69,7 @@ void Population::updateBiasedFitnesses(SubPopulation & pop)
 	// Ranking the individuals based on their diversity contribution (decreasing order of distance)
 	std::vector <std::pair <double, int> > ranking;
 	for (int i = 0 ; i < (int)pop.size(); i++) 
-		ranking.push_back({-pop[i]->averageBrokenPairsDistanceClosest(params.ap.nbClose),i});
+		ranking.push_back({-averageBrokenPairsDistanceClosest(*pop[i],params.ap.nbClose),i});
 	std::sort(ranking.begin(), ranking.end());
 
 	// Updating the biased fitness values
@@ -100,7 +100,7 @@ void Population::removeWorstBiasedFitness(SubPopulation & pop)
 	double worstIndividualBiasedFitness = -1.e30;
 	for (int i = 1; i < (int)pop.size(); i++)
 	{
-		bool isClone = (pop[i]->averageBrokenPairsDistanceClosest(1) < MY_EPSILON); // A distance equal to 0 indicates that a clone exists
+		bool isClone = (averageBrokenPairsDistanceClosest(*pop[i],1) < MY_EPSILON); // A distance equal to 0 indicates that a clone exists
 		if ((isClone && !isWorstIndividualClone) || (isClone == isWorstIndividualClone && pop[i]->biasedFitness > worstIndividualBiasedFitness))
 		{
 			worstIndividualBiasedFitness = pop[i]->biasedFitness;
@@ -110,9 +110,19 @@ void Population::removeWorstBiasedFitness(SubPopulation & pop)
 		}
 	}
 
-	pop.erase(pop.begin() + worstIndividualPosition); // Removing the individual from the population
-	for (Individual * myIndividual2 : pop) myIndividual2->removeProximity(worstIndividual); // Cleaning its distances from the other individuals in the population
-	delete worstIndividual; // Freeing memory
+	// Removing the individual from the population and freeing memory
+	pop.erase(pop.begin() + worstIndividualPosition); 
+
+	// Cleaning its distances from the other individuals in the population
+	for (Individual * indiv2 : pop)
+	{
+		auto it = indiv2->indivsPerProximity.begin();
+		while (it->second != worstIndividual) ++it;
+		indiv2->indivsPerProximity.erase(it);
+	}
+
+	// Freeing memory
+	delete worstIndividual; 
 }
 
 void Population::restart()
@@ -128,12 +138,12 @@ void Population::restart()
 
 void Population::managePenalties()
 {
-	// Setting some bounds [0.1,1000] to the penalty values for safety
+	// Setting some bounds [0.1,100000] to the penalty values for safety
 	double fractionFeasibleLoad = (double)std::count(listFeasibilityLoad.begin(), listFeasibilityLoad.end(), true) / (double)listFeasibilityLoad.size();
 	if (fractionFeasibleLoad < params.ap.targetFeasible - 0.05 && params.penaltyCapacity < 100000.) params.penaltyCapacity = std::min<double>(params.penaltyCapacity * 1.2,100000.);
 	else if (fractionFeasibleLoad > params.ap.targetFeasible + 0.05 && params.penaltyCapacity > 0.1) params.penaltyCapacity = std::max<double>(params.penaltyCapacity * 0.85, 0.1);
 
-	// Setting some bounds [0.1,1000] to the penalty values for safety
+	// Setting some bounds [0.1,100000] to the penalty values for safety
 	double fractionFeasibleDuration = (double)std::count(listFeasibilityDuration.begin(), listFeasibilityDuration.end(), true) / (double)listFeasibilityDuration.size();
 	if (fractionFeasibleDuration < params.ap.targetFeasible - 0.05 && params.penaltyDuration < 100000.)	params.penaltyDuration = std::min<double>(params.penaltyDuration * 1.2,100000.);
 	else if (fractionFeasibleDuration > params.ap.targetFeasible + 0.05 && params.penaltyDuration > 0.1) params.penaltyDuration = std::max<double>(params.penaltyDuration * 0.85, 0.1);
@@ -179,19 +189,19 @@ const Individual & Population::getBinaryTournament ()
 	else return *individual2 ;		
 }
 
-Individual * Population::getBestFeasible ()
+const Individual * Population::getBestFeasible ()
 {
 	if (!feasibleSubpopulation.empty()) return feasibleSubpopulation[0] ;
 	else return NULL ;
 }
 
-Individual * Population::getBestInfeasible ()
+const Individual * Population::getBestInfeasible ()
 {
 	if (!infeasibleSubpopulation.empty()) return infeasibleSubpopulation[0] ;
 	else return NULL ;
 }
 
-Individual * Population::getBestFound()
+const Individual * Population::getBestFound()
 {
 	if (bestSolutionOverall.eval.penalizedCost < 1.e29) return &bestSolutionOverall;
 	else return NULL;
@@ -227,11 +237,24 @@ double Population::brokenPairsDistance(const Individual & indiv1, const Individu
 	return (double)differences / (double)params.nbClients;
 }
 
+double Population::averageBrokenPairsDistanceClosest(const Individual & indiv, int nbClosest)
+{
+	double result = 0.;
+	int maxSize = std::min<int>(nbClosest, indiv.indivsPerProximity.size());
+	auto it = indiv.indivsPerProximity.begin();
+	for (int i = 0; i < maxSize; i++)
+	{
+		result += it->first;
+		++it;
+	}
+	return result / (double)maxSize;
+}
+
 double Population::getDiversity(const SubPopulation & pop)
 {
 	double average = 0.;
 	int size = std::min<int>(params.ap.mu, pop.size()); // Only monitoring the "mu" better solutions to avoid too much noise in the measurements
-	for (int i = 0; i < size; i++) average += pop[i]->averageBrokenPairsDistanceClosest(size);
+	for (int i = 0; i < size; i++) average += averageBrokenPairsDistanceClosest(*pop[i],size);
 	if (size > 0) return average / (double)size;
 	else return -1.0;
 }
@@ -245,12 +268,32 @@ double Population::getAverageCost(const SubPopulation & pop)
 	else return -1.0;
 }
 
-void Population::exportSearchProgress(std::string fileName, std::string instanceName, int seedRNG)
+void Population::exportSearchProgress(std::string fileName, std::string instanceName)
 {
 	std::ofstream myfile(fileName);
 	for (std::pair<clock_t, double> state : searchProgress)
-		myfile << instanceName << ";" << seedRNG << ";" << state.second << ";" << (double)state.first / (double)CLOCKS_PER_SEC << std::endl;
+		myfile << instanceName << ";" << params.ap.seed << ";" << state.second << ";" << (double)state.first / (double)CLOCKS_PER_SEC << std::endl;
 }
+
+void Population::exportCVRPLibFormat(const Individual & indiv, std::string fileName)
+{
+	std::ofstream myfile(fileName);
+	if (myfile.is_open())
+	{
+		for (int k = 0; k < (int)indiv.chromR.size(); k++)
+		{
+			if (!indiv.chromR[k].empty())
+			{
+				myfile << "Route #" << k + 1 << ":"; // Route IDs start at 1 in the file format
+				for (int i : indiv.chromR[k]) myfile << " " << i;
+				myfile << std::endl;
+			}
+		}
+		myfile << "Cost " << indiv.eval.penalizedCost << std::endl;
+	}
+	else std::cout << "----- IMPOSSIBLE TO OPEN: " << fileName << std::endl;
+}
+
 
 Population::Population(Params & params, Split & split, LocalSearch & localSearch) : params(params), split(split), localSearch(localSearch), bestSolutionRestart(params,false), bestSolutionOverall(params, false)
 {

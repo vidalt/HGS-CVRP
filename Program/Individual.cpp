@@ -32,45 +32,6 @@ void Individual::evaluateCompleteCost(const Params & params)
 	eval.isFeasible = (eval.capacityExcess < MY_EPSILON && eval.durationExcess < MY_EPSILON);
 }
 
-void Individual::removeProximity(Individual * indiv)
-{
-	auto it = indivsPerProximity.begin();
-	while (it->second != indiv) ++it;
-	indivsPerProximity.erase(it);
-}
-
-double Individual::averageBrokenPairsDistanceClosest(int nbClosest) 
-{
-	double result = 0 ;
-	int maxSize = std::min<int>(nbClosest, indivsPerProximity.size());
-	auto it = indivsPerProximity.begin();
-	for (int i=0 ; i < maxSize; i++)
-	{
-		result += it->first ;
-		++it ;
-	}
-	return result/(double)maxSize ;
-}
-
-void Individual::exportCVRPLibFormat(std::string fileName)
-{
-	std::ofstream myfile(fileName);
-	if (myfile.is_open())
-	{
-		for (int k = 0; k < (int)chromR.size() ; k++)
-		{
-			if (!chromR[k].empty())
-			{
-				myfile << "Route #" << k+1 << ":"; // Route IDs start at 1 in the file format
-				for (int i : chromR[k]) myfile << " " << i;
-				myfile << std::endl;
-			}
-		}
-		myfile << "Cost " << eval.penalizedCost << std::endl;
-	}
-	else std::cout << "----- IMPOSSIBLE TO OPEN: " << fileName << std::endl;
-}
-
 Individual::Individual(const Params & params, bool generate)
 {
 	if (generate)
