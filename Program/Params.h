@@ -54,8 +54,8 @@ class Params
 public:
 
 	/* PARAMETERS OF THE GENETIC ALGORITHM */
-	bool verbose;                   // Controls verbose level through the iterations
-	AlgorithmParameters ap;         // Structure containing all the main parameters of the algorithm
+	bool verbose;                       // Controls verbose level through the iterations
+	AlgorithmParameters ap;	            // Main parameters of the HGS algorithm
 
 	/* ADAPTIVE PENALTY COEFFICIENTS */
 	double penaltyCapacity;				// Penalty for one unit of capacity excess (adapted through the search)
