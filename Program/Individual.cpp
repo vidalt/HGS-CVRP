@@ -1,6 +1,6 @@
 #include "Individual.h" 
 
-void Individual::evaluateCompleteCost()
+void Individual::evaluateCompleteCost(const Params & params)
 {
 	eval = EvalIndiv();
 	for (int r = 0; r < params.nbVehicles; r++)
@@ -39,17 +39,6 @@ void Individual::removeProximity(Individual * indiv)
 	indivsPerProximity.erase(it);
 }
 
-double Individual::brokenPairsDistance(const Individual & indiv2)
-{
-	int differences = 0;
-	for (int j = 1; j <= params.nbClients; j++)
-	{
-		if (successors[j] != indiv2.successors[j] && successors[j] != indiv2.predecessors[j]) differences++;
-		if (predecessors[j] == 0 && indiv2.predecessors[j] != 0 && indiv2.successors[j] != 0) differences++;
-	}
-	return (double)differences/(double)params.nbClients;
-}
-
 double Individual::averageBrokenPairsDistanceClosest(int nbClosest) 
 {
 	double result = 0 ;
@@ -65,11 +54,10 @@ double Individual::averageBrokenPairsDistanceClosest(int nbClosest)
 
 void Individual::exportCVRPLibFormat(std::string fileName)
 {
-	if (params.verbose) std::cout << "----- WRITING SOLUTION WITH VALUE " << eval.penalizedCost << " IN : " << fileName << std::endl;
 	std::ofstream myfile(fileName);
 	if (myfile.is_open())
 	{
-		for (int k = 0; k < params.nbVehicles; k++)
+		for (int k = 0; k < (int)chromR.size() ; k++)
 		{
 			if (!chromR[k].empty())
 			{
@@ -79,7 +67,6 @@ void Individual::exportCVRPLibFormat(std::string fileName)
 			}
 		}
 		myfile << "Cost " << eval.penalizedCost << std::endl;
-		myfile << "Time " << (double)(clock()-params.startTime)/(double)CLOCKS_PER_SEC << std::endl;
 	}
 	else std::cout << "----- IMPOSSIBLE TO OPEN: " << fileName << std::endl;
 }
@@ -115,19 +102,7 @@ bool Individual::readCVRPLibFormat(std::string fileName, std::vector<std::vector
 	return false;
 }
 
-Individual& Individual::operator=(const Individual & indiv)
-{
-	eval = indiv.eval;
-	chromT = indiv.chromT;
-	chromR = indiv.chromR;
-	successors = indiv.successors;
-	predecessors = indiv.predecessors;
-	indivsPerProximity = indiv.indivsPerProximity;
-	biasedFitness = indiv.biasedFitness;
-	return *this;
-}
-
-Individual::Individual(const Params & params, bool generate) : params(params)
+Individual::Individual(const Params & params, bool generate)
 {
 	if (generate)
 	{

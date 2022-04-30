@@ -39,7 +39,6 @@ class Individual
 {
 public:
 
-  const Params & params ;													// Problem parameters
   EvalIndiv eval;															// Solution cost parameters
   std::vector < int > chromT ;												// Giant tour representing the individual
   std::vector < std::vector <int> > chromR ;								// For each vehicle, the associated sequence of deliveries (complete solution)
@@ -48,14 +47,11 @@ public:
   std::multiset < std::pair < double, Individual* > > indivsPerProximity ;	// The other individuals in the population, ordered by increasing proximity (the set container follows a natural ordering based on the first value of the pair)
   double biasedFitness;														// Biased fitness of the solution
 
-  // Measuring cost of a solution from the information of chromR
-  void evaluateCompleteCost();
+  // Measuring cost and feasibility of an Individual from the information of chromR (needs chromR filled and access to Params)
+  void evaluateCompleteCost(const Params & params);
 
   // Removing an individual in the structure of proximity
   void removeProximity(Individual * indiv);
-
-  // Distance measure with another individual
-  double brokenPairsDistance(const Individual & indiv2);
 
   // Returns the average distance of this individual with the nbClosest individuals
   double averageBrokenPairsDistanceClosest(int nbClosest) ;
@@ -68,8 +64,5 @@ public:
 
   // Constructor: random individual if generate = true, empty individual if generate = false
   Individual(const Params & params, bool generate);
-
-  // Custom copy constructor
-  Individual& operator=(const Individual & indiv);
 };
 #endif

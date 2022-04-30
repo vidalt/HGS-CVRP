@@ -34,7 +34,7 @@ bool Population::addIndividual(const Individual & indiv, bool updateFeasible)
 	Individual * myIndividual = new Individual(indiv);
 	for (Individual * myIndividual2 : subpop)
 	{
-		double myDistance = myIndividual->brokenPairsDistance(*myIndividual2);
+		double myDistance = brokenPairsDistance(*myIndividual,*myIndividual2);
 		myIndividual2->indivsPerProximity.insert({ myDistance, myIndividual });
 		myIndividual->indivsPerProximity.insert({ myDistance, myIndividual2 });
 	}
@@ -216,6 +216,17 @@ void Population::printState(int nbIter, int nbIterNoImprovement)
 	}
 }
 
+double Population::brokenPairsDistance(const Individual & indiv1, const Individual & indiv2)
+{
+	int differences = 0;
+	for (int j = 1; j <= params.nbClients; j++)
+	{
+		if (indiv1.successors[j] != indiv2.successors[j] && indiv1.successors[j] != indiv2.predecessors[j]) differences++;
+		if (indiv1.predecessors[j] == 0 && indiv2.predecessors[j] != 0 && indiv2.successors[j] != 0) differences++;
+	}
+	return (double)differences / (double)params.nbClients;
+}
+
 double Population::getDiversity(const SubPopulation & pop)
 {
 	double average = 0.;
@@ -242,7 +253,7 @@ void Population::exportBKS(std::string fileName)
 	bool readOK = Individual::readCVRPLibFormat(fileName, readSolution, readCost);
 	if (bestSolutionOverall.eval.penalizedCost < 1.e29 && (!readOK || bestSolutionOverall.eval.penalizedCost < readCost - MY_EPSILON))
 	{
-		if (params.verbose) std::cout << "----- NEW BKS: " << bestSolutionOverall.eval.penalizedCost << " !!!" << std::endl;
+		if (params.verbose) std::cout << "WRITING NEW BKS !!! WITH VALUE " << bestSolutionOverall.eval.penalizedCost << " IN " << fileName << std::endl;
 		bestSolutionOverall.exportCVRPLibFormat(fileName);
 	}
 }

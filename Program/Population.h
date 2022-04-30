@@ -80,6 +80,9 @@ class Population
    // Prints population state
    void printState(int nbIter, int nbIterNoImprovement);
 
+   // Distance measure between two individuals, used for diversity calculations
+   double brokenPairsDistance(const Individual & indiv1, const Individual & indiv2);
+
    // Returns the average diversity value among the 50% best individuals in the subpopulation
    double getDiversity(const SubPopulation & pop);
 

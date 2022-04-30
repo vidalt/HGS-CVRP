@@ -780,7 +780,7 @@ void LocalSearch::exportIndividual(Individual & indiv)
 		}
 	}
 
-	indiv.evaluateCompleteCost();
+	indiv.evaluateCompleteCost(params);
 }
 
 LocalSearch::LocalSearch(Params & params) : params (params)

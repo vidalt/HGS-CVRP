@@ -25,7 +25,7 @@ void Split::generalSplit(Individual & indiv, int nbMaxVehicles)
 		splitLF(indiv);
 
 	// Build up the rest of the Individual structure
-	indiv.evaluateCompleteCost();
+	indiv.evaluateCompleteCost(params);
 }
 
 int Split::splitSimple(Individual & indiv)
