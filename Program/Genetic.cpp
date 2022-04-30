@@ -13,7 +13,7 @@ void Genetic::run()
 		/* LOCAL SEARCH */
 		localSearch.run(offspring, params.penaltyCapacity, params.penaltyDuration);
 		bool isNewBest = population.addIndividual(offspring,true);
-		if (!offspring.eval.isFeasible && std::rand()%2 == 0) // Repair half of the solutions in case of infeasibility
+		if (!offspring.eval.isFeasible && params.ran()%2 == 0) // Repair half of the solutions in case of infeasibility
 		{
 			localSearch.run(offspring, params.penaltyCapacity*10., params.penaltyDuration*10.);
 			if (offspring.eval.isFeasible) isNewBest = (population.addIndividual(offspring,false) || isNewBest);
@@ -43,11 +43,12 @@ void Genetic::crossoverOX(Individual & result, const Individual & parent1, const
 	std::vector <bool> freqClient = std::vector <bool> (params.nbClients + 1, false);
 
 	// Picking the beginning and end of the crossover zone
-	int start = std::rand() % params.nbClients;
-	int end = std::rand() % params.nbClients;
+	std::uniform_int_distribution<> distr(0, params.nbClients-1);
+	int start = distr(params.ran);
+	int end = distr(params.ran);
 
 	// Avoid that start and end coincide by accident
-	while (end == start) end = std::rand() % params.nbClients;
+	while (end == start) end = distr(params.ran);
 
 	// Copy from start to end
 	int j = start;
@@ -78,5 +79,5 @@ Genetic::Genetic(Params & params) :
 	split(params),
 	localSearch(params),
 	population(params,this->split,this->localSearch),
-	offspring(params,true){}
+	offspring(params){}
 

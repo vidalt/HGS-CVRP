@@ -114,7 +114,7 @@ extern "C" Solution *solve_cvrp_dist_mtx(
 
 		Params params(x_coords,y_coords,distance_matrix,service_time,demands,vehicleCapacity,durationLimit,max_nbVeh,isDurationConstraint,verbose,*ap);
 		
-		// Running HGS  and returning the result
+		// Running HGS and returning the result
 		Genetic solver(params);
 		solver.run();
 		result = prepare_solution(solver.population, params);

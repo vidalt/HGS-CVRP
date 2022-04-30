@@ -27,7 +27,7 @@ Params::Params(
 	maxDemand = 0.;
 
 	// Initialize RNG
-	srand(ap.seed);
+	ran.seed(ap.seed);
 
 	// check if valid coordinates are provided
 	areCoordinatesProvided = (demands.size() == x_coords.size()) && (demands.size() == x_coords.size());

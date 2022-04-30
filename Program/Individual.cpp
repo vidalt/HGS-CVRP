@@ -32,17 +32,13 @@ void Individual::evaluateCompleteCost(const Params & params)
 	eval.isFeasible = (eval.capacityExcess < MY_EPSILON && eval.durationExcess < MY_EPSILON);
 }
 
-Individual::Individual(const Params & params, bool generate)
+Individual::Individual(Params & params)
 {
-	if (generate)
-	{
-		successors = std::vector <int>(params.nbClients + 1);
-		predecessors = std::vector <int>(params.nbClients + 1);
-		chromR = std::vector < std::vector <int> >(params.nbVehicles);
-		chromT = std::vector <int>(params.nbClients);
-		for (int i = 0; i < params.nbClients; i++) chromT[i] = i + 1;
-		std::random_shuffle(chromT.begin(), chromT.end());
-	}
-	else
-		eval.penalizedCost = 1.e30;
+	successors = std::vector <int>(params.nbClients + 1);
+	predecessors = std::vector <int>(params.nbClients + 1);
+	chromR = std::vector < std::vector <int> >(params.nbVehicles);
+	chromT = std::vector <int>(params.nbClients);
+	for (int i = 0; i < params.nbClients; i++) chromT[i] = i + 1;
+	std::shuffle(chromT.begin(), chromT.end(), params.ran);
+	eval.penalizedCost = 1.e30;	
 }

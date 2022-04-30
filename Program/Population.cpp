@@ -5,11 +5,11 @@ void Population::generatePopulation()
 	if (params.verbose) std::cout << "----- BUILDING INITIAL POPULATION" << std::endl;
 	for (int i = 0; i < 4*params.ap.mu && (i == 0 || params.ap.timeLimit == 0 || (double)(clock() - params.startTime) / (double)CLOCKS_PER_SEC < params.ap.timeLimit) ; i++)
 	{
-		Individual randomIndiv(params,true);
+		Individual randomIndiv(params);
 		split.generalSplit(randomIndiv, params.nbVehicles);
 		localSearch.run(randomIndiv, params.penaltyCapacity, params.penaltyDuration);
 		addIndividual(randomIndiv, true);
-		if (!randomIndiv.eval.isFeasible && std::rand() % 2 == 0)  // Repair half of the solutions in case of infeasibility
+		if (!randomIndiv.eval.isFeasible && params.ran() % 2 == 0)  // Repair half of the solutions in case of infeasibility
 		{
 			localSearch.run(randomIndiv, params.penaltyCapacity*10., params.penaltyDuration*10.);
 			if (randomIndiv.eval.isFeasible) addIndividual(randomIndiv, false);
@@ -132,7 +132,7 @@ void Population::restart()
 	for (Individual * indiv : infeasibleSubpopulation) delete indiv;
 	feasibleSubpopulation.clear();
 	infeasibleSubpopulation.clear();
-	bestSolutionRestart = Individual(params,false);
+	bestSolutionRestart = Individual(params);
 	generatePopulation();
 }
 
@@ -173,18 +173,18 @@ const Individual & Population::getBinaryTournament ()
 {
 	Individual * individual1 ;
 	Individual * individual2 ;
-
-	updateBiasedFitnesses(feasibleSubpopulation);
-	updateBiasedFitnesses(infeasibleSubpopulation);
+	std::uniform_int_distribution<> distr(0, feasibleSubpopulation.size() + infeasibleSubpopulation.size() - 1);
 	
-	int place1 = std::rand() % (feasibleSubpopulation.size() + infeasibleSubpopulation.size()) ;
+	int place1 = distr(params.ran);
 	if (place1 >= (int)feasibleSubpopulation.size()) individual1 = infeasibleSubpopulation[place1 - feasibleSubpopulation.size()] ;
 	else individual1 = feasibleSubpopulation[place1] ;
 
-	int place2 = std::rand() % (feasibleSubpopulation.size() + infeasibleSubpopulation.size()) ;
+	int place2 = distr(params.ran);
 	if (place2 >= (int)feasibleSubpopulation.size()) individual2 = infeasibleSubpopulation[place2 - feasibleSubpopulation.size()] ;
 	else individual2 = feasibleSubpopulation[place2] ;
 
+	updateBiasedFitnesses(feasibleSubpopulation);
+	updateBiasedFitnesses(infeasibleSubpopulation);
 	if (individual1->biasedFitness < individual2->biasedFitness) return *individual1 ;
 	else return *individual2 ;		
 }
@@ -295,7 +295,7 @@ void Population::exportCVRPLibFormat(const Individual & indiv, std::string fileN
 }
 
 
-Population::Population(Params & params, Split & split, LocalSearch & localSearch) : params(params), split(split), localSearch(localSearch), bestSolutionRestart(params,false), bestSolutionOverall(params, false)
+Population::Population(Params & params, Split & split, LocalSearch & localSearch) : params(params), split(split), localSearch(localSearch), bestSolutionRestart(params), bestSolutionOverall(params)
 {
 	listFeasibilityLoad = std::list<bool>(100, true);
 	listFeasibilityDuration = std::list<bool>(100, true);
