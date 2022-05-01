@@ -2,6 +2,9 @@
 
 void Genetic::run()
 {	
+	/* INITIAL POPULATION */
+	population.generatePopulation();
+
 	int nbIter;
 	int nbIterNonProd = 1;
 	if (params.verbose) std::cout << "----- STARTING GENETIC ALGORITHM" << std::endl;

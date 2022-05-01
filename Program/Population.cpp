@@ -290,12 +290,10 @@ void Population::exportCVRPLibFormat(const Individual & indiv, std::string fileN
 	else std::cout << "----- IMPOSSIBLE TO OPEN: " << fileName << std::endl;
 }
 
-
 Population::Population(Params & params, Split & split, LocalSearch & localSearch) : params(params), split(split), localSearch(localSearch), bestSolutionRestart(params), bestSolutionOverall(params)
 {
 	listFeasibilityLoad = std::list<bool>(100, true);
 	listFeasibilityDuration = std::list<bool>(100, true);
-	generatePopulation();
 }
 
 Population::~Population()
