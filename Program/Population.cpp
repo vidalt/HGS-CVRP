@@ -28,7 +28,7 @@ bool Population::addIndividual(const Individual & indiv, bool updateFeasible)
 	}
 
 	// Find the adequate subpopulation in relation to the individual feasibility
-	SubPopulation & subpop = (indiv.eval.isFeasible) ? feasibleSubpopulation : infeasibleSubpopulation;
+	SubPopulation & subpop = (indiv.eval.isFeasible) ? feasibleSubpop : infeasibleSubpop;
 
 	// Create a copy of the individual and updade the proximity structures calculating inter-individual distances
 	Individual * myIndividual = new Individual(indiv);
@@ -128,10 +128,10 @@ void Population::removeWorstBiasedFitness(SubPopulation & pop)
 void Population::restart()
 {
 	if (params.verbose) std::cout << "----- RESET: CREATING A NEW POPULATION -----" << std::endl;
-	for (Individual * indiv : feasibleSubpopulation) delete indiv ;
-	for (Individual * indiv : infeasibleSubpopulation) delete indiv;
-	feasibleSubpopulation.clear();
-	infeasibleSubpopulation.clear();
+	for (Individual * indiv : feasibleSubpop) delete indiv ;
+	for (Individual * indiv : infeasibleSubpop) delete indiv;
+	feasibleSubpop.clear();
+	infeasibleSubpop.clear();
 	bestSolutionRestart = Individual(params);
 	generatePopulation();
 }
@@ -149,21 +149,21 @@ void Population::managePenalties()
 	else if (fractionFeasibleDuration > params.ap.targetFeasible + 0.05 && params.penaltyDuration > 0.1) params.penaltyDuration = std::max<double>(params.penaltyDuration * 0.85, 0.1);
 
 	// Update the evaluations
-	for (int i = 0; i < (int)infeasibleSubpopulation.size(); i++)
-		infeasibleSubpopulation[i]->eval.penalizedCost = infeasibleSubpopulation[i]->eval.distance
-		+ params.penaltyCapacity * infeasibleSubpopulation[i]->eval.capacityExcess
-		+ params.penaltyDuration * infeasibleSubpopulation[i]->eval.durationExcess;
+	for (int i = 0; i < (int)infeasibleSubpop.size(); i++)
+		infeasibleSubpop[i]->eval.penalizedCost = infeasibleSubpop[i]->eval.distance
+		+ params.penaltyCapacity * infeasibleSubpop[i]->eval.capacityExcess
+		+ params.penaltyDuration * infeasibleSubpop[i]->eval.durationExcess;
 
 	// If needed, reorder the individuals in the infeasible subpopulation since the penalty values have changed (simple bubble sort for the sake of simplicity)
-	for (int i = 0; i < (int)infeasibleSubpopulation.size(); i++)
+	for (int i = 0; i < (int)infeasibleSubpop.size(); i++)
 	{
-		for (int j = 0; j < (int)infeasibleSubpopulation.size() - i - 1; j++)
+		for (int j = 0; j < (int)infeasibleSubpop.size() - i - 1; j++)
 		{
-			if (infeasibleSubpopulation[j]->eval.penalizedCost > infeasibleSubpopulation[j + 1]->eval.penalizedCost + MY_EPSILON)
+			if (infeasibleSubpop[j]->eval.penalizedCost > infeasibleSubpop[j + 1]->eval.penalizedCost + MY_EPSILON)
 			{
-				Individual * indiv = infeasibleSubpopulation[j];
-				infeasibleSubpopulation[j] = infeasibleSubpopulation[j + 1];
-				infeasibleSubpopulation[j + 1] = indiv;
+				Individual * indiv = infeasibleSubpop[j];
+				infeasibleSubpop[j] = infeasibleSubpop[j + 1];
+				infeasibleSubpop[j + 1] = indiv;
 			}
 		}
 	}
@@ -171,33 +171,29 @@ void Population::managePenalties()
 
 const Individual & Population::getBinaryTournament ()
 {
-	Individual * individual1 ;
-	Individual * individual2 ;
-	std::uniform_int_distribution<> distr(0, feasibleSubpopulation.size() + infeasibleSubpopulation.size() - 1);
-	
+	// Picking two individuals with uniform distribution over the union of the feasible and infeasible subpopulations
+	std::uniform_int_distribution<> distr(0, feasibleSubpop.size() + infeasibleSubpop.size() - 1);
 	int place1 = distr(params.ran);
-	if (place1 >= (int)feasibleSubpopulation.size()) individual1 = infeasibleSubpopulation[place1 - feasibleSubpopulation.size()] ;
-	else individual1 = feasibleSubpopulation[place1] ;
-
 	int place2 = distr(params.ran);
-	if (place2 >= (int)feasibleSubpopulation.size()) individual2 = infeasibleSubpopulation[place2 - feasibleSubpopulation.size()] ;
-	else individual2 = feasibleSubpopulation[place2] ;
-
-	updateBiasedFitnesses(feasibleSubpopulation);
-	updateBiasedFitnesses(infeasibleSubpopulation);
-	if (individual1->biasedFitness < individual2->biasedFitness) return *individual1 ;
-	else return *individual2 ;		
+	Individual * indiv1 = (place1 >= (int)feasibleSubpop.size()) ? infeasibleSubpop[place1 - feasibleSubpop.size()] : feasibleSubpop[place1];
+	Individual * indiv2 = (place2 >= (int)feasibleSubpop.size()) ? infeasibleSubpop[place2 - feasibleSubpop.size()] : feasibleSubpop[place2];
+	
+	// Keeping the best of the two in terms of biased fitness
+	updateBiasedFitnesses(feasibleSubpop);
+	updateBiasedFitnesses(infeasibleSubpop);
+	if (indiv1->biasedFitness < indiv2->biasedFitness) return *indiv1 ;
+	else return *indiv2 ;		
 }
 
 const Individual * Population::getBestFeasible ()
 {
-	if (!feasibleSubpopulation.empty()) return feasibleSubpopulation[0] ;
+	if (!feasibleSubpop.empty()) return feasibleSubpop[0] ;
 	else return NULL ;
 }
 
 const Individual * Population::getBestInfeasible ()
 {
-	if (!infeasibleSubpopulation.empty()) return infeasibleSubpopulation[0] ;
+	if (!infeasibleSubpop.empty()) return infeasibleSubpop[0] ;
 	else return NULL ;
 }
 
@@ -213,13 +209,13 @@ void Population::printState(int nbIter, int nbIterNoImprovement)
 	{
 		std::printf("It %6d %6d | T(s) %.2f", nbIter, nbIterNoImprovement, (double)(clock()-params.startTime)/(double)CLOCKS_PER_SEC);
 
-		if (getBestFeasible() != NULL) std::printf(" | Feas %zu %.2f %.2f", feasibleSubpopulation.size(), getBestFeasible()->eval.penalizedCost, getAverageCost(feasibleSubpopulation));
+		if (getBestFeasible() != NULL) std::printf(" | Feas %zu %.2f %.2f", feasibleSubpop.size(), getBestFeasible()->eval.penalizedCost, getAverageCost(feasibleSubpop));
 		else std::printf(" | NO-FEASIBLE");
 
-		if (getBestInfeasible() != NULL) std::printf(" | Inf %zu %.2f %.2f", infeasibleSubpopulation.size(), getBestInfeasible()->eval.penalizedCost, getAverageCost(infeasibleSubpopulation));
+		if (getBestInfeasible() != NULL) std::printf(" | Inf %zu %.2f %.2f", infeasibleSubpop.size(), getBestInfeasible()->eval.penalizedCost, getAverageCost(infeasibleSubpop));
 		else std::printf(" | NO-INFEASIBLE");
 
-		std::printf(" | Div %.2f %.2f", getDiversity(feasibleSubpopulation), getDiversity(infeasibleSubpopulation));
+		std::printf(" | Div %.2f %.2f", getDiversity(feasibleSubpop), getDiversity(infeasibleSubpop));
 		std::printf(" | Feas %.2f %.2f", (double)std::count(listFeasibilityLoad.begin(), listFeasibilityLoad.end(), true) / (double)listFeasibilityLoad.size(), (double)std::count(listFeasibilityDuration.begin(), listFeasibilityDuration.end(), true) / (double)listFeasibilityDuration.size());
 		std::printf(" | Pen %.2f %.2f", params.penaltyCapacity, params.penaltyDuration);
 		std::cout << std::endl;
@@ -304,6 +300,6 @@ Population::Population(Params & params, Split & split, LocalSearch & localSearch
 
 Population::~Population()
 {
-	for (int i = 0; i < (int)feasibleSubpopulation.size(); i++) delete feasibleSubpopulation[i];
-	for (int i = 0; i < (int)infeasibleSubpopulation.size(); i++) delete infeasibleSubpopulation[i];
+	for (int i = 0; i < (int)feasibleSubpop.size(); i++) delete feasibleSubpop[i];
+	for (int i = 0; i < (int)infeasibleSubpop.size(); i++) delete infeasibleSubpop[i];
 }
