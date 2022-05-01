@@ -2,7 +2,7 @@
 #include "commandline.h"
 #include "LocalSearch.h"
 #include "Split.h"
-#include "CVRPLIB.h"
+#include "InstanceCVRPLIB.h"
 using namespace std;
 
 int main(int argc, char *argv[])
@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
 
 		// Reading the data file and initializing some data structures
 		if (commandline.verbose) std::cout << "----- READING INSTANCE: " << commandline.pathInstance << std::endl;
-		CVRPLIB cvrp(commandline.pathInstance, commandline.isRoundingInteger);
+		InstanceCVRPLIB cvrp(commandline.pathInstance, commandline.isRoundingInteger);
 
 		Params params(cvrp.x_coords,cvrp.y_coords,cvrp.dist_mtx,cvrp.service_time,cvrp.demands,
 			          cvrp.vehicleCapacity,cvrp.durationLimit,commandline.nbVeh,cvrp.isDurationConstraint,commandline.verbose,commandline.ap);

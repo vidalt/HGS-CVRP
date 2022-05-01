@@ -4,11 +4,10 @@
 
 #include <fstream>
 #include <cmath>
-#include "CVRPLIB.h"
+#include "InstanceCVRPLIB.h"
 
-CVRPLIB::CVRPLIB(std::string pathToInstance, bool isRoundingInteger = true)
+InstanceCVRPLIB::InstanceCVRPLIB(std::string pathToInstance, bool isRoundingInteger = true)
 {
-
 	std::string content, content2, content3;
 	double serviceTimeData = 0.;
 
@@ -31,7 +30,6 @@ CVRPLIB::CVRPLIB(std::string pathToInstance, bool isRoundingInteger = true)
 		if (nbClients <= 0) throw std::string("Number of nodes is undefined");
 		if (vehicleCapacity == 1.e30) throw std::string("Vehicle capacity is undefined");
 
-
 		x_coords = std::vector<double>(nbClients + 1);
 		y_coords = std::vector<double>(nbClients + 1);
 		demands = std::vector<double>(nbClients + 1);
@@ -51,7 +49,6 @@ CVRPLIB::CVRPLIB(std::string pathToInstance, bool isRoundingInteger = true)
 			if (node_number != i + 1) throw std::string("The node numbering is not in order.");
 		}
 
-
 		// Reading demand information
 		inputFile >> content;
 		if (content != "DEMAND_SECTION") throw std::string("Unexpected data in input file: " + content);
@@ -62,7 +59,6 @@ CVRPLIB::CVRPLIB(std::string pathToInstance, bool isRoundingInteger = true)
 		}
 
 		// Calculating 2D Euclidean Distance
-		// TODO: Support other types of distance functions
 		dist_mtx = std::vector < std::vector< double > >(nbClients + 1, std::vector <double>(nbClients + 1));
 		for (int i = 0; i <= nbClients; i++)
 		{
@@ -85,6 +81,4 @@ CVRPLIB::CVRPLIB(std::string pathToInstance, bool isRoundingInteger = true)
 	}
 	else
 		throw std::string("Impossible to open instance file: " + pathToInstance);
-
-
 }

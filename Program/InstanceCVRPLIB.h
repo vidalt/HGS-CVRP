@@ -2,12 +2,12 @@
 // Created by chkwon on 3/22/22.
 //
 
-#ifndef CVRPLIB_H
-#define CVRPLIB_H
+#ifndef INSTANCECVRPLIB_H
+#define INSTANCECVRPLIB_H
 #include<string>
 #include<vector>
 
-class CVRPLIB
+class InstanceCVRPLIB
 {
 public:
 	std::vector<double> x_coords;
@@ -20,8 +20,8 @@ public:
 	bool isDurationConstraint = false;						// Indicates if the problem includes duration constraints
 	int nbClients ;											// Number of clients (excluding the depot)
 
-	CVRPLIB(std::string pathToInstance, bool isRoundingInteger);
+	InstanceCVRPLIB(std::string pathToInstance, bool isRoundingInteger);
 };
 
 
-#endif //CVRPLIB_H
+#endif //INSTANCECVRPLIB_H

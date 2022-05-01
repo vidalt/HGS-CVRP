@@ -10,7 +10,7 @@ set(
         Program/Params.cpp
         Program/Population.cpp
         Program/Split.cpp
-        Program/CVRPLIB.cpp
+        Program/InstanceCVRPLIB.cpp
         Program/AlgorithmParameters.cpp
         Program/C_Interface.cpp)
 
