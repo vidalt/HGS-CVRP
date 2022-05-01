@@ -112,7 +112,7 @@ class LocalSearch
 
 private:
 	
-	Params * params ;							// Problem parameters
+	Params & params ;							// Problem parameters
 	bool searchCompleted;						// Tells whether all moves have been evaluated without success
 	int nbMoves;								// Total number of moves (RI and SWAP*) applied during the local search. Attention: this is not only a simple counter, it is also used to avoid repeating move evaluations
 	std::vector < int > orderNodes;				// Randomized order for checking the nodes in the RI local search
@@ -146,8 +146,8 @@ private:
 	void setLocalVariablesRouteU(); // Initializes some local variables and distances associated to routeU to avoid always querying the same values in the distance matrix
 	void setLocalVariablesRouteV(); // Initializes some local variables and distances associated to routeV to avoid always querying the same values in the distance matrix
 
-	inline double penaltyExcessDuration(double myDuration) {return std::max<double>(0., myDuration - params->durationLimit)*penaltyDurationLS;}
-	inline double penaltyExcessLoad(double myLoad) {return std::max<double>(0., myLoad - params->vehicleCapacity)*penaltyCapacityLS;}
+	inline double penaltyExcessDuration(double myDuration) {return std::max<double>(0., myDuration - params.durationLimit)*penaltyDurationLS;}
+	inline double penaltyExcessLoad(double myLoad) {return std::max<double>(0., myLoad - params.vehicleCapacity)*penaltyCapacityLS;}
 
 	/* RELOCATE MOVES */
 	// (Legacy notations: move1...move9 from Prins 2004)
@@ -178,16 +178,16 @@ private:
 	public:
 
 	// Run the local search with the specified penalty values
-	void run(Individual * indiv, double penaltyCapacityLS, double penaltyDurationLS);
+	void run(Individual & indiv, double penaltyCapacityLS, double penaltyDurationLS);
 
 	// Loading an initial solution into the local search
-	void loadIndividual(Individual * indiv);
+	void loadIndividual(const Individual & indiv);
 
 	// Exporting the LS solution into an individual and calculating the penalized cost according to the original penalty weights from Params
-	void exportIndividual(Individual * indiv);
+	void exportIndividual(Individual & indiv);
 
 	// Constructor
-	LocalSearch(Params * params);
+	LocalSearch(Params & params);
 };
 
 #endif

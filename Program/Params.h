@@ -37,6 +37,7 @@ SOFTWARE.*/
 #include <climits>
 #include <algorithm>
 #include <unordered_set>
+#include <random>
 #define MY_EPSILON 0.00001 // Precision parameter, used to avoid numerical instabilities
 #define PI 3.14159265359
 
@@ -54,16 +55,18 @@ class Params
 public:
 
 	/* PARAMETERS OF THE GENETIC ALGORITHM */
-	int nbGranular;					// Granular search parameter, limits the number of moves in the RI local search
-	int mu;							// Minimum population size
-	int lambda;						// Number of solutions created before reaching the maximum population size (i.e., generation size)
-	int nbElite;					// Number of elite individuals (reduced in HGS-2020)
-	int nbClose;					// Number of closest solutions/individuals considered when calculating diversity contribution
-	double targetFeasible;   		// Reference proportion for the number of feasible individuals, used for the adaptation of the penalty parameters
+	bool verbose;                       // Controls verbose level through the iterations
+	AlgorithmParameters ap;	            // Main parameters of the HGS algorithm
 
 	/* ADAPTIVE PENALTY COEFFICIENTS */
 	double penaltyCapacity;				// Penalty for one unit of capacity excess (adapted through the search)
 	double penaltyDuration;				// Penalty for one unit of duration excess (adapted through the search)
+
+	/* START TIME OF THE ALGORITHM */
+	clock_t startTime;                  // Start time of the optimization (set when Params is constructed)
+
+	/* RANDOM NUMBER GENERATOR */       
+	std::minstd_rand ran;               // Using the fastest and simplest LCG. The quality of random numbers is not critical for the LS, but speed is
 
 	/* DATA OF THE PROBLEM INSTANCE */
 	bool isDurationConstraint ;								// Indicates if the problem includes duration constraints
@@ -77,18 +80,7 @@ public:
 	std::vector< Client > cli ;								// Vector containing information on each client
 	const std::vector< std::vector< double > >& timeCost;	// Distance matrix
 	std::vector< std::vector< int > > correlatedVertices;	// Neighborhood restrictions: For each client, list of nearby customers
-
-	/* START TIME OF THE ALGORITHM */
-	clock_t startTime;
-
-	/* On/Off SWAP* search based on the coordinates */
-	bool useSwapStar;
-
-	/* check if valid coordinates are provided */
-	bool areCoordinatesProvided;
-
-	/* Controls verbose level throughout the iterations */
-	bool verbose;
+	bool areCoordinatesProvided;                            // Check if valid coordinates are provided
 
 	// Initialization from a given data set
 	Params(const std::vector<double>& x_coords,

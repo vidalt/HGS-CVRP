@@ -16,10 +16,8 @@ Params::Params(
 	bool verbose,
 	const AlgorithmParameters& ap
 )
-	: nbGranular(ap.nbGranular), mu(ap.mu), lambda(ap.lambda),
-	  nbElite(ap.nbElite), nbClose(ap.nbClose), targetFeasible(ap.targetFeasible),
-	  isDurationConstraint(isDurationConstraint), nbVehicles(nbVeh), durationLimit(durationLimit),
-	  vehicleCapacity(vehicleCapacity), timeCost(dist_mtx), useSwapStar(ap.useSwapStar), verbose(verbose)
+	: ap(ap), isDurationConstraint(isDurationConstraint), nbVehicles(nbVeh), durationLimit(durationLimit),
+	  vehicleCapacity(vehicleCapacity), timeCost(dist_mtx), verbose(verbose)
 {
 	// This marks the starting time of the algorithm
 	startTime = clock();
@@ -29,17 +27,16 @@ Params::Params(
 	maxDemand = 0.;
 
 	// Initialize RNG
-	srand(ap.seed);
+	ran.seed(ap.seed);
 
 	// check if valid coordinates are provided
 	areCoordinatesProvided = (demands.size() == x_coords.size()) && (demands.size() == x_coords.size());
-
 
 	cli = std::vector<Client>(nbClients + 1);
 	for (int i = 0; i <= nbClients; i++)
 	{
 		// If useSwapStar==false, x_coords and y_coords may be empty.
-		if (useSwapStar && areCoordinatesProvided)
+		if (ap.useSwapStar == 1 && areCoordinatesProvided)
 		{
 			cli[i].coordX = x_coords[i];
 			cli[i].coordY = y_coords[i];
@@ -48,7 +45,6 @@ Params::Params(
 		}
 		else
 		{
-			// Is this part necessary?
 			cli[i].coordX = 0.0;
 			cli[i].coordY = 0.0;
 			cli[i].polarAngle = 0.0;
@@ -59,6 +55,9 @@ Params::Params(
 		if (cli[i].demand > maxDemand) maxDemand = cli[i].demand;
 		totalDemand += cli[i].demand;
 	}
+
+	if (verbose && ap.useSwapStar == 1 && !areCoordinatesProvided)
+		std::cout << "----- NO COORDINATES HAVE BEEN PROVIDED, SWAP* NEIGHBORHOOD WILL BE DEACTIVATED BY DEFAULT" << std::endl;
 
 	// Default initialization if the number of vehicles has not been provided by the user
 	if (nbVehicles == INT_MAX)
@@ -90,7 +89,7 @@ Params::Params(
 			if (i != j) orderProximity.emplace_back(timeCost[i][j], j);
 		std::sort(orderProximity.begin(), orderProximity.end());
 
-		for (int j = 0; j < std::min<int>(nbGranular, nbClients - 1); j++)
+		for (int j = 0; j < std::min<int>(ap.nbGranular, nbClients - 1); j++)
 		{
 			// If i is correlated with j, then j should be correlated with i
 			setCorrelatedVertices[i].insert(orderProximity[j].second);
@@ -116,6 +115,9 @@ Params::Params(
 	// A reasonable scale for the initial values of the penalties
 	penaltyDuration = 1;
 	penaltyCapacity = std::max<double>(0.1, std::min<double>(1000., maxDist / maxDemand));
+
+	if (verbose)
+		std::cout << "----- INSTANCE SUCCESSFULLY LOADED WITH " << nbClients << " CLIENTS AND " << nbVehicles << " VEHICLES" << std::endl;
 }
 
 

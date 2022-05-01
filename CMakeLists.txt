@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 project(HGS_CVRP)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 set(
         src_files
@@ -10,7 +10,7 @@ set(
         Program/Params.cpp
         Program/Population.cpp
         Program/Split.cpp
-        Program/CVRPLIB.cpp
+        Program/InstanceCVRPLIB.cpp
         Program/AlgorithmParameters.cpp
         Program/C_Interface.cpp)
 
