@@ -57,3 +57,10 @@ add_subdirectory(Test/Test-c/)
 add_test(NAME       lib_test_c
          COMMAND    lib_test_c)
 
+# Install
+install(TARGETS lib
+        DESTINATION lib)
+install(TARGETS bin
+        DESTINATION bin)
+install(FILES Program/AlgorithmParameters.h Program/C_Interface.h
+        DESTINATION include)
