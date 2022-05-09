@@ -2,6 +2,7 @@
 #include "commandline.h"
 #include "LocalSearch.h"
 #include "Split.h"
+#include "InstanceCVRPLIB.h"
 using namespace std;
 
 int main(int argc, char *argv[])
@@ -11,31 +12,26 @@ int main(int argc, char *argv[])
 		// Reading the arguments of the program
 		CommandLine commandline(argc, argv);
 
+		// Print all algorithm parameter values
+		if (commandline.verbose) print_algorithm_parameters(commandline.ap);
+
 		// Reading the data file and initializing some data structures
-		std::cout << "----- READING DATA SET: " << commandline.pathInstance << std::endl;
-		Params params(commandline.pathInstance, commandline.nbVeh, commandline.seed);
+		if (commandline.verbose) std::cout << "----- READING INSTANCE: " << commandline.pathInstance << std::endl;
+		InstanceCVRPLIB cvrp(commandline.pathInstance, commandline.isRoundingInteger);
 
-		// Creating the Split and local search structures
-		Split split(&params);
-		LocalSearch localSearch(&params);
+		Params params(cvrp.x_coords,cvrp.y_coords,cvrp.dist_mtx,cvrp.service_time,cvrp.demands,
+			          cvrp.vehicleCapacity,cvrp.durationLimit,commandline.nbVeh,cvrp.isDurationConstraint,commandline.verbose,commandline.ap);
 
-		// Initial population
-		std::cout << "----- INSTANCE LOADED WITH " << params.nbClients << " CLIENTS AND " << params.nbVehicles << " VEHICLES" << std::endl;
-		std::cout << "----- BUILDING INITIAL POPULATION" << std::endl;
-		Population population(&params, &split, &localSearch);
-
-		// Genetic algorithm
-		std::cout << "----- STARTING GENETIC ALGORITHM" << std::endl;
-		Genetic solver(&params, &split, &population, &localSearch);
-		solver.run(commandline.nbIter, commandline.timeLimit);
-		std::cout << "----- GENETIC ALGORITHM FINISHED, TIME SPENT: " << (double)clock()/(double)CLOCKS_PER_SEC << std::endl;
-
+		// Running HGS
+		Genetic solver(params);
+		solver.run();
+		
 		// Exporting the best solution
-		if (population.getBestFound() != NULL)
+		if (solver.population.getBestFound() != NULL)
 		{
-			population.getBestFound()->exportCVRPLibFormat(commandline.pathSolution);
-			population.exportSearchProgress(commandline.pathSolution + ".PG.csv", commandline.pathInstance, commandline.seed);
-			if (commandline.pathBKS != "") population.exportBKS(commandline.pathBKS);
+			if (params.verbose) std::cout << "----- WRITING BEST SOLUTION IN : " << commandline.pathSolution << std::endl;
+			solver.population.exportCVRPLibFormat(*solver.population.getBestFound(),commandline.pathSolution);
+			solver.population.exportSearchProgress(commandline.pathSolution + ".PG.csv", commandline.pathInstance);
 		}
 	}
 	catch (const string& e) { std::cout << "EXCEPTION | " << e << std::endl; }

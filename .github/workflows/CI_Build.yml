@@ -1,0 +1,37 @@
+name: CI_Build
+
+on:
+  push:
+    branches: [ master, dev ]
+  pull_request:
+    branches: [ master, dev ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ "ubuntu-latest", "windows-latest", "macos-latest" ]
+    steps:
+    - uses: actions/checkout@v2
+    - name: make bin on ${{ matrix.os }}
+      run: | 
+        mkdir build 
+        cd build
+        cmake .. -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles"
+        make bin
+    - name: test bin on ${{ matrix.os }}
+      run: |
+        cd build
+        ctest -R bin --verbose
+    - name: make lib on ${{ matrix.os }}
+      run: |
+        cd build
+        cmake .. -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles"
+        make lib
+    - name: test lib on ${{ matrix.os }}
+      run: |
+        cd build
+        cmake .. -DCMAKE_BUILD_TYPE=Debug -G "Unix Makefiles"        
+        make lib_test_c
+        ctest -R lib --verbose

@@ -66,7 +66,7 @@ class Split
  private:
 
  // Problem parameters
- Params * params ;
+ const Params & params ;
  int maxVehicles ;
 
  /* Auxiliary data structures to run the Linear Split algorithm */
@@ -82,7 +82,7 @@ class Split
  inline double propagate(int i, int j, int k)
  {
 	 return potential[k][i] + sumDistance[j] - sumDistance[i + 1] + cliSplit[i + 1].d0_x + cliSplit[j].dx_0
-		 + params->penaltyCapacity * std::max<double>(sumLoad[j] - sumLoad[i] - params->vehicleCapacity, 0.);
+		 + params.penaltyCapacity * std::max<double>(sumLoad[j] - sumLoad[i] - params.vehicleCapacity, 0.);
  }
 
  // Tests if i dominates j as a predecessor for all nodes x >= j+1
@@ -90,7 +90,7 @@ class Split
  inline bool dominates(int i, int j, int k)
  {
 	 return potential[k][j] + cliSplit[j + 1].d0_x > potential[k][i] + cliSplit[i + 1].d0_x + sumDistance[j + 1] - sumDistance[i + 1]
-		 + params->penaltyCapacity * (sumLoad[j] - sumLoad[i]);
+		 + params.penaltyCapacity * (sumLoad[j] - sumLoad[i]);
  }
 
  // Tests if j dominates i as a predecessor for all nodes x >= j+1
@@ -101,18 +101,18 @@ class Split
  }
 
   // Split for unlimited fleet
-  int splitSimple(Individual * indiv);
+  int splitSimple(Individual & indiv);
 
   // Split for limited fleet
-  int splitLF(Individual * indiv);
+  int splitLF(Individual & indiv);
 
 public:
 
   // General Split function (tests the unlimited fleet, and only if it does not produce a feasible solution, runs the Split algorithm for limited fleet)
-  void generalSplit(Individual * indiv, int nbMaxVehicles);
+  void generalSplit(Individual & indiv, int nbMaxVehicles);
 
   // Constructor
-  Split(Params * params);
+  Split(const Params & params);
 
 };
 #endif

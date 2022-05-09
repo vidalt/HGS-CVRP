@@ -24,6 +24,7 @@ SOFTWARE.*/
 #define PARAMS_H
 
 #include "CircleSector.h"
+#include "AlgorithmParameters.h"
 #include <string>
 #include <vector>
 #include <list>
@@ -36,12 +37,12 @@ SOFTWARE.*/
 #include <climits>
 #include <algorithm>
 #include <unordered_set>
+#include <random>
 #define MY_EPSILON 0.00001 // Precision parameter, used to avoid numerical instabilities
 #define PI 3.14159265359
 
 struct Client
 {
-	int custNum;			// Index of the customer	
 	double coordX;			// Coordinate X
 	double coordY;			// Coordinate Y
 	double serviceDuration; // Service duration
@@ -54,19 +55,20 @@ class Params
 public:
 
 	/* PARAMETERS OF THE GENETIC ALGORITHM */
-	int nbGranular			= 20;		// Granular search parameter, limits the number of moves in the RI local search
-	int mu					= 25;		// Minimum population size
-	int lambda				= 40;		// Number of solutions created before reaching the maximum population size (i.e., generation size)
-	int nbElite				= 4;		// Number of elite individuals (reduced in HGS-2020)
-	int nbClose				= 5;		// Number of closest solutions/individuals considered when calculating diversity contribution
-	double targetFeasible   = 0.2;		// Reference proportion for the number of feasible individuals, used for the adaptation of the penalty parameters
-	
+	bool verbose;                       // Controls verbose level through the iterations
+	AlgorithmParameters ap;	            // Main parameters of the HGS algorithm
+
 	/* ADAPTIVE PENALTY COEFFICIENTS */
 	double penaltyCapacity;				// Penalty for one unit of capacity excess (adapted through the search)
 	double penaltyDuration;				// Penalty for one unit of duration excess (adapted through the search)
 
-	/* DATA OF THE PROBLEM INSTANCE */			
-	bool isRoundingInteger ;								// Distance calculation convention
+	/* START TIME OF THE ALGORITHM */
+	clock_t startTime;                  // Start time of the optimization (set when Params is constructed)
+
+	/* RANDOM NUMBER GENERATOR */       
+	std::minstd_rand ran;               // Using the fastest and simplest LCG. The quality of random numbers is not critical for the LS, but speed is
+
+	/* DATA OF THE PROBLEM INSTANCE */
 	bool isDurationConstraint ;								// Indicates if the problem includes duration constraints
 	int nbClients ;											// Number of clients (excluding the depot)
 	int nbVehicles ;										// Number of vehicles
@@ -75,12 +77,23 @@ public:
 	double totalDemand ;									// Total demand required by the clients
 	double maxDemand;										// Maximum demand of a client
 	double maxDist;											// Maximum distance between two clients
-	std::vector < Client > cli ;							// Vector containing information on each client
-	std::vector < std::vector < double > > timeCost ;		// Distance matrix
-	std::vector < std::vector < int > > correlatedVertices;	// Neighborhood restrictions: For each client, list of nearby customers
+	std::vector< Client > cli ;								// Vector containing information on each client
+	const std::vector< std::vector< double > >& timeCost;	// Distance matrix
+	std::vector< std::vector< int > > correlatedVertices;	// Neighborhood restrictions: For each client, list of nearby customers
+	bool areCoordinatesProvided;                            // Check if valid coordinates are provided
 
 	// Initialization from a given data set
-	Params(std::string pathToInstance, int nbVeh, int seedRNG);
+	Params(const std::vector<double>& x_coords,
+		const std::vector<double>& y_coords,
+		const std::vector<std::vector<double>>& dist_mtx,
+		const std::vector<double>& service_time,
+		const std::vector<double>& demands,
+		double vehicleCapacity,
+		double durationLimit,
+		int nbVeh,
+		bool isDurationConstraint,
+		bool verbose,
+		const AlgorithmParameters& ap);
 };
 #endif
 

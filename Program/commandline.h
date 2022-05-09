@@ -26,23 +26,23 @@ SOFTWARE.*/
 #include <iostream>
 #include <string>
 #include <climits>
+#include "AlgorithmParameters.h"
 
 class CommandLine
 {
 public:
+	AlgorithmParameters ap = default_algorithm_parameters();
 
-	int nbIter		= 20000;		// Number of iterations without improvement until termination. Default value: 20,000 iterations
-	int timeLimit   = INT_MAX;		// CPU time limit until termination in seconds. Default value: infinity
-	int seed		= 0;			// Random seed. Default value: 0
-	int nbVeh		= INT_MAX;		// Number of vehicles. Default value: infinity
+	int nbVeh		 = INT_MAX;		// Number of vehicles. Default value: infinity
 	std::string pathInstance;		// Instance path
 	std::string pathSolution;		// Solution path
-	std::string pathBKS = "";		// BKS path
+	bool verbose     = true;
+	bool isRoundingInteger = true;
 
 	// Reads the line of command and extracts possible options
 	CommandLine(int argc, char* argv[])
 	{
-		if (argc % 2 != 1 || argc > 13 || argc < 3)
+		if (argc % 2 != 1 || argc > 27 || argc < 3)
 		{
 			std::cout << "----- NUMBER OF COMMANDLINE ARGUMENTS IS INCORRECT: " << argc << std::endl;
 			display_help(); throw std::string("Incorrect line of command");
@@ -54,15 +54,29 @@ public:
 			for (int i = 3; i < argc; i += 2)
 			{
 				if (std::string(argv[i]) == "-t")
-					timeLimit = atoi(argv[i+1]);
+					ap.timeLimit = atof(argv[i+1]);
 				else if (std::string(argv[i]) == "-it")
-					nbIter  = atoi(argv[i+1]);
-				else if (std::string(argv[i]) == "-bks")
-					pathBKS = std::string(argv[i+1]);
+					ap.nbIter  = atoi(argv[i+1]);
 				else if (std::string(argv[i]) == "-seed")
-					seed    = atoi(argv[i+1]);
+					ap.seed    = atoi(argv[i+1]);
 				else if (std::string(argv[i]) == "-veh")
 					nbVeh = atoi(argv[i+1]);
+				else if (std::string(argv[i]) == "-round")
+					isRoundingInteger = atoi(argv[i+1]);
+				else if (std::string(argv[i]) == "-log")
+					verbose = atoi(argv[i+1]);
+				else if (std::string(argv[i]) == "-nbGranular")
+					ap.nbGranular = atoi(argv[i+1]);
+				else if (std::string(argv[i]) == "-mu")
+					ap.mu = atoi(argv[i+1]);
+				else if (std::string(argv[i]) == "-lambda")
+					ap.lambda = atoi(argv[i+1]);
+				else if (std::string(argv[i]) == "-nbElite")
+					ap.nbElite = atoi(argv[i+1]);
+				else if (std::string(argv[i]) == "-nbClose")
+					ap.nbClose = atoi(argv[i+1]);
+				else if (std::string(argv[i]) == "-targetFeasible")
+					ap.targetFeasible = atof(argv[i+1]);
 				else
 				{
 					std::cout << "----- ARGUMENT NOT RECOGNIZED: " << std::string(argv[i]) << std::endl;
@@ -76,14 +90,23 @@ public:
 	void display_help()
 	{
 		std::cout << std::endl;
-		std::cout << "-------------------------------------------------- HGS-CVRP algorithm (2020) --------------------------------------------------" << std::endl;
-		std::cout << "Call with: ./genvrp instancePath solPath [-it nbIter] [-t myCPUtime] [-bks bksPath] [-seed mySeed] [-veh nbVehicles]           " << std::endl;
-		std::cout << "[-it nbIterations] sets a maximum number of iterations without improvement. Defaults to 20,000                                 " << std::endl;
-		std::cout << "[-t myCPUtime] sets a time limit in seconds. If this parameter is set the code will be run iteratively until the time limit    " << std::endl;
-		std::cout << "[-bks bksPath] sets an optional path to a BKS. This file will be overwritten in case of improvement                            " << std::endl;
-		std::cout << "[-seed mySeed] sets a fixed seed. Defaults to 0                                                                                " << std::endl;
-		std::cout << "[-veh nbVehicles] sets a prescribed fleet size. Otherwise a reasonable UB on the the fleet size is calculated                  " << std::endl;
-		std::cout << "-------------------------------------------------------------------------------------------------------------------------------" << std::endl;
+		std::cout << "-------------------------------------------------- HGS-CVRP algorithm (2020) ---------------------------------------------------" << std::endl;
+		std::cout << "Call with: ./hgs instancePath solPath [-it nbIter] [-t myCPUtime] [-seed mySeed] [-veh nbVehicles] [-log verbose]               " << std::endl;
+		std::cout << "[-it <int>] sets a maximum number of iterations without improvement. Defaults to 20,000                                         " << std::endl;
+		std::cout << "[-t <double>] sets a time limit in seconds. If this parameter is set the code will be run iteratively until the time limit      " << std::endl;
+		std::cout << "[-seed <int>] sets a fixed seed. Defaults to 0                                                                                  " << std::endl;
+		std::cout << "[-veh <int>] sets a prescribed fleet size. Otherwise a reasonable UB on the the fleet size is calculated                        " << std::endl;
+		std::cout << "[-round <bool>] rounding the distance to the nearest integer or not. It can be 0 (not rounding) or 1 (rounding). Defaults to 1. " << std::endl;
+		std::cout << "[-log <bool>] sets the verbose level of the algorithm log. It can be 0 or 1. Defaults to 1.                                     " << std::endl;
+		std::cout << std::endl;
+		std::cout << "Additional Arguments:                                                                                                           " << std::endl;
+		std::cout << "[-nbGranular <int>] Granular search parameter, limits the number of moves in the RI local search. Defaults to 20                " << std::endl;
+		std::cout << "[-mu <int>] Minimum population size. Defaults to 25                                                                             " << std::endl;
+		std::cout << "[-lambda <int>] Number of solutions created before reaching the maximum population size (i.e., generation size). Defaults to 40 " << std::endl;
+		std::cout << "[-nbElite <int>] Number of elite individuals. Defaults to 5                                                                     " << std::endl;
+		std::cout << "[-nbClose <int>] Number of closest solutions/individuals considered when calculating diversity contribution. Defaults to 4      " << std::endl;
+		std::cout << "[-targetFeasible <double>] target ratio of feasible individuals in the last 100 generatied individuals. Defaults to 0.2         " << std::endl;
+		std::cout << "--------------------------------------------------------------------------------------------------------------------------------" << std::endl;
 		std::cout << std::endl;
 	};
 };
