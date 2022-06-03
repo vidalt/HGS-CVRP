@@ -30,7 +30,7 @@ Params::Params(
 	ran.seed(ap.seed);
 
 	// check if valid coordinates are provided
-	areCoordinatesProvided = (demands.size() == x_coords.size()) && (demands.size() == x_coords.size());
+	areCoordinatesProvided = (demands.size() == x_coords.size()) && (demands.size() == y_coords.size());
 
 	cli = std::vector<Client>(nbClients + 1);
 	for (int i = 0; i <= nbClients; i++)
