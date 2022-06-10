@@ -12,7 +12,8 @@ set(
         Program/Split.cpp
         Program/InstanceCVRPLIB.cpp
         Program/AlgorithmParameters.cpp
-        Program/C_Interface.cpp)
+        Program/C_Interface.cpp
+        Program/Decomposition.cpp)
 
 include_directories(Program)
 

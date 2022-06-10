@@ -77,6 +77,14 @@ public:
 					ap.nbClose = atoi(argv[i+1]);
 				else if (std::string(argv[i]) == "-targetFeasible")
 					ap.targetFeasible = atof(argv[i+1]);
+        else if (std::string(argv[i]) == "-useDecomposition")
+          ap.useDecomposition = atoi(argv[i+1]);
+        else if (std::string(argv[i]) == "-decoIterations")
+          ap.decoIterations = atoi(argv[i+1]);
+        else if (std::string(argv[i]) == "-decoTargetSz")
+          ap.decoTargetSz = atoi(argv[i+1]);
+        else if (std::string(argv[i]) == "-decoNbIter")
+          ap.decoNbIter = atoi(argv[i+1]);
 				else
 				{
 					std::cout << "----- ARGUMENT NOT RECOGNIZED: " << std::string(argv[i]) << std::endl;
@@ -106,6 +114,10 @@ public:
 		std::cout << "[-nbElite <int>] Number of elite individuals. Defaults to 5                                                                     " << std::endl;
 		std::cout << "[-nbClose <int>] Number of closest solutions/individuals considered when calculating diversity contribution. Defaults to 4      " << std::endl;
 		std::cout << "[-targetFeasible <double>] target ratio of feasible individuals in the last 100 generatied individuals. Defaults to 0.2         " << std::endl;
+    std::cout << "[-useDecomposition <0/1>] Use barycentre cluster decomposition? Defaults to 0 (i.e., NO decomposition)                          " << std::endl;
+    std::cout << "[-decoIterations <int>] Iterations between two consecutive decomposition phases. Defaults to 2500 or 5000 depending on inst sz  " << std::endl;
+    std::cout << "[-decoTargetSz <int>] Target number of customers in subproblems                                                                 " << std::endl;
+    std::cout << "[-decoNbIter <int>] Like '-it' but for the subproblems                                                                          " << std::endl;
 		std::cout << "--------------------------------------------------------------------------------------------------------------------------------" << std::endl;
 		std::cout << std::endl;
 	};
