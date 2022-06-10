@@ -36,6 +36,11 @@ add_test(NAME    bin_test_X-n106-k14
                                     -DCOST=14971
                                     -DROUND=1
                                     -P ${CMAKE_CURRENT_SOURCE_DIR}/Test/TestExecutable.cmake)
+add_test(NAME    bin_test_decomposition_X-n502-k39
+         COMMAND ${CMAKE_COMMAND}   -DINSTANCE=X-n502-k39
+                                    -DMAX_COST=69250 # Optimal cost is 69226
+                                    -DROUND=1
+                                    -P ${CMAKE_CURRENT_SOURCE_DIR}/Test/TestDecomposition.cmake)
 
 # Test Executable: Instances with Duration, without Rounding
 add_test(NAME    bin_test_CMT6
