@@ -66,7 +66,7 @@ public:
 	clock_t startTime;                  // Start time of the optimization (set when Params is constructed)
 
 	/* RANDOM NUMBER GENERATOR */       
-	std::minstd_rand ran;               // Using the fastest and simplest LCG. The quality of random numbers is not critical for the LS, but speed is
+	mutable std::minstd_rand ran;               // Using the fastest and simplest LCG. The quality of random numbers is not critical for the LS, but speed is
 
 	/* DATA OF THE PROBLEM INSTANCE */
 	bool isDurationConstraint ;								// Indicates if the problem includes duration constraints
