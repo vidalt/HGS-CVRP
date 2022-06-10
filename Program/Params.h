@@ -78,14 +78,14 @@ public:
 	double maxDemand;										// Maximum demand of a client
 	double maxDist;											// Maximum distance between two clients
 	std::vector< Client > cli ;								// Vector containing information on each client
-	const std::vector< std::vector< double > >& timeCost;	// Distance matrix
+	std::vector< std::vector< double > > timeCost;	// Distance matrix
 	std::vector< std::vector< int > > correlatedVertices;	// Neighborhood restrictions: For each client, list of nearby customers
 	bool areCoordinatesProvided;                            // Check if valid coordinates are provided
 
 	// Initialization from a given data set
 	Params(const std::vector<double>& x_coords,
 		const std::vector<double>& y_coords,
-		const std::vector<std::vector<double>>& dist_mtx,
+		std::vector<std::vector<double>> dist_mtx,
 		const std::vector<double>& service_time,
 		const std::vector<double>& demands,
 		double vehicleCapacity,
@@ -94,6 +94,9 @@ public:
 		bool isDurationConstraint,
 		bool verbose,
 		const AlgorithmParameters& ap);
+
+  // Default 0-params constructor.
+  Params() = default;
 };
 #endif
 
