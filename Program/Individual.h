@@ -67,6 +67,6 @@ public:
   void evaluateCompleteCost(const Params & params);
 
   // Constructor of a random individual containing only a giant tour with a shuffled visit order
-  Individual(Params & params);
+  Individual(const Params & params);
 };
 #endif
