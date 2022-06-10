@@ -704,6 +704,9 @@ void LocalSearch::updateRouteData(Route * myRoute)
 	// Remember "when" this route has been last modified (will be used to filter unnecessary move evaluations)
 	myRoute->whenLastModified = nbMoves ;
 
+  const auto depotX = params.cli[0].coordX;
+  const auto depotY = params.cli[0].coordY;
+
 	if (myRoute->nbCustomers == 0)
 	{
 		myRoute->polarAngleBarycenter = 1.e30;
@@ -714,6 +717,9 @@ void LocalSearch::updateRouteData(Route * myRoute)
 		myRoute->polarAngleBarycenter = atan2(cumulatedY/(double)myRoute->nbCustomers - params.cli[0].coordY, cumulatedX/(double)myRoute->nbCustomers - params.cli[0].coordX);
 		emptyRoutes.erase(myRoute->cour);
 	}
+
+  myRoute->baryX = cumulatedX / (double)myplace - depotX;
+  myRoute->baryY = cumulatedY / (double)myplace - depotY;
 }
 
 void LocalSearch::loadIndividual(const Individual & indiv)
@@ -767,9 +773,17 @@ void LocalSearch::exportIndividual(Individual & indiv)
 	std::sort(routePolarAngles.begin(), routePolarAngles.end()); // empty routes have a polar angle of 1.e30, and therefore will always appear at the end
 
 	int pos = 0;
+  indiv.barycentres.clear();
 	for (int r = 0; r < params.nbVehicles; r++)
 	{
 		indiv.chromR[r].clear();
+
+    if(routes[r].polarAngleBarycenter < 1.e29) {
+      indiv.barycentres.emplace_back(routes[r].baryX, routes[r].baryY, routes[r].polarAngleBarycenter);
+    } else {
+      indiv.barycentres.emplace_back(0.0, 0.0, 0.0);
+    }
+
 		Node * node = depots[routePolarAngles[r].second].next;
 		while (!node->isDepot)
 		{

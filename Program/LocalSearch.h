@@ -40,6 +40,8 @@ struct Route
 	double reversalDistance;			// Difference of cost if the route is reversed
 	double penalty;						// Current sum of load and duration penalties
 	double polarAngleBarycenter;		// Polar angle of the barycenter of the route
+  double baryX;       // X-coordinate of the barycentre
+  double baryY;       // Y-coordinate of the barycentre
 	CircleSector sector;				// Circle sector associated to the set of customers
 };
 

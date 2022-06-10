@@ -35,6 +35,21 @@ struct EvalIndiv
 	bool isFeasible = false;		// Feasibility status of the individual
 };
 
+/** Structure used to keep information about the barycentre of a route. */
+struct Barycentre {
+  /** X coordinate (average of the x coordinates of the visited customers). */
+  double x;
+
+  /** Y coordinate (average of the y coordinates of the visited customers). */
+  double y;
+
+  /** Polar angle of the barycentre. */
+  double angle;
+
+  /** Simple constructor assigning all members. */
+  Barycentre(double x, double y, double angle) : x{x}, y{y}, angle{angle} {}
+};
+
 class Individual
 {
 public:
@@ -45,6 +60,7 @@ public:
   std::vector < int > successors ;											// For each node, the successor in the solution (can be the depot 0)
   std::vector < int > predecessors ;										// For each node, the predecessor in the solution (can be the depot 0)
   std::multiset < std::pair < double, Individual* > > indivsPerProximity ;	// The other individuals in the population, ordered by increasing proximity (the set container follows a natural ordering based on the first value of the pair)
+  std::vector<Barycentre> barycentres;        // Barycentres of each route. If a route is empty, the barycentre is meaningless and is at (0,0)
   double biasedFitness;														// Biased fitness of the solution
 
   // Measuring cost and feasibility of an Individual from the information of chromR (needs chromR filled and access to Params)
