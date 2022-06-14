@@ -231,8 +231,10 @@ namespace kmeans {
       double dsq = distSq(pt, centres.back());
 
       for(auto i = 0u; i < centres.size() - 1u; ++i) {
+        const auto dist = distSq(pt, centres[i]);
         if(distSq(pt, centres[i]) < dsq) {
           n = i;
+          dsq = dist;
         }
       }
 
