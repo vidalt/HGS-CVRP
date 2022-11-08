@@ -90,6 +90,22 @@ There exist different conventions regarding distance calculations in the academi
 The default code behavior is to apply integer rounding, as it should be done on the X instances of Uchoa et al. (2017).
 To change this behavior (e.g., when testing on the CMT or Golden instances), give a flag `-round 0`, when you run the executable.
 
+The progress of the algorithm in the standard output will be displayed as:
+
+``
+It [N1] [N2] | T(s) [T] | Feas [NF] [BestF] [AvgF] | Inf [NI] [BestI] [AvgI] | Div [DivF] [DivI] | Feas [FeasC] [FeasD] | Pen [PenC] [PenD]
+``
+```
+[N1] and [N2]: Total number of iterations and iterations without improvement
+[T]: CPU time spent until now
+[NF] and [NI]: Number of feasible and infeasible solutions in the subpopulations 
+[BestF] and [BestI]: Value of the best feasible and infeasible solution in the subpopulations 
+[AvgF] and [AvgI]: Average value of the solutions in the feasible and infeasible subpopulations 
+[DivF] and [DivI]: Diversity of the feasible and infeasible subpopulations
+[FC] and [FD]: Percentage of naturally feasible solutions in relation to the capacity and duration constraints
+[PC] and [PD]: Current penalty level per unit of excess capacity and duration
+```
+
 ## Code structure
 
 The main classes containing the logic of the algorithm are the following:
