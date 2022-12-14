@@ -77,6 +77,10 @@ public:
 					ap.nbClose = atoi(argv[i+1]);
 				else if (std::string(argv[i]) == "-targetFeasible")
 					ap.targetFeasible = atof(argv[i+1]);
+				else if (std::string(argv[i]) == "-penaltyIncrease")
+					ap.penaltyIncrease = atof(argv[i+1]);
+				else if (std::string(argv[i]) == "-penaltyDecrease")
+					ap.penaltyDecrease = atof(argv[i+1]);
 				else
 				{
 					std::cout << "----- ARGUMENT NOT RECOGNIZED: " << std::string(argv[i]) << std::endl;
@@ -105,7 +109,9 @@ public:
 		std::cout << "[-lambda <int>] Number of solutions created before reaching the maximum population size (i.e., generation size). Defaults to 40 " << std::endl;
 		std::cout << "[-nbElite <int>] Number of elite individuals. Defaults to 5                                                                     " << std::endl;
 		std::cout << "[-nbClose <int>] Number of closest solutions/individuals considered when calculating diversity contribution. Defaults to 4      " << std::endl;
-		std::cout << "[-targetFeasible <double>] target ratio of feasible individuals in the last 100 generatied individuals. Defaults to 0.2         " << std::endl;
+		std::cout << "[-targetFeasible <double>] target ratio of feasible individuals in last 100 iterations. Defaults to 0.2                         " << std::endl;
+		std::cout << "[-penaltyIncrease <double>] penalty increase if insufficient feasible individuals in last 100 iterations. Defaults to 1.2       " << std::endl;
+		std::cout << "[-penaltyDecrease <double>] penalty decrease if sufficient feasible individuals in last 100 iterations. Defaults to 0.85        " << std::endl;
 		std::cout << "--------------------------------------------------------------------------------------------------------------------------------" << std::endl;
 		std::cout << std::endl;
 	};
