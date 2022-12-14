@@ -83,7 +83,9 @@ Additional Arguments:
 [-lambda <int>] Number of solutions created before reaching the maximum population size (i.e., generation size). Defaults to 40
 [-nbElite <int>] Number of elite individuals. Defaults to 5                                                                    
 [-nbClose <int>] Number of closest solutions/individuals considered when calculating diversity contribution. Defaults to 4     
-[-targetFeasible <double>] target ratio of feasible individuals in the last 100 generatied individuals. Defaults to 0.2        
+[-targetFeasible <double>] target ratio of feasible individuals in last 100 iterations. Defaults to 0.2                          
+[-penaltyIncrease <double>] penalty increase if insufficient feasible individuals in last 100 iterations. Defaults to 1.2         
+[-penaltyDecrease <double>] penalty decrease if sufficient feasible individuals in last 100 iterations. Defaults to 0.85        
 ```
 
 There exist different conventions regarding distance calculations in the academic literature.
