@@ -14,8 +14,8 @@ struct AlgorithmParameters {
 	int nbElite;			// Number of elite individuals
 	int nbClose;			// Number of closest solutions/individuals considered when calculating diversity contribution
 	double targetFeasible;	// Reference proportion for the number of feasible individuals, used for the adaptation of the penalty parameters
-	double penaltyDecrease;
-	double penaltyIncrease;
+	double penaltyDecrease;	// Multiplier used to decrease penalty parameters if there are sufficient feasible individuals
+	double penaltyIncrease;	// Multiplier used to increase penalty parameters if there are insufficient feasible individuals
 
 	int seed;				// Random seed. Default value: 0
 	int nbIter;				// Nb iterations without improvement until termination (or restart if a time limit is specified). Default value: 20,000 iterations
