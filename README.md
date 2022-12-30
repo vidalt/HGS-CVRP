@@ -50,7 +50,7 @@ Build with:
 ```console
 mkdir build
 cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake .. -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles"
 make bin
 ```
 This will generate the executable file `hgs` in the `build` directory.
@@ -115,7 +115,7 @@ You can also build a shared library to call the HGS-CVRP algorithm from your cod
 ```console
 mkdir build
 cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake .. -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles"
 make lib
 ```
 This will generate the library file, `libhgscvrp.so` (Linux), `libhgscvrp.dylib` (macOS), or `hgscvrp.dll` (Windows),
