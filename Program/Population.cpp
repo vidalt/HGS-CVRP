@@ -296,8 +296,8 @@ void Population::exportCVRPLibFormat(const Individual & indiv, std::string fileN
 
 Population::Population(Params & params, Split & split, LocalSearch & localSearch) : params(params), split(split), localSearch(localSearch), bestSolutionRestart(params), bestSolutionOverall(params)
 {
-	listFeasibilityLoad = std::list<bool>(100, true);
-	listFeasibilityDuration = std::list<bool>(100, true);
+	listFeasibilityLoad = std::list<bool>(params.ap.nbIterPenaltyManagement, true);
+	listFeasibilityDuration = std::list<bool>(params.ap.nbIterPenaltyManagement, true);
 }
 
 Population::~Population()
