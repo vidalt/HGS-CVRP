@@ -2,24 +2,32 @@ name: CI_Build
 
 on:
   push:
-    branches: [ master, dev ]
+    branches: [ main, dev ]
   pull_request:
-    branches: [ master, dev ]
+    branches: [ main, dev ]
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ "ubuntu-latest", "windows-latest", "macos-latest" ]
+        os: [ "ubuntu-latest", "windows-latest", "macos-latest"]
+      fail-fast: false
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
+    - uses: ilammy/msvc-dev-cmd@v1
     - name: make bin on ${{ matrix.os }}
       run: | 
         mkdir build 
         cd build
-        cmake .. -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles"
-        make bin
+        if [ "$RUNNER_OS" == "Windows" ]; then
+          cmake .. -DCMAKE_BUILD_TYPE=Release -G "NMake Makefiles"
+          nmake bin
+        else
+          cmake .. -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles"
+          make bin
+        fi
+      shell: bash
     - name: test bin on ${{ matrix.os }}
       run: |
         cd build
@@ -27,11 +35,23 @@ jobs:
     - name: make lib on ${{ matrix.os }}
       run: |
         cd build
-        cmake .. -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles"
-        make lib
+        if [ "$RUNNER_OS" == "Windows" ]; then
+          cmake .. -DCMAKE_BUILD_TYPE=Release -G "NMake Makefiles"
+          nmake lib
+        else
+          cmake .. -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles"
+          make lib
+        fi
+      shell: bash
     - name: test lib on ${{ matrix.os }}
       run: |
         cd build
-        cmake .. -DCMAKE_BUILD_TYPE=Debug -G "Unix Makefiles"        
-        make lib_test_c
+        if [ "$RUNNER_OS" == "Windows" ]; then
+          cmake .. -DCMAKE_BUILD_TYPE=Debug -G "NMake Makefiles"
+          nmake lib_test_c
+        else
+          cmake .. -DCMAKE_BUILD_TYPE=Debug -G "Unix Makefiles"
+          make lib_test_c
+        fi  
         ctest -R lib --verbose
+      shell: bash

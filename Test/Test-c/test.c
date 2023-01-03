@@ -69,7 +69,7 @@ int main()
 	////////////////////////////////////////////////////////////////////////////////////////////////////////
 	printf("-------- test.c #2 -----\n");
 	// Test #2: solve by dist_mtx
-	double dist_mtx[n][n];
+	double dist_mtx[10][10];
 	for (int i=0; i < n; i++) {
 		for (int j=0; j< n; j++) {
 			dist_mtx[i][j] = sqrt( (x[i] - x[j]) * (x[i] - x[j]) + (y[i] - y[j]) * (y[i] - y[j]));
@@ -153,7 +153,7 @@ int main()
 
 	printf("-------- test.c #7 (tight duration constraint) -----\n");
 
-	double rounded_dist_mtx[n][n];
+	double rounded_dist_mtx[10][10];
 	for (int i=0; i < n; i++) {
 		for (int j=0; j< n; j++) {
 			rounded_dist_mtx[i][j] = sqrt( (x[i] - x[j]) * (x[i] - x[j]) + (y[i] - y[j]) * (y[i] - y[j]));
