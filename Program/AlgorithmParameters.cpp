@@ -22,6 +22,7 @@ struct AlgorithmParameters default_algorithm_parameters() {
 
 	ap.seed = 0;
 	ap.nbIter = 20000;
+	ap.nbIterTraces = 500;
 	ap.timeLimit = 0;
 	ap.useSwapStar = 1;
 
@@ -42,6 +43,7 @@ void print_algorithm_parameters(const AlgorithmParameters & ap)
 	std::cout << "---- penaltyIncrease         is set to " << ap.penaltyIncrease << std::endl;
 	std::cout << "---- seed                    is set to " << ap.seed << std::endl;
 	std::cout << "---- nbIter                  is set to " << ap.nbIter << std::endl;
+	std::cout << "---- nbIterTraces            is set to " << ap.nbIterTraces << std::endl;
 	std::cout << "---- timeLimit               is set to " << ap.timeLimit << std::endl;
 	std::cout << "---- useSwapStar             is set to " << ap.useSwapStar << std::endl;
 	std::cout << "==================================================" << std::endl;

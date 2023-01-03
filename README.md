@@ -78,6 +78,7 @@ Call with: ./hgs instancePath solPath [-it nbIter] [-t myCPUtime] [-bks bksPath]
 [-log <bool>] sets the verbose level of the algorithm log. It can be 0 or 1. Defaults to 1.                                       
 
 Additional Arguments:
+[-nbIterTraces <int>] Number of iterations between traces display during HGS execution. Defaults to 500
 [-nbGranular <int>] Granular search parameter, limits the number of moves in the RI local search. Defaults to 20               
 [-mu <int>] Minimum population size. Defaults to 25                                                                            
 [-lambda <int>] Number of solutions created before reaching the maximum population size (i.e., generation size). Defaults to 40
