@@ -52,5 +52,8 @@ public:
 
   // Constructor of a random individual containing only a giant tour with a shuffled visit order
   Individual(Params & params);
+
+  // Constructor of an individual from a file in CVRPLib solution format as produced by the algorithm (useful if a user wishes to input an initial solution)
+  Individual(Params & params, std::string fileName);
 };
 #endif
