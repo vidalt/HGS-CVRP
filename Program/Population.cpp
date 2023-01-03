@@ -140,13 +140,17 @@ void Population::managePenalties()
 {
 	// Setting some bounds [0.1,100000] to the penalty values for safety
 	double fractionFeasibleLoad = (double)std::count(listFeasibilityLoad.begin(), listFeasibilityLoad.end(), true) / (double)listFeasibilityLoad.size();
-	if (fractionFeasibleLoad < params.ap.targetFeasible - 0.05 && params.penaltyCapacity < 100000.) params.penaltyCapacity = std::min<double>(params.penaltyCapacity * 1.2,100000.);
-	else if (fractionFeasibleLoad > params.ap.targetFeasible + 0.05 && params.penaltyCapacity > 0.1) params.penaltyCapacity = std::max<double>(params.penaltyCapacity * 0.85, 0.1);
+	if (fractionFeasibleLoad < params.ap.targetFeasible - 0.05 && params.penaltyCapacity < 100000.)
+		params.penaltyCapacity = std::min<double>(params.penaltyCapacity * params.ap.penaltyIncrease, 100000.);
+	else if (fractionFeasibleLoad > params.ap.targetFeasible + 0.05 && params.penaltyCapacity > 0.1)
+		params.penaltyCapacity = std::max<double>(params.penaltyCapacity * params.ap.penaltyDecrease, 0.1);
 
 	// Setting some bounds [0.1,100000] to the penalty values for safety
 	double fractionFeasibleDuration = (double)std::count(listFeasibilityDuration.begin(), listFeasibilityDuration.end(), true) / (double)listFeasibilityDuration.size();
-	if (fractionFeasibleDuration < params.ap.targetFeasible - 0.05 && params.penaltyDuration < 100000.)	params.penaltyDuration = std::min<double>(params.penaltyDuration * 1.2,100000.);
-	else if (fractionFeasibleDuration > params.ap.targetFeasible + 0.05 && params.penaltyDuration > 0.1) params.penaltyDuration = std::max<double>(params.penaltyDuration * 0.85, 0.1);
+	if (fractionFeasibleDuration < params.ap.targetFeasible - 0.05 && params.penaltyDuration < 100000.)
+		params.penaltyDuration = std::min<double>(params.penaltyDuration * params.ap.penaltyIncrease, 100000.);
+	else if (fractionFeasibleDuration > params.ap.targetFeasible + 0.05 && params.penaltyDuration > 0.1)
+		params.penaltyDuration = std::max<double>(params.penaltyDuration * params.ap.penaltyDecrease, 0.1);
 
 	// Update the evaluations
 	for (int i = 0; i < (int)infeasibleSubpop.size(); i++)
@@ -292,8 +296,8 @@ void Population::exportCVRPLibFormat(const Individual & indiv, std::string fileN
 
 Population::Population(Params & params, Split & split, LocalSearch & localSearch) : params(params), split(split), localSearch(localSearch), bestSolutionRestart(params), bestSolutionOverall(params)
 {
-	listFeasibilityLoad = std::list<bool>(100, true);
-	listFeasibilityDuration = std::list<bool>(100, true);
+	listFeasibilityLoad = std::list<bool>(params.ap.nbIterPenaltyManagement, true);
+	listFeasibilityDuration = std::list<bool>(params.ap.nbIterPenaltyManagement, true);
 }
 
 Population::~Population()
