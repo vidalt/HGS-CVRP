@@ -1,5 +1,5 @@
 
-[![CI_Build](https://github.com/vidalt/HGS-CVRP/actions/workflows/CI_Build.yml/badge.svg)](https://github.com/vidalt/HGS-CVRP/actions/workflows/CI_Build.yml)
+[![CI_Build](https://github.com/vidalt/HGS-CVRP/actions/workflows/CI_Build.yml/badge.svg?branch=main)](https://github.com/vidalt/HGS-CVRP/actions/workflows/CI_Build.yml)
 
 # HGS-CVRP: A modern implementation of the Hybrid Genetic Search for the CVRP
 
@@ -78,12 +78,16 @@ Call with: ./hgs instancePath solPath [-it nbIter] [-t myCPUtime] [-bks bksPath]
 [-log <bool>] sets the verbose level of the algorithm log. It can be 0 or 1. Defaults to 1.                                       
 
 Additional Arguments:
+[-nbIterTraces <int>] Number of iterations between traces display during HGS execution. Defaults to 500
 [-nbGranular <int>] Granular search parameter, limits the number of moves in the RI local search. Defaults to 20               
 [-mu <int>] Minimum population size. Defaults to 25                                                                            
 [-lambda <int>] Number of solutions created before reaching the maximum population size (i.e., generation size). Defaults to 40
 [-nbElite <int>] Number of elite individuals. Defaults to 5                                                                    
 [-nbClose <int>] Number of closest solutions/individuals considered when calculating diversity contribution. Defaults to 4     
-[-targetFeasible <double>] target ratio of feasible individuals in the last 100 generatied individuals. Defaults to 0.2        
+[-nbIterPenaltyManagement <int>] Number of iterations between penalty updates. Defaults to 100
+[-targetFeasible <double>] target ratio of feasible individuals between penalty updates. Defaults to 0.2
+[-penaltyIncrease <double>] penalty increase if insufficient feasible individuals between penalty updates. Defaults to 1.2
+[-penaltyDecrease <double>] penalty decrease if sufficient feasible individuals between penalty updates. Defaults to 0.85
 ```
 
 There exist different conventions regarding distance calculations in the academic literature.

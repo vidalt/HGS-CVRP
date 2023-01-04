@@ -27,8 +27,8 @@ void Genetic::run()
 		else nbIterNonProd ++ ;
 
 		/* DIVERSIFICATION, PENALTY MANAGEMENT AND TRACES */
-		if (nbIter % 100 == 0) population.managePenalties() ;
-		if (nbIter % 500 == 0) population.printState(nbIter, nbIterNonProd);
+		if (nbIter % params.ap.nbIterPenaltyManagement == 0) population.managePenalties();
+		if (nbIter % params.ap.nbIterTraces == 0) population.printState(nbIter, nbIterNonProd);
 
 		/* FOR TESTS INVOLVING SUCCESSIVE RUNS UNTIL A TIME LIMIT: WE RESET THE ALGORITHM/POPULATION EACH TIME maxIterNonProd IS ATTAINED*/
 		if (params.ap.timeLimit != 0 && nbIterNonProd == params.ap.nbIter)

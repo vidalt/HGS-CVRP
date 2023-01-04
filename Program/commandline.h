@@ -42,7 +42,7 @@ public:
 	// Reads the line of command and extracts possible options
 	CommandLine(int argc, char* argv[])
 	{
-		if (argc % 2 != 1 || argc > 27 || argc < 3)
+		if (argc % 2 != 1 || argc > 35 || argc < 3)
 		{
 			std::cout << "----- NUMBER OF COMMANDLINE ARGUMENTS IS INCORRECT: " << argc << std::endl;
 			display_help(); throw std::string("Incorrect line of command");
@@ -75,8 +75,16 @@ public:
 					ap.nbElite = atoi(argv[i+1]);
 				else if (std::string(argv[i]) == "-nbClose")
 					ap.nbClose = atoi(argv[i+1]);
+				else if (std::string(argv[i]) == "-nbIterPenaltyManagement")
+					ap.nbIterPenaltyManagement = atoi(argv[i+1]);
+				else if (std::string(argv[i]) == "-nbIterTraces")
+					ap.nbIterTraces = atoi(argv[i + 1]);
 				else if (std::string(argv[i]) == "-targetFeasible")
 					ap.targetFeasible = atof(argv[i+1]);
+				else if (std::string(argv[i]) == "-penaltyIncrease")
+					ap.penaltyIncrease = atof(argv[i+1]);
+				else if (std::string(argv[i]) == "-penaltyDecrease")
+					ap.penaltyDecrease = atof(argv[i+1]);
 				else
 				{
 					std::cout << "----- ARGUMENT NOT RECOGNIZED: " << std::string(argv[i]) << std::endl;
@@ -100,12 +108,16 @@ public:
 		std::cout << "[-log <bool>] sets the verbose level of the algorithm log. It can be 0 or 1. Defaults to 1.                                     " << std::endl;
 		std::cout << std::endl;
 		std::cout << "Additional Arguments:                                                                                                           " << std::endl;
+		std::cout << "[-nbIterTraces <int>] Number of iterations between traces display during HGS execution. Defaults to 500                         " << std::endl;
 		std::cout << "[-nbGranular <int>] Granular search parameter, limits the number of moves in the RI local search. Defaults to 20                " << std::endl;
 		std::cout << "[-mu <int>] Minimum population size. Defaults to 25                                                                             " << std::endl;
 		std::cout << "[-lambda <int>] Number of solutions created before reaching the maximum population size (i.e., generation size). Defaults to 40 " << std::endl;
 		std::cout << "[-nbElite <int>] Number of elite individuals. Defaults to 5                                                                     " << std::endl;
 		std::cout << "[-nbClose <int>] Number of closest solutions/individuals considered when calculating diversity contribution. Defaults to 4      " << std::endl;
-		std::cout << "[-targetFeasible <double>] target ratio of feasible individuals in the last 100 generatied individuals. Defaults to 0.2         " << std::endl;
+		std::cout << "[-nbIterPenaltyManagement <int>] Number of iterations between penalty updates. Defaults to 100                                  " << std::endl;
+		std::cout << "[-targetFeasible <double>] target ratio of feasible individuals between penalty updates. Defaults to 0.2                        " << std::endl;
+		std::cout << "[-penaltyIncrease <double>] penalty increase if insufficient feasible individuals between penalty updates. Defaults to 1.2      " << std::endl;
+		std::cout << "[-penaltyDecrease <double>] penalty decrease if sufficient feasible individuals between penalty updates. Defaults to 0.85       " << std::endl;
 		std::cout << "--------------------------------------------------------------------------------------------------------------------------------" << std::endl;
 		std::cout << std::endl;
 	};
