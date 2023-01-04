@@ -33,8 +33,8 @@ void Genetic::run()
 		else nbIterNonProd ++ ;
 
 		/* DIVERSIFICATION, PENALTY MANAGEMENT AND TRACES */
-		if (nbIter % 100 == 0) population.managePenalties() ;
-		if (nbIter % 500 == 0) population.printState(nbIter, nbIterNonProd);
+		if (nbIter % params.ap.nbIterPenaltyManagement == 0) population.managePenalties();
+		if (nbIter % params.ap.nbIterTraces == 0) population.printState(nbIter, nbIterNonProd);
 
     /* DECOMPOSITION PHASE */
     if(params.ap.useDecomposition != 0 && nbIter > 0 && (nbIter % params.ap.decoIterations) == 0) {

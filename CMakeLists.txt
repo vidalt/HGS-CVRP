@@ -15,6 +15,10 @@ set(
         Program/C_Interface.cpp
         Program/Decomposition.cpp)
 
+if (MSVC)
+	set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+endif (MSVC)
+
 include_directories(Program)
 
 # Build Executable

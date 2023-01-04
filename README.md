@@ -50,7 +50,7 @@ Build with:
 ```console
 mkdir build
 cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake .. -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles"
 make bin
 ```
 This will generate the executable file `hgs` in the `build` directory.
@@ -78,17 +78,37 @@ Call with: ./hgs instancePath solPath [-it nbIter] [-t myCPUtime] [-bks bksPath]
 [-log <bool>] sets the verbose level of the algorithm log. It can be 0 or 1. Defaults to 1.                                       
 
 Additional Arguments:
+[-nbIterTraces <int>] Number of iterations between traces display during HGS execution. Defaults to 500
 [-nbGranular <int>] Granular search parameter, limits the number of moves in the RI local search. Defaults to 20               
 [-mu <int>] Minimum population size. Defaults to 25                                                                            
 [-lambda <int>] Number of solutions created before reaching the maximum population size (i.e., generation size). Defaults to 40
 [-nbElite <int>] Number of elite individuals. Defaults to 5                                                                    
 [-nbClose <int>] Number of closest solutions/individuals considered when calculating diversity contribution. Defaults to 4     
-[-targetFeasible <double>] target ratio of feasible individuals in the last 100 generatied individuals. Defaults to 0.2        
+[-nbIterPenaltyManagement <int>] Number of iterations between penalty updates. Defaults to 100
+[-targetFeasible <double>] target ratio of feasible individuals between penalty updates. Defaults to 0.2
+[-penaltyIncrease <double>] penalty increase if insufficient feasible individuals between penalty updates. Defaults to 1.2
+[-penaltyDecrease <double>] penalty decrease if sufficient feasible individuals between penalty updates. Defaults to 0.85
 ```
 
 There exist different conventions regarding distance calculations in the academic literature.
 The default code behavior is to apply integer rounding, as it should be done on the X instances of Uchoa et al. (2017).
 To change this behavior (e.g., when testing on the CMT or Golden instances), give a flag `-round 0`, when you run the executable.
+
+The progress of the algorithm in the standard output will be displayed as:
+
+``
+It [N1] [N2] | T(s) [T] | Feas [NF] [BestF] [AvgF] | Inf [NI] [BestI] [AvgI] | Div [DivF] [DivI] | Feas [FeasC] [FeasD] | Pen [PenC] [PenD]
+``
+```
+[N1] and [N2]: Total number of iterations and iterations without improvement
+[T]: CPU time spent until now
+[NF] and [NI]: Number of feasible and infeasible solutions in the subpopulations 
+[BestF] and [BestI]: Value of the best feasible and infeasible solution in the subpopulations 
+[AvgF] and [AvgI]: Average value of the solutions in the feasible and infeasible subpopulations 
+[DivF] and [DivI]: Diversity of the feasible and infeasible subpopulations
+[FC] and [FD]: Percentage of naturally feasible solutions in relation to the capacity and duration constraints
+[PC] and [PD]: Current penalty level per unit of excess capacity and duration
+```
 
 ## Code structure
 
@@ -115,7 +135,7 @@ You can also build a shared library to call the HGS-CVRP algorithm from your cod
 ```console
 mkdir build
 cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake .. -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles"
 make lib
 ```
 This will generate the library file, `libhgscvrp.so` (Linux), `libhgscvrp.dylib` (macOS), or `hgscvrp.dll` (Windows),

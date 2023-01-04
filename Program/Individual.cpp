@@ -42,3 +42,40 @@ Individual::Individual(const Params & params)
 	std::shuffle(chromT.begin(), chromT.end(), params.ran);
 	eval.penalizedCost = 1.e30;	
 }
+
+Individual::Individual(Params & params, std::string fileName) : Individual(params)
+{
+	double readCost;
+	chromT.clear();
+	std::ifstream inputFile(fileName);
+	if (inputFile.is_open())
+	{
+		std::string inputString;
+		inputFile >> inputString;
+		// Loops in the input file as long as the first line keyword is "Route"
+		for (int r = 0; inputString == "Route"; r++)
+		{
+			inputFile >> inputString;
+			getline(inputFile, inputString);
+			std::stringstream ss(inputString);
+			int inputCustomer;
+			while (ss >> inputCustomer) // Loops as long as there is an integer to read in this route
+			{
+				chromT.push_back(inputCustomer);
+				chromR[r].push_back(inputCustomer);
+			}
+			inputFile >> inputString;
+		}
+		if (inputString == "Cost") inputFile >> readCost;
+		else throw std::string("Unexpected token in input solution");
+
+		// Some safety checks and printouts
+		evaluateCompleteCost(params);
+		if ((int)chromT.size() != params.nbClients) throw std::string("Input solution does not contain the correct number of clients");
+		if (!eval.isFeasible) throw std::string("Input solution is infeasible");
+		if (eval.penalizedCost != readCost)throw std::string("Input solution has a different cost than announced in the file");
+		if (params.verbose) std::cout << "----- INPUT SOLUTION HAS BEEN SUCCESSFULLY READ WITH COST " << eval.penalizedCost << std::endl;
+	}
+	else 
+		throw std::string("Impossible to open solution file provided in input in : " + fileName);
+}
