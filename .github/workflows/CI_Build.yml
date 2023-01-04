@@ -2,9 +2,9 @@ name: CI_Build
 
 on:
   push:
-    branches: [ main, dev ]
+    branches: [ main, dev, feature-decompositions ]
   pull_request:
-    branches: [ main, dev ]
+    branches: [ main, dev, feature-decompositions ]
 
 jobs:
   build:
