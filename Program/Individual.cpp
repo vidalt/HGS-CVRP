@@ -43,7 +43,7 @@ Individual::Individual(const Params & params)
 	eval.penalizedCost = 1.e30;	
 }
 
-Individual::Individual(Params & params, std::string fileName) : Individual(params)
+Individual::Individual(const Params & params, std::string fileName) : Individual(params)
 {
 	double readCost;
 	chromT.clear();
