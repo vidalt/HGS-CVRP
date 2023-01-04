@@ -26,6 +26,7 @@ SOFTWARE.*/
 #include <cstdint>
 #include <vector>
 #include <algorithm>
+#include <numeric>
 #include <random>
 #include <cassert>
 
