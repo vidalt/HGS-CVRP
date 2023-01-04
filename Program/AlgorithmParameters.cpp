@@ -26,6 +26,11 @@ struct AlgorithmParameters default_algorithm_parameters() {
 	ap.timeLimit = 0;
 	ap.useSwapStar = 1;
 
+	ap.useDecomposition = 0;
+	ap.decoIterations = 0;
+	ap.decoTargetSz = 250;
+	ap.decoNbIter = 1000;
+
 	return ap;
 }
 
@@ -46,5 +51,9 @@ void print_algorithm_parameters(const AlgorithmParameters & ap)
 	std::cout << "---- nbIterTraces            is set to " << ap.nbIterTraces << std::endl;
 	std::cout << "---- timeLimit               is set to " << ap.timeLimit << std::endl;
 	std::cout << "---- useSwapStar             is set to " << ap.useSwapStar << std::endl;
+  std::cout << "---- useDecomposition        is set to " << ap.useDecomposition << std::endl;
+	std::cout << "---- decoIterations          is set to " << ap.decoIterations << std::endl;
+	std::cout << "---- decoTargetSz            is set to " << ap.decoTargetSz << std::endl;
+	std::cout << "---- decoNbIter              is set to " << ap.decoNbIter << std::endl;
 	std::cout << "==================================================" << std::endl;
 }

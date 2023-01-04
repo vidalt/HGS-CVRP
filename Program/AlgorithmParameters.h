@@ -24,6 +24,12 @@ struct AlgorithmParameters {
 	int nbIterTraces;       // Number of iterations between traces display during HGS execution
 	double timeLimit;		// CPU time limit until termination in seconds. Default value: 0 (i.e., inactive)
 	int useSwapStar;		// Use SWAP* local search or not. Default value: 1. Only available when coordinates are provided.
+
+  int useDecomposition;   // If 1, large (> 300 customers) problems are decomposed using Barycentre Clustering Decomposition.
+                          // See: https://santini.in/files/papers/santini-schneider-vidal-vigo-2022.pdf
+  int decoIterations;     // Decompose the problem each decoIterations iterations.
+  int decoTargetSz;       // Try to create subproblems with this many customers.
+  int decoNbIter;         // Param nbIter, but for the sub-problem.
 };
 
 #ifdef __cplusplus

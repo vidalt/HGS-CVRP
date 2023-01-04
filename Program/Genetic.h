@@ -25,6 +25,7 @@ SOFTWARE.*/
 
 #include "Population.h"
 #include "Individual.h"
+#include "Decomposition.h"
 
 class Genetic
 {
@@ -35,6 +36,7 @@ public:
 	LocalSearch localSearch;		// Local Search structure
 	Population population;			// Population (public for now to give access to the solutions, but should be be improved later on)
 	Individual offspring;			// First individual to be used as input for the crossover
+  Decomposition decomposition; // Object which takes care of decomposition, if enabled.
 
 	// OX Crossover
 	void crossoverOX(Individual & result, const Individual & parent1, const Individual & parent2);
@@ -44,6 +46,12 @@ public:
 
 	// Constructor
 	Genetic(Params & params);
+
+private:
+  // If the user wants decomposition but has not provided relevant params,
+  // we try to guess what good values would be for these params, based on
+  // the instance size.
+  void checkDecompositionParams();
 };
 
 #endif

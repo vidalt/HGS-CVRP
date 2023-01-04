@@ -32,7 +32,7 @@ void Individual::evaluateCompleteCost(const Params & params)
 	eval.isFeasible = (eval.capacityExcess < MY_EPSILON && eval.durationExcess < MY_EPSILON);
 }
 
-Individual::Individual(Params & params)
+Individual::Individual(const Params & params)
 {
 	successors = std::vector <int>(params.nbClients + 1);
 	predecessors = std::vector <int>(params.nbClients + 1);

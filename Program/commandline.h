@@ -42,7 +42,7 @@ public:
 	// Reads the line of command and extracts possible options
 	CommandLine(int argc, char* argv[])
 	{
-		if (argc % 2 != 1 || argc > 35 || argc < 3)
+		if (argc % 2 != 1 || argc > 43 || argc < 3)
 		{
 			std::cout << "----- NUMBER OF COMMANDLINE ARGUMENTS IS INCORRECT: " << argc << std::endl;
 			display_help(); throw std::string("Incorrect line of command");
@@ -81,10 +81,18 @@ public:
 					ap.nbIterTraces = atoi(argv[i + 1]);
 				else if (std::string(argv[i]) == "-targetFeasible")
 					ap.targetFeasible = atof(argv[i+1]);
-				else if (std::string(argv[i]) == "-penaltyIncrease")
+        else if (std::string(argv[i]) == "-penaltyIncrease")
 					ap.penaltyIncrease = atof(argv[i+1]);
 				else if (std::string(argv[i]) == "-penaltyDecrease")
 					ap.penaltyDecrease = atof(argv[i+1]);
+        else if (std::string(argv[i]) == "-useDecomposition")
+          ap.useDecomposition = atoi(argv[i+1]);
+        else if (std::string(argv[i]) == "-decoIterations")
+          ap.decoIterations = atoi(argv[i+1]);
+        else if (std::string(argv[i]) == "-decoTargetSz")
+          ap.decoTargetSz = atoi(argv[i+1]);
+        else if (std::string(argv[i]) == "-decoNbIter")
+          ap.decoNbIter = atoi(argv[i+1]);
 				else
 				{
 					std::cout << "----- ARGUMENT NOT RECOGNIZED: " << std::string(argv[i]) << std::endl;
@@ -118,6 +126,10 @@ public:
 		std::cout << "[-targetFeasible <double>] target ratio of feasible individuals between penalty updates. Defaults to 0.2                        " << std::endl;
 		std::cout << "[-penaltyIncrease <double>] penalty increase if insufficient feasible individuals between penalty updates. Defaults to 1.2      " << std::endl;
 		std::cout << "[-penaltyDecrease <double>] penalty decrease if sufficient feasible individuals between penalty updates. Defaults to 0.85       " << std::endl;
+    std::cout << "[-useDecomposition <0/1>] Use barycentre cluster decomposition? Defaults to 0 (i.e., NO decomposition)                          " << std::endl;
+    std::cout << "[-decoIterations <int>] Iterations between two consecutive decomposition phases. Defaults to 2500 or 5000 depending on inst sz  " << std::endl;
+    std::cout << "[-decoTargetSz <int>] Target number of customers in subproblems                                                                 " << std::endl;
+    std::cout << "[-decoNbIter <int>] Like '-it' but for the subproblems                                                                          " << std::endl;
 		std::cout << "--------------------------------------------------------------------------------------------------------------------------------" << std::endl;
 		std::cout << std::endl;
 	};
