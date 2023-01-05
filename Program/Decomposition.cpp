@@ -296,6 +296,10 @@ SubProblem::SubProblem(const Params &mpParams,
   spParams.ap.nbClose = mpParams.ap.nbClose;
   spParams.ap.targetFeasible = mpParams.ap.targetFeasible;
   spParams.ap.useSwapStar = mpParams.ap.useSwapStar;
+  spParams.ap.nbIterPenaltyManagement = mpParams.ap.nbIterPenaltyManagement;
+  spParams.ap.penaltyDecrease = mpParams.ap.penaltyDecrease;
+  spParams.ap.penaltyIncrease = mpParams.ap.penaltyIncrease;
+  spParams.ap.nbIterTraces = mpParams.ap.nbIterTraces;
   spParams.isDurationConstraint = mpParams.isDurationConstraint;
   spParams.areCoordinatesProvided = mpParams.areCoordinatesProvided;
   spParams.durationLimit = mpParams.durationLimit;
