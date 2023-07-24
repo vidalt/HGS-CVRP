@@ -161,6 +161,7 @@ void Population::managePenalties()
 	// If needed, reorder the individuals in the infeasible subpopulation since the penalty values have changed (simple bubble sort for the sake of simplicity)
 	for (int i = 0; i < (int)infeasibleSubpop.size(); i++)
 	{
+		bool flag = false;
 		for (int j = 0; j < (int)infeasibleSubpop.size() - i - 1; j++)
 		{
 			if (infeasibleSubpop[j]->eval.penalizedCost > infeasibleSubpop[j + 1]->eval.penalizedCost + MY_EPSILON)
@@ -168,8 +169,10 @@ void Population::managePenalties()
 				Individual * indiv = infeasibleSubpop[j];
 				infeasibleSubpop[j] = infeasibleSubpop[j + 1];
 				infeasibleSubpop[j + 1] = indiv;
+				flag = true;
 			}
 		}
+		if(!flag) break;
 	}
 }
 
