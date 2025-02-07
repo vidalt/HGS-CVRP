@@ -6,8 +6,8 @@ include_directories(${HGS_CVRP_SOURCE_DIR}/Program)
 
 add_executable(lib_test_c
         test.c
-        ${HGS_CVRP_SOURCE_DIR}/Program/C_Interface.h
-        ${HGS_CVRP_SOURCE_DIR}/Program/AlgorithmParameters.h
+        ${PROJECT_SOURCE_DIR}/Program/C_Interface.h
+        ${PROJECT_SOURCE_DIR}/Program/AlgorithmParameters.h
         )
 
 target_link_libraries(lib_test_c -lm lib)  # need -lm to link math library
