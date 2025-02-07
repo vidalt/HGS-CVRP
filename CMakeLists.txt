@@ -20,14 +20,33 @@ endif (MSVC)
 
 include_directories(Program)
 
-# Build Executable
-add_executable(bin
-        Program/main.cpp
-        ${src_files})
 
+# Build Library
+
+# object to be used by both static and shared (compile only once)
+add_library(objlib OBJECT ${src_files})
+set_property(TARGET objlib PROPERTY POSITION_INDEPENDENT_CODE 1)
+
+# static library
+add_library(lib_static STATIC $<TARGET_OBJECTS:objlib>)
+# if static and runtime libraries use name "hgscvrp", MSVC will overwrite one
+# of them, because both STATIC and SHARED builds create "hgscvrp.lib"
+set_target_properties(lib_static PROPERTIES OUTPUT_NAME hgscvrp_static)
+
+# runtime library
+add_library(lib SHARED $<TARGET_OBJECTS:objlib>)
+set_target_properties(lib PROPERTIES OUTPUT_NAME hgscvrp)
+
+
+# Build Executable
+
+add_executable(bin Program/main.cpp)
+target_link_libraries(bin PRIVATE lib_static)
 set_target_properties(bin PROPERTIES OUTPUT_NAME hgs)
 
+
 # Test Executable
+
 include(CTest)
 add_test(NAME    bin_test_X-n101-k25
          COMMAND ${CMAKE_COMMAND}   -DINSTANCE=X-n101-k25
@@ -52,14 +71,12 @@ add_test(NAME    bin_test_CMT7
                                     -DROUND=0
                                     -P ${PROJECT_SOURCE_DIR}/Test/TestExecutable.cmake)
 
-# Build Library
-add_library(lib SHARED ${src_files})
-set_target_properties(lib PROPERTIES OUTPUT_NAME hgscvrp)
 
 # Test Library
 add_subdirectory(Test/Test-c/)
 add_test(NAME       lib_test_c
          COMMAND    lib_test_c)
+
 
 # Install
 install(TARGETS lib
