@@ -32,6 +32,7 @@ void LocalSearch::runProfile(Individual & indiv, double penaltyCapacityLS, doubl
 		for (int posU = 0; posU < params.nbClients; posU++)
 		{
 			nodeU = &clients[orderNodes[posU]];
+			// Only an accepted move can change this customer's neighbors; each acceptance increments nbMoves.
 			int preparedAtMove = -1;
 			int lastTestRINodeU = nodeU->whenLastTestedRI;
 			nodeU->whenLastTestedRI = nbMoves;
@@ -382,8 +383,8 @@ bool LocalSearch::move8()
 	// Early move pruning to save CPU time. Guarantees that this move cannot improve without checking additional (load, duration...) constraints
 	if (cost >= 0) return false;
 		
-	cost += (loadOnly ? 0.0 : penaltyExcessDuration(nodeU->cumulatedTime + nodeV->cumulatedTime + (loadOnly ? 0.0 : nodeV->cumulatedReversalDistance) + params.timeCost[nodeUIndex][nodeVIndex]))
-		+ (loadOnly ? 0.0 : penaltyExcessDuration(routeU->duration - nodeU->cumulatedTime - afterU + (loadOnly ? 0.0 : routeU->reversalDistance) - (loadOnly ? 0.0 : nodeX->cumulatedReversalDistance) + routeV->duration - nodeV->cumulatedTime - afterV + params.timeCost[nodeXIndex][nodeYIndex]))
+	cost += (loadOnly ? 0.0 : penaltyExcessDuration(nodeU->cumulatedTime + nodeV->cumulatedTime + nodeV->cumulatedReversalDistance + params.timeCost[nodeUIndex][nodeVIndex]))
+		+ (loadOnly ? 0.0 : penaltyExcessDuration(routeU->duration - nodeU->cumulatedTime - afterU + routeU->reversalDistance - nodeX->cumulatedReversalDistance + routeV->duration - nodeV->cumulatedTime - afterV + params.timeCost[nodeXIndex][nodeYIndex]))
 		+ penaltyExcessLoad(nodeU->cumulatedLoad + nodeV->cumulatedLoad)
 		+ penaltyExcessLoad(routeU->load + routeV->load - nodeU->cumulatedLoad - nodeV->cumulatedLoad);
 		
@@ -835,6 +836,9 @@ LocalSearch::LocalSearch(Params & params) : params (params)
         if (!std::isfinite(client.serviceDuration) || client.serviceDuration < 0.) useLoadProfile = false;
         maxService = std::max(maxService, client.serviceDuration);
     }
+    // A route or prefix has at most one travel/service step per customer plus the depot return.
+    // When costs are symmetric, the move formulas add at most two such times and five
+    // positive edge/service terms. The factor 16 leaves headroom for intermediate sums and rounding.
     const double safeDuration = 16.0 * (params.nbClients + 2.0) * (params.maxDist + maxService + 1.0);
     useLoadProfile = useLoadProfile && std::isfinite(safeDuration) && params.durationLimit > safeDuration;
     for (int i = 0; useLoadProfile && i <= params.nbClients; ++i) {
