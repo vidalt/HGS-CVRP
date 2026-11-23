@@ -113,6 +113,12 @@ class LocalSearch
 private:
 	
 	Params & params ;							// Problem parameters
+    bool useLoadProfile;
+    template<bool loadOnly>
+    void runProfile(Individual & indiv, double capacityPenalty, double durationPenalty);
+    template<bool loadOnly>
+    void loadProfile(const Individual & indiv);
+
 	bool searchCompleted;						// Tells whether all moves have been evaluated without success
 	int nbMoves;								// Total number of moves (RI and SWAP*) applied during the local search. Attention: this is not only a simple counter, it is also used to avoid repeating move evaluations
 	std::vector < int > orderNodes;				// Randomized order for checking the nodes in the RI local search
@@ -138,42 +144,44 @@ private:
 	Route * routeV ;
 	int nodeUPrevIndex, nodeUIndex, nodeXIndex, nodeXNextIndex ;	
 	int nodeVPrevIndex, nodeVIndex, nodeYIndex, nodeYNextIndex ;	
+    double beforeU, afterU, afterX, removeU, removeUX, removeXU;
+    double beforeV, afterV, afterY;
 	double loadU, loadX, loadV, loadY;
 	double serviceU, serviceX, serviceV, serviceY;
 	double penaltyCapacityLS, penaltyDurationLS ;
 	bool intraRouteMove ;
 
-	void setLocalVariablesRouteU(); // Initializes some local variables and distances associated to routeU to avoid always querying the same values in the distance matrix
-	void setLocalVariablesRouteV(); // Initializes some local variables and distances associated to routeV to avoid always querying the same values in the distance matrix
+	template<bool loadOnly> void setLocalVariablesRouteU(); // Initializes some local variables and distances associated to routeU to avoid always querying the same values in the distance matrix
+	template<bool loadOnly> void setLocalVariablesRouteV(); // Initializes some local variables and distances associated to routeV to avoid always querying the same values in the distance matrix
 
 	inline double penaltyExcessDuration(double myDuration) {return std::max<double>(0., myDuration - params.durationLimit)*penaltyDurationLS;}
 	inline double penaltyExcessLoad(double myLoad) {return std::max<double>(0., myLoad - params.vehicleCapacity)*penaltyCapacityLS;}
 
 	/* RELOCATE MOVES */
 	// (Legacy notations: move1...move9 from Prins 2004)
-	bool move1(); // If U is a client node, remove U and insert it after V
-	bool move2(); // If U and X are client nodes, remove them and insert (U,X) after V
-	bool move3(); // If U and X are client nodes, remove them and insert (X,U) after V
+	template<bool loadOnly> bool move1(); // If U is a client node, remove U and insert it after V
+	template<bool loadOnly> bool move2(); // If U and X are client nodes, remove them and insert (U,X) after V
+	template<bool loadOnly> bool move3(); // If U and X are client nodes, remove them and insert (X,U) after V
 
 	/* SWAP MOVES */
-	bool move4(); // If U and V are client nodes, swap U and V
-	bool move5(); // If U, X and V are client nodes, swap (U,X) and V
-	bool move6(); // If (U,X) and (V,Y) are client nodes, swap (U,X) and (V,Y) 
+	template<bool loadOnly> bool move4(); // If U and V are client nodes, swap U and V
+	template<bool loadOnly> bool move5(); // If U, X and V are client nodes, swap (U,X) and V
+	template<bool loadOnly> bool move6(); // If (U,X) and (V,Y) are client nodes, swap (U,X) and (V,Y)
 	 
 	/* 2-OPT and 2-OPT* MOVES */
-	bool move7(); // If route(U) == route(V), replace (U,X) and (V,Y) by (U,V) and (X,Y)
-	bool move8(); // If route(U) != route(V), replace (U,X) and (V,Y) by (U,V) and (X,Y)
-	bool move9(); // If route(U) != route(V), replace (U,X) and (V,Y) by (U,Y) and (V,X)
+	template<bool loadOnly> bool move7(); // If route(U) == route(V), replace (U,X) and (V,Y) by (U,V) and (X,Y)
+	template<bool loadOnly> bool move8(); // If route(U) != route(V), replace (U,X) and (V,Y) by (U,V) and (X,Y)
+	template<bool loadOnly> bool move9(); // If route(U) != route(V), replace (U,X) and (V,Y) by (U,Y) and (V,X)
 
 	/* SUB-ROUTINES FOR EFFICIENT SWAP* EVALUATIONS */
-	bool swapStar(); // Calculates all SWAP* between routeU and routeV and apply the best improving move
+	template<bool loadOnly> bool swapStar(); // Calculates all SWAP* between routeU and routeV and apply the best improving move
 	double getCheapestInsertSimultRemoval(Node * U, Node * V, Node *& bestPosition); // Calculates the insertion cost and position in the route of V, where V is omitted
 	void preprocessInsertions(Route * R1, Route * R2); // Preprocess all insertion costs of nodes of route R1 in route R2
 
 	/* ROUTINES TO UPDATE THE SOLUTIONS */
 	static void insertNode(Node * U, Node * V);		// Solution update: Insert U after V
 	static void swapNode(Node * U, Node * V) ;		// Solution update: Swap U and V							   
-	void updateRouteData(Route * myRoute);			// Updates the preprocessed data of a route
+	template<bool loadOnly> void updateRouteData(Route * myRoute);			// Updates the preprocessed data of a route
 
 	public:
 
